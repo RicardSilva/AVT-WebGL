@@ -1,167 +1,272 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 	<head>
-		<title>three.js webgl - OBJLoader + MTLLoader</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				font-family: Monospace;
-				background-color: #000;
-				color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
-			#info {
-				color: #fff;
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				z-index: 100;
-				display:block;
-			}
-			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
-		</style>
-	</head>
+		<title>Micromachines</title>
+		
+		<script id="shader-vs" type="x-shader/x-vertex">
+			#version 100
+		    attribute vec3 VertexNormal;
+			attribute vec4 VertexPosition;
+			attribute vec4 texCoord;
 
-	<body>
-		<div id="info">
-		<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - OBJLoader + MTLLoader
-		</div>
+			attribute vec2 vVertex;
+			attribute vec2 vtexCoord;
 
-		<script src="js/build/three.js"></script>
+		    uniform mat4 m_pvm;
+			uniform mat4 m_viewModel;
+			uniform mat3 m_normal;
+			uniform bool vWritingMode;
 
-		<script src="js/loaders/DDSLoader.js"></script>
-		<script src="js/loaders/MTLLoader.js"></script>
-		<script src="js/loaders/OBJLoader.js"></script>
+			varying vec3 Normal;
+			varying vec4 Position;
+			varying vec3 EyeDirection;
+			varying vec2 tex_coord;
 
-		<script src="js/Detector.js"></script>
-		<script src="js/libs/stats.min.js"></script>
-
-		<script>
-
-			var container, stats;
-
-			var camera, scene, renderer;
-
-			var mouseX = 0, mouseY = 0;
-
-			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
-
-
-			init();
-			animate();
-
-
-			function init() {
-
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
-
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-				camera.position.z = 250;
-
-				// scene
-
-				scene = new THREE.Scene();
-
-				var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
-				scene.add( ambientLight );
-
-				var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
-				camera.add( pointLight );
-				scene.add( camera );
-
-				// model
-
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-
-				var onError = function ( xhr ) { };
-
-				THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
-
-				var mtlLoader = new THREE.MTLLoader();
-				mtlLoader.setPath( 'obj/' );
-				mtlLoader.load( 'cube.mtl', function( materials ) {
-
-					materials.preload();
-
-					var objLoader = new THREE.OBJLoader();
-					objLoader.setMaterials( materials );
-					objLoader.setPath( 'obj/' );
-					objLoader.load( 'cube.obj', function ( object ) {
-
-					object.scale.x = 10;
-						object.scale.y = 10;
-						object.scale.z = 10;
-						scene.add( object );
-
-					}, onProgress, onError );
-
-				});
-
-				//
-
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize, false );
-
-			}
-
-			function onWindowResize() {
-
-				windowHalfX = window.innerWidth / 2;
-				windowHalfY = window.innerHeight / 2;
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			function onDocumentMouseMove( event ) {
-
-				mouseX = ( event.clientX - windowHalfX ) / 2;
-				mouseY = ( event.clientY - windowHalfY ) / 2;
-
-			}
-
-			//
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-				render();
-
-			}
-
-			function render() {
-
-				camera.position.x += ( mouseX - camera.position.x ) * .05;
-				camera.position.y += ( - mouseY - camera.position.y ) * .05;
-
-				camera.lookAt( scene.position );
-
-				renderer.render( scene, camera );
-
-			}
-
+		    void main(void) {
+		        if (!vWritingMode) {
+					Normal = normalize(m_normal * VertexNormal);
+					Position = m_viewModel * VertexPosition;
+					EyeDirection = normalize(vec3(-Position));
+					gl_Position = m_pvm * VertexPosition;
+					tex_coord = texCoord.st;
+				}
+				else {
+					tex_coord = vtexCoord;
+					gl_Position = m_pvm * vec4(vVertex, 0.0, 1.0);
+				}	
+		    }
 		</script>
 
+		<script id="shader-fs" type="x-shader/x-fragment">
+		    precision mediump float;
+			struct MaterialProperties {
+				vec4 diffuse; 				// what part of diffuse light is scattered
+				vec4 ambient; 				// what part of ambient light is reflected
+				vec4 specular; 				// what part of specular light is scattered
+				float shininess;			// exponent for sharpening specular reflection
+				int texCount;
+			};
+
+			struct LightProperties {
+				bool isEnabled;				// true to apply this light in this invocation
+
+				bool isLocal;				// true for a point light or a spotlight,
+											// false for a positional light
+
+				bool isSpot;				// true if the light is a spotlight
+
+				vec3 color;
+
+				vec3 position_point;
+				vec4 direction;
+				vec4 position;				// location of light, if is Local is true,
+											// otherwise the direction toward the light
+				float spotCosCutoff;
+				float spotExponent;
+
+				float constantAttenuation;	// local light attenuation coefficients
+				float linearAttenuation;
+				float quadraticAttenuation;
+			};
+
+			const int numberOfLights = 9;
+			uniform MaterialProperties mat;
+			uniform LightProperties lights[numberOfLights];
+			uniform bool useTextures;
+			uniform bool writingMode;
+			uniform bool particle;
+			uniform bool sun;
+			uniform bool flare;
+			uniform int texMode;
+
+			uniform vec3 overrideColor;
+
+			uniform bool fogIsEnabled;
+			uniform int fogMode;
+			uniform vec3 fogColor;
+			uniform float fogDensity;
+			uniform float alpha;
+
+			uniform sampler2D texmap1;
+			uniform sampler2D texmap2;
+
+			varying vec3 Normal;
+			varying vec4 Position;
+			varying vec3 EyeDirection;
+			varying vec2 tex_coord;
+
+		    void main(void) {
+		    	if(!particle) {
+					if (!writingMode) {
+				    	vec3 scatteredLight = vec3(0.0); // or, to a global ambient light
+						vec3 reflectedLight = vec3(0.0);
+						vec4 texel, texel1;
+						texel = texture2D(texmap1, tex_coord);
+						texel1 = texture2D(texmap2, tex_coord);
+						vec4 tex = vec4(1.0);
+						if (useTextures) {
+							if (texMode == 2) {
+								tex = texel * texel1;
+							}
+							else if (texMode == 1) {
+								tex = texel;
+							}
+						}
+						for (int light = 0; light < numberOfLights; light++) {
+
+							if (lights[light].isEnabled) {
+								vec3 halfVector;
+								vec3 lightDirection;
+								if (lights[light].isSpot) {
+									lightDirection  = vec3(lights[light].position);
+								}
+								else {
+									lightDirection = lights[light].position_point;
+								}
+								float attenuation = 1.0;
+
+								if (lights[light].isLocal) {
+									lightDirection = lightDirection - vec3(Position);
+									float lightDistance = length(lightDirection);
+									lightDirection = lightDirection / lightDistance;
+									attenuation = 1.0 /
+													(lights[light].constantAttenuation
+														+ lights[light].linearAttenuation * lightDistance
+														+ lights[light].quadraticAttenuation * lightDistance
+														* lightDistance);
+									if (lights[light].isSpot) {
+										float spotCos = dot(lightDirection, normalize(vec3(-lights[light].direction)));
+
+										if (spotCos < lights[light].spotCosCutoff) {
+											attenuation = 0.0;
+										}
+										else
+											attenuation *= pow(spotCos, lights[light].spotExponent);
+									}
+
+									halfVector = normalize(lightDirection + EyeDirection);
+								}
+								else {
+									lightDirection = normalize(vec3(-lights[light].direction));
+									halfVector = normalize(lightDirection + EyeDirection / 2.0);
+								}
+
+								float diffuse = max(0.0, dot(Normal, lightDirection));
+								float specular = max(0.0, dot(Normal, halfVector));
+								if (diffuse == 0.0)
+									specular = 0.0;
+								else
+								specular = pow(specular, mat.shininess);
+
+								// Accumulate all the lights’ effects
+								scatteredLight += lights[light].color * mat.ambient.rgb * attenuation + lights[light].color * mat.diffuse.rgb * diffuse * attenuation;
+								reflectedLight += lights[light].color * mat.specular.rgb * specular * attenuation;
+							}
+						}
+						vec3 frag_rgb = min((scatteredLight + reflectedLight)*tex.rgb, vec3(1.0));
+						if (fogIsEnabled) {
+							float dist = length(Position.xyz);
+							float fogAmount = 0.0;
+							if (fogMode == 0) {
+								fogAmount = (15.0 - dist)/(15.0 - 7.5);
+							}
+							else if (fogMode == 1) {
+								fogAmount = 1.0 / exp(dist * fogDensity);
+							}
+							else if (fogMode == 2) {
+								fogAmount = 1.0 / exp((dist * fogDensity) * (dist * fogDensity));
+							}
+							fogAmount = clamp(fogAmount, 0.0, 1.0);
+							frag_rgb =  mix(fogColor, frag_rgb, fogAmount);
+						}
+						gl_FragColor = vec4(frag_rgb, mat.diffuse.a*tex.a);
+
+						if (tex.a < 0.01)
+							discard;
+				    }
+				    else {
+						vec4 col = vec4(1,1,1,1);
+						gl_FragColor = texture2D(texmap1, tex_coord)*col;
+						if (gl_FragColor.rgb == vec3(0.0))
+							discard;
+					}
+				}
+				else {
+					if (sun) {
+						vec4 texel = texture2D(texmap1, tex_coord);
+						vec4 texel1 = texture2D(texmap2, tex_coord);
+						vec4 tex = texel * texel1;
+						gl_FragColor = tex;
+						if (gl_FragColor.a < 0.01)
+							discard;
+					}
+					else if (flare) {
+						gl_FragColor = texture2D(texmap1, tex_coord) * mat.diffuse;
+						if (gl_FragColor.a < 0.01)
+							discard;
+					}
+					else {
+						vec4 color = vec4(0.88, 0.55, 0.21, alpha);
+						vec4 tex = texture2D(texmap1, tex_coord);
+						gl_FragColor = tex * color * 2.0;
+					}
+				}
+		    }
+		</script>
+
+		<script type="text/javascript" src="js/libs/gl-matrix-min.js"></script>
+		<script type="text/javascript" src="js/libs/webgl-utils.js"></script>
+
+
+		<script type="text/javascript" src="js/math.js"></script>
+		<script type="text/javascript" src="js/shaderInit.js"></script>
+		<script type="text/javascript" src="js/cameras.js"></script>
+		<script type="text/javascript" src="js/gm.js"></script>
+		<script type="text/javascript" src="js/lights.js"></script>
+		<script type="text/javascript" src="js/objects/car.js"></script>
+		<script type="text/javascript" src="js/objects/butter.js"></script>
+		<script type="text/javascript" src="js/objects/cheerio.js"></script>
+		<script type="text/javascript" src="js/objects/orange.js"></script>
+		<script type="text/javascript" src="js/objects/billboards.js"></script>
+		<script type="text/javascript" src="js/objects/particle.js"></script>
+		<script type="text/javascript" src="js/objects/milk.js"></script>
+		<script type="text/javascript" src="js/objects/sun.js"></script>
+		<script type="text/javascript" src="js/objects/lens.js"></script>
+		<script type="text/javascript" src="js/script.js"></script>
+		<style type="text/css">
+		    #loadingtext {
+		        position:absolute;
+		        top:250px;
+		        left:150px;
+		        font-size:2em;
+		        color: white;
+		    }
+		    html, body {
+		        margin: 0px;
+		        width: 100%;
+		        height: 100%;
+		        overflow: hidden;
+		    }
+			canvas {
+				width: 100%;
+				height: 100%;
+				
+			}
+			#micromachines-canvas {
+				position: absolute;
+			  	left: 0px;
+			  	top: 0px;
+			}
+			#text-canvas {
+			  position: absolute;
+			  left: 0px;
+			  top: 0px;
+			  z-index: 2;
+			}
+		</style>
+	</head>
+	<body onload="webGLStart();">
+		<canvas id="text-canvas"></canvas>
+		<canvas id="micromachines-canvas"></canvas>
+		<div id="loadingtext">Loading world...</div>
 	</body>
 </html>
