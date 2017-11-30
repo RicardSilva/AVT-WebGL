@@ -18,6 +18,12 @@ function Car(position) {
 	this.inercia = 175;
 	
 	this.createLights();
+	
+	this.width = 16.2;
+	this.height = 11.7;
+	this.length = 30;
+	
+	this.updateHitbox();
 }
 
 Car.prototype.createLights = function() {
@@ -47,4 +53,16 @@ Car.prototype.updateLights = function() {
 
 Car.prototype.restart = function() {
 	
+}
+
+Car.prototype.updateHitbox = function() {
+	var sinAngle = fabs(sin(this.angle * 3.14 / 180));
+	var cosAngle = fabs(cos(this.angle * 3.14 / 180));
+	
+	this.xMin = this.position[0] - (this.length * cosAngle + this.width * sinAngle) / 2;
+    this.yMin = this.position[1] - this.height / 2;
+	this.zMin = this.position[2] - (this.length * sinAngle + this.width * cosAngle) / 2;
+	this.xMax = this.position[0] + (this.length * cosAngle + this.width * sinAngle) / 2;
+    this.yMax = this.position[1] + this.height / 2;
+	this.zMax = this.position[2] + (this.length * sinAngle + this.width * cosAngle) / 2;
 }
