@@ -58,9 +58,8 @@ GameManager.prototype.initLights = function() {
 }
 
 GameManager.prototype.initGameObjects = function() {
+	//var car = new Car([0,0,0]);
 }
-
-
 
 GameManager.prototype.draw = function() {
 	
