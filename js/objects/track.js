@@ -1,10 +1,10 @@
 function Track(position) {
 	this.position = position;
-	this.speed = [0, 0, 0];
+	this.speed = vec3.create(0, 0, 0);
 	this.angle = 0;
 	this.isActive = true;
 	
-	this.startingPosition = [0, 0, 0] ;
+	this.startingPosition = vec3.create(0, 0, 0);
 	this.orangeCounter = 0;
 	this.orangeSpeed = 125;
 	

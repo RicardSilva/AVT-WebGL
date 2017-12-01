@@ -140,33 +140,36 @@ GameManager.prototype.restartGame = function() {
 }
 
 GameManager.prototype.checkCollision = function(obj1, obj2) {
-    return ((obj1.XMax > obj2.XMin) && (obj1.XMin < obj2.XMax) && (obj1.ZMax > obj2.ZMin) && (obj1.ZMin < obj2.ZMax));
+    return ((obj1.maxCorner.x > obj2.minCorner.x) && (obj1.minCorner.x < obj2.maxCorner.x) 
+			&& (obj1.maxCorner.z > obj2.minCorner.z) && (obj1.minCorner.z < obj2.maxCorner.z));
 }
 
 GameManager.prototype.computePositionAfterCollision = function(obj1, obj2) {
-    var distance = [obj2.center[0] - obj1.center[0], obj2.center[1] - obj1.center[1], obj2.center[2] - obj1.center[2]];
+    var distance = vec3.create(obj2.center.x - obj1.center.x,
+							obj2.center.y - obj1.center.y,
+							obj2.center.z - obj1.center.z);
 	
-	var x = (obj1.xMax - obj1.xMin)/2 + (obj2.xMax - obj2.xMin)/2 - fabs(distance[0]);
-	var z = (obj1.zMax - obj1.zMin)/2 + (obj2.zMax - obj2.zMin)/2 - fabs(distance[0]);
+	var x = (obj1.maxCorner.x - obj1.minCorner.x)/2 + (obj2.maxCorner.x - obj2.minCorner.x)/2 - fabs(distance.x);
+	var z = (obj1.maxCorner.z - obj1.minCorner.z)/2 + (obj2.maxCorner.z - obj2.minCorner.z)/2 - fabs(distance.x);
 	
 	if (x < z) {
-		if (distance[0] < 0)
+		if (distance.x < 0)
 			x = -x;
-		obj1.position([obj1.position[0] - x, obj1.position[1], obj.position[2]]);
+		obj1.position.set(obj1.position.x - x, obj1.position.y, obj.position.z);
 	}
 	else {
-		if (distance[2] > 0)
+		if (distance.z > 0)
 			z = -z;
-		obj1.position([obj1.position[0], obj1.position[1], obj.position[2] + z]);
+		obj1.position.set(obj1.position.x, obj1.position.y, obj.position.z + z]);
 	}
 	
 	obj1.updateHitbox();
 }
 
 GameManager.prototype.processCarObstacleCollision = function(obj) {
-    obs.angle = car.angle;
-	obs.speed = car.speed;
-	car.speed = [0, 0, 0];
+    obs.angle.copy(car.angle);
+	obs.speed.copy(car.speed);
+	car.speed = vec3.set(0, 0, 0);
 	
 	this.computePositionAfterCollision(car, obj);
 }
