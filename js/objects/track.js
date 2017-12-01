@@ -20,6 +20,8 @@ Track.prototype.createObjects = function() {
 	//this.oranges.push(/*new Spotlight()*/);
 	this.lamps = [];
 	//this.lamps.push(/*new Spotlight()*/);
+	this.borders = [];
+	//this.borders.push(/*new Spotlight()*/);
 }
 
 Track.prototype.draw = function() {
@@ -30,8 +32,19 @@ Track.prototype.drawLights = function() {
 	
 }
 
-Track.prototype.update = function() {
-	
+Track.prototype.update = function(timeStep) {
+	for (cheerio of this.cheerios) {
+		if (cheerio.isActive)
+			cheerio.update(timeStep);
+	}
+	for (butter of this.butters) {
+		if (butter.isActive)
+			butter.update(timeStep);
+	}
+	for (orange of this.oranges) {
+		if (orange.isActive)
+			orange.update(timeStep);
+	}
 }
 
 Track.prototype.restart = function() {
@@ -44,6 +57,11 @@ Track.prototype.attemptToSpawnOrange = function() {
 
 Track.prototype.increaseOrangeSpeed = function() {
 	
+}
+
+Track.prototype.removeOrange = function(i) {
+	this.oranges.splice(1, 1);
+	this.orangeCounter--;
 }
 
 Track.prototype.toogleDirectionalLight = function() {

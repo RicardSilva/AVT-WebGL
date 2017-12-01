@@ -20,8 +20,27 @@ Orange.prototype.draw = function() {
 	
 }
 
-Orange.prototype.update = function() {
+Orange.prototype.update = function(timestep) {
+	timeStep = timeStep / 1000;
 	
+	var speedX = speed[0];
+	var speedZ = speed[2];
+	
+	var cosAngle = cos(angle * 3.14 / 180);
+	var sinAngle = sin(angle * 3.14 / 180);
+
+	var posX = position[0];
+	var posZ = position[2];
+	
+	// update position
+	position[0] = posX + speedX * cosAngle * timeStep;
+	position[2] = posZ + speedZ * -sinAngle * timeStep;
+	
+	// update rotation angle
+	this.rotationAngle = this.rotationAngle + speed[0] * 0.04;
+	this.rotationAngle = this.rotationAngle % 360;
+	
+	this.updateHitbox();
 }
 
 Orange.prototype.increaseSpeed = function() {

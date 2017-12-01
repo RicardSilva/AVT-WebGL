@@ -121,8 +121,14 @@ GameManager.prototype.drawFlare = function() {
     
 }
 
-GameManager.prototype.update = function(delta_t) {
+GameManager.prototype.update = function(timeStep) {
+   this.car.update(timeStep);
+   this.track.update(timeStep);
    
+   this.processCarCollisions();
+   this.processObsCollisions();
+   
+   //compute cameras position
 }
 
 GameManager.prototype.resetCar = function() {
@@ -191,6 +197,10 @@ GameManager.prototype.processCarCollisions = function() {
 	//TODO finishline
 }
 
+GameManager.prototype.processOrangeCollision = function(i) {
+    track.removeOrange(i);
+}
+
 GameManager.prototype.processObsCollisions = function() {
     for (cheerio of this.track.cheerios){
 		for (border of this.track.borders){
@@ -209,7 +219,13 @@ GameManager.prototype.processObsCollisions = function() {
 	for (orange of this.track.oranges){
 		for (border of this.track.borders){
 			if(this.checkCollision(orange, border))
-				this.computePositionAfterCollision(orange, border);
+				this.processOrangeCollision(orange);
+		}
+	}
+	for (i = 0; i < this.track.oranges.length; i++){
+		for (border of this.track.borders){
+			if(this.checkCollision(oranges[i], border))
+				this.processOrangeCollision(i);
 		}
 	}
 	
