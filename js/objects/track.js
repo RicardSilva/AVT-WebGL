@@ -18,6 +18,8 @@ Track.prototype.createObjects = function() {
 	//this.butters.push(/*new Spotlight()*/);
 	this.oranges = [];
 	//this.oranges.push(/*new Spotlight()*/);
+	this.lamps = [];
+	//this.lamps.push(/*new Spotlight()*/);
 }
 
 Track.prototype.draw = function() {

@@ -12,6 +12,8 @@ function Lamp(position) {
 	this.height = 37;
 	this.length = 7.8;
 	
+	this.updateCenter();
+	
 	this.updateHitbox();
 }
 
@@ -38,6 +40,10 @@ Lamp.prototype.updateLight = function() {
 
 Lamp.prototype.toggleLight = function() {
 	
+}
+
+Lamp.prototype.updateCenter = function() {
+	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
 }
 
 Lamp.prototype.updateHitbox = function() {

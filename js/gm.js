@@ -28,6 +28,7 @@ GameManager.prototype.initShader = function() {
     //FIXME
      initShaders();
 }
+
 GameManager.prototype.initMeshes = function() {
 }
 
@@ -64,12 +65,15 @@ GameManager.prototype.initGameObjects = function() {
 GameManager.prototype.draw = function() {
 	
 }
+
 GameManager.prototype.drawHUD = function() {
     
 }
+
 GameManager.prototype.drawMirrorReflection = function() {
     
 }
+
 GameManager.prototype.drawFlare = function() {
     
 }
@@ -78,18 +82,101 @@ GameManager.prototype.update = function(delta_t) {
    
 }
 
-
-
-
-
-
 GameManager.prototype.resetCar = function() {
     
 }
+
 GameManager.prototype.restartGame = function() {
     
 }
 
+GameManager.prototype.checkCollision = function(obj1, obj2) {
+    return ((obj1.XMax > obj2.XMin) && (obj1.XMin < obj2.XMax) && (obj1.ZMax > obj2.ZMin) && (obj1.ZMin < obj2.ZMax));
+}
+
+GameManager.prototype.computePositionAfterCollision = function(obj1, obj2) {
+    var distance = [obj2.center[0] - obj1.center[0], obj2.center[1] - obj1.center[1], obj2.center[2] - obj1.center[2]];
+	
+	var x = (obj1.xMax - obj1.xMin)/2 + (obj2.xMax - obj2.xMin)/2 - fabs(distance[0]);
+	var z = (obj1.zMax - obj1.zMin)/2 + (obj2.zMax - obj2.zMin)/2 - fabs(distance[0]);
+	
+	if (x < z) {
+		if (distance[0] < 0)
+			x = -x;
+		obj1.position([obj1.position[0] - x, obj1.position[1], obj.position[2]]);
+	}
+	else {
+		if (distance[2] > 0)
+			z = -z;
+		obj1.position([obj1.position[0], obj1.position[1], obj.position[2] + z]);
+	}
+	
+	obj1.updateHitbox();
+}
+
+GameManager.prototype.processCarObstacleCollision = function(obj) {
+    obs.angle = car.angle;
+	obs.speed = car.speed;
+	car.speed = [0, 0, 0];
+	
+	this.computePositionAfterCollision(car, obj);
+}
+
+GameManager.prototype.processCarCollisions = function() {
+    for (cheerio of this.track.cheerios){
+		if(this.checkCollision(this.car, cheerio))
+			this.processCarObstacleCollision(cheerio);
+	}
+	
+	for (butter of this.track.butters){
+		if(this.checkCollision(this.car, butter))
+			this.processCarObstacleCollision(butter);
+	}
+	
+	for (orange of this.track.oranges){
+		if(this.checkCollision(this.car, orange))
+			this.processCarObstacleCollision(orange);
+	}
+	
+	for (lamp of this.track.lamps){
+		if(this.checkCollision(this.car, lamp))
+			this.processCarObstacleCollision(lamp);
+	}
+	
+	//TODO borders
+	
+	//TODO finishline
+}
+
+GameManager.prototype.processObsCollisions = function() {
+    for (cheerio of this.track.cheerios){
+		for (border of this.track.borders){
+			if(this.checkCollision(cheerio, border))
+				this.computePositionAfterCollision(cheerio, border);
+		}
+	}
+	
+	for (butter of this.track.butters){
+		for (border of this.track.borders){
+			if(this.checkCollision(butter, border))
+				this.computePositionAfterCollision(butter, border);
+		}
+	}
+	
+	for (orange of this.track.oranges){
+		for (border of this.track.borders){
+			if(this.checkCollision(orange, border))
+				this.computePositionAfterCollision(orange, border);
+		}
+	}
+	
+	for (lamp of this.track.lamps){
+		for (border of this.track.borders){
+			if(this.checkCollision(lamp, border))
+				this.computePositionAfterCollision(lamp, border);
+		}
+	}
+}
 
 function loadImage(url, callback) {
   var image = new Image();

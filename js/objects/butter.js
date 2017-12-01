@@ -10,6 +10,8 @@ function Butter(position) {
 	this.height = 20;
 	this.length = 40;
 	
+	this.updateCenter();
+	
 	this.updateHitbox();
 }
 
@@ -19,6 +21,10 @@ Butter.prototype.draw = function() {
 
 Butter.prototype.update = function() {
 	
+}
+
+Butter.prototype.updateCenter = function() {
+	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
 }
 
 Butter.prototype.updateHitbox = function() {

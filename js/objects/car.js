@@ -23,6 +23,8 @@ function Car(position) {
 	this.height = 11.7;
 	this.length = 30;
 	
+	this.updateCenter();
+	
 	this.updateHitbox();
 }
 
@@ -55,7 +57,11 @@ Car.prototype.restart = function() {
 	
 }
 
-Car.prototype.updateHitbox = function() {
+Car.prototype.updateCenter = function() {
+	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
+}
+
+Car.prototype.updateHitbox = function() { //TODO sin/cos/abs lib
 	var sinAngle = fabs(sin(this.angle * 3.14 / 180));
 	var cosAngle = fabs(cos(this.angle * 3.14 / 180));
 	

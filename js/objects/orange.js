@@ -11,6 +11,8 @@ function Orange(position, speed, rotationAngle, rotationAxle) {
 	
 	this.radius = 15;
 	
+	this.updateCenter();
+	
 	this.updateHitbox();
 }
 
@@ -24,6 +26,10 @@ Orange.prototype.update = function() {
 
 Orange.prototype.increaseSpeed = function() {
 	
+}
+
+Orange.prototype.updateCenter = function() {
+	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
 }
 
 Orange.prototype.updateHitbox = function() {

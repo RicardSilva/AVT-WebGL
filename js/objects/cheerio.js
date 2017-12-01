@@ -10,6 +10,8 @@ function Cheerio(position) {
 	this.height = 4.5;
 	this.length = 15;
 	
+	this.updateCenter();
+	
 	this.updateHitbox();
 }
 
@@ -19,6 +21,10 @@ Cheerio.prototype.draw = function() {
 
 Cheerio.prototype.update = function() {
 	
+}
+
+Cheerio.prototype.updateCenter = function() {
+	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
 }
 
 Cheerio.prototype.updateHitbox = function() {
