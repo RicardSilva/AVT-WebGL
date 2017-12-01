@@ -7,16 +7,16 @@ function Camera (near, far) {
 	this.far = far;
 }
 
-Camera.prototype.setEye(eye) { this.eye = eye; }
-Camera.prototype.setTarget(target) { this.target = target; }
-Camera.prototype.setUp(up) { this.up = up; }
+Camera.prototype.setEye = function(eye) { vec3.copy(this.eye, eye); }
+Camera.prototype.setTarget = function(target) { vec3.copy(this.target, target); }
+Camera.prototype.setUp = function(up) { vec3.copy(this.up, up); }
 
-Camera.prototype.computeView() {
+Camera.prototype.computeView = function() {
 	mat4.identity(viewMatrix);
-	mat4.lookAt(viewMatrix, eye, target, up);
+	mat4.lookAt(viewMatrix, this.eye, this.target, this.up);
 }
 
-Camera.prototype.computeCarCameraPosition(position, orientation) {
+Camera.prototype.computeCarCameraPosition = function(position, orientation) {
 	var x = position[0]; // aim for the car's center of rotation
 	var y = position[1];
 	var z = position[2];
@@ -31,7 +31,7 @@ Camera.prototype.computeCarCameraPosition(position, orientation) {
 
 
 }
-Camera.prototype.computeCockpitCameraPosition(position, orientation) {
+Camera.prototype.computeCockpitCameraPosition = function(position, orientation) {
 
 	var x = position[0] - (4.5 * cos(orientation * 3.14 / 180)); // camera inside car
 	var y = position[1] + 10;
@@ -45,7 +45,7 @@ Camera.prototype.computeCockpitCameraPosition(position, orientation) {
 
 	copy(this.target, vec3.fromValues(x,y,z));
 }
-Camera.prototype.computeBackCameraPosition(position, orientation) {
+Camera.prototype.computeBackCameraPosition = function(position, orientation) {
 	
 	var x = position[0] - (4.5 * cos(orientation * 3.14 / 180)); // camera inside car
 	var y = position[1] + 10;
@@ -60,11 +60,11 @@ Camera.prototype.computeBackCameraPosition(position, orientation) {
 	copy(this.target, vec3.fromValues(x,y,z));
 }
 
-Camera.convertWorldToScreen(worldPosition) {
+function convertWorldToScreen(worldPosition) {
 	var coords = vec4.fromValues(worldPosition[0],
 								 worldPosition[1],
 								 worldPosition[2],
-								 1.0f);
+								 1.0);
 	
 	multMatrixPoint(VIEW, coords, coords);
 	multMatrixPoint(PROJECTION, coords, coords);
@@ -72,8 +72,8 @@ Camera.convertWorldToScreen(worldPosition) {
 	if (coords[3] <= 0)
 		return vec2.fromValues(-1, -1);
 
-	var x = (coords[0] / coords[3] + 1) / 2.0f;
-	var y = 1 - ((coords[1] / coords[3] + 1) / 2.0f);
+	var x = (coords[0] / coords[3] + 1) / 2.0;
+	var y = 1 - ((coords[1] / coords[3] + 1) / 2.0);
 
 
 	return vec2.fromValues(x, y);
@@ -81,8 +81,9 @@ Camera.convertWorldToScreen(worldPosition) {
 
 
 }
-OrthogonalCamera.prototype = Object.create(Camera.prototype);
-function OrthogonalCamera(right, left, bottom, top, near, far) {
+OrthoCamera.prototype = Object.create(Camera.prototype);
+function OrthoCamera(right, left, bottom, top, near, far) {
+	Camera.call(this, near, far);
 	this.right  = right;
 	this.left   = left;
 
@@ -92,7 +93,7 @@ function OrthogonalCamera(right, left, bottom, top, near, far) {
 	this.near   = near;
 	this.far    = far;
 }
-OrthogonalCamera.prototype.computeProjection = function() {
+OrthoCamera.prototype.computeProjection = function() {
 	mat4.identity(projectionMatrix);
 	mat4.ortho(projectionMatrix, this.right, this.left, this.bottom, this.top, this.near, this.far);
 }
@@ -100,6 +101,7 @@ OrthogonalCamera.prototype.computeProjection = function() {
 
 PerspectiveCamera.prototype = Object.create(Camera.prototype);
 function PerspectiveCamera(fov, ratio, near, far, position, direction) {
+	Camera.call(this, near, far);
 	this.fov       = fov;
 	this.ratio     = ratio;
 

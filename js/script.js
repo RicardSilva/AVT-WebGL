@@ -46,35 +46,44 @@ function drawText() {
     }
 }
 
-var lastTime = 0;
+var oldTime = 0;
 
 function update() {
-    var timeNow = new Date().getTime();
-    if (lastTime != 0) {
-        var elapsed = timeNow - lastTime;
-            gameManager.update(elapsed);
-        }
-    lastTime = timeNow;
+    if (!gameManager.pause && !gameManager.gameOver) {
+        var time = new Date().getTime();
+        var timeStep = time - oldTime;
+        oldTime = time;
+        gameManager.update(timeStep);
+    }
+    else {
+        oldTime = new Date().getTime();
+    }
+
 }
 
 
 function tick() {
     requestAnimFrame(tick);
-    handleKeys();
-    drawScene();
+    //handleKeys();
+
     update();
+    drawScene();
 }
 
 
+
+//var currentlyPressedKeys = {};
 
 function handleKeyDown(event) {
-    gameManager.keyDown(event.keyCode);
+   // currentlyPressedKeys[event.keyCode] = true;
+   gameManager.keyDown(event.keyCode);
 }
-
-
 function handleKeyUp(event) {
-     gameManager.keyUp(event.keyCode);
+   // currentlyPressedKeys[event.keyCode] = false;
+   gameManager.keyUp(event.keyCode);
 }
+
+
 
 function resize(canvas, over) {
   // Lookup the size the browser is displaying the canvas.

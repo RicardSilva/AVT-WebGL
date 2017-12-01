@@ -40,7 +40,7 @@ function Shader (vsShader, fsShader) {
 }
 
 
-Shader.prototype.initAttributes() {
+Shader.prototype.initAttributes = function() {
     this.vertexPositionAttribute = gl.getAttribLocation(this.program, "inPosition");
     gl.enableVertexAttribArray(this.vertexPositionAttribute);
 
@@ -51,7 +51,7 @@ Shader.prototype.initAttributes() {
     gl.enableVertexAttribArray(this.textureCoordAttribute);
 }
 
-Shader.prototype.getUniformLocations() {
+Shader.prototype.getUniformLocations = function() {
 
     this.projViewModelID =  gl.getUniformLocation(this.program, "m_pvm");
     this.viewModelID = gl.getUniformLocation(this.program, "m_viewModel");
@@ -63,54 +63,54 @@ Shader.prototype.getUniformLocations() {
     this.matShininessID = gl.getUniformLocation(this.program, "mat.shininess");
     this.matTransparencyID = gl.getUniformLocation(this.program, "mat.transparency");
     
-    this. useTexturesID = gl.getUniformLocation(this.program, "useTextures");
-    this. textureModeID = gl.getUniformLocation(this.program, "textureMode");
-    this. woodDiffuseID = gl.getUniformLocation(this.program, "woodDiffuse");
+    this.useTexturesID = gl.getUniformLocation(this.program, "useTextures");
+    this.textureModeID = gl.getUniformLocation(this.program, "textureMode");
+    this.woodDiffuseID = gl.getUniformLocation(this.program, "woodDiffuse");
     this.woodSpecularID = gl.getUniformLocation(this.program, "woodSpecular");
-    this. bambooDiffuseID = gl.getUniformLocation(this.program, "bambooDiffuse");
-    this. bambooSpecularID = gl.getUniformLocation(this.program, "bambooSpecular");
-    this. maskID = gl.getUniformLocation(this.program, "mask");
-    this. treeID = gl.getUniformLocation(this.program, "billboardTexture");
-    this. foggyID = gl.getUniformLocation(this.program, "foggy");
+    this.bambooDiffuseID = gl.getUniformLocation(this.program, "bambooDiffuse");
+    this.bambooSpecularID = gl.getUniformLocation(this.program, "bambooSpecular");
+    this.maskID = gl.getUniformLocation(this.program, "mask");
+    this.treeID = gl.getUniformLocation(this.program, "billboardTexture");
+    this.foggyID = gl.getUniformLocation(this.program, "foggy");
 
     var uniformName;
     for (i = 0; i < MAX_LIGHTS; i++) {
         for (j = 0; j < ATTRIBS_PER_LIGHT; j++) {
-            uniformName = "lights[" + i + "]." + lightAttribNames[j];
-            lightUniforms[i * ATTRIBS_PER_LIGHT + j] = gl.getUniformLocation(this.program, uniformName);
+            uniformName = "lights[" + i + "]." + this.lightAttribNames[j];
+            this.lightUniforms[i * ATTRIBS_PER_LIGHT + j] = gl.getUniformLocation(this.program, uniformName);
         }        
 
     }
 }
 
-Shader.prototype.use() {
+Shader.prototype.use = function() {
      gl.useProgram(this.program);
 }
-Shader.prototype.unUse() {
+Shader.prototype.unUse = function() {
     gl.useProgram(0);
 }
 
 
-Shader.prototype.loadFoggy(value) {
+Shader.prototype.loadFoggy = function(value) {
    gl.uniform1i(this.foggyID, value);
 }
-Shader.prototype.loadProjViewModelMatrix(matrix) {
+Shader.prototype.loadProjViewModelMatrix = function(matrix) {
     gl.uniformMatrix4fv(this.projViewModelID, false, matrix);
 }
-Shader.prototype.loadViewModelMatrix(matrix) {
+Shader.prototype.loadViewModelMatrix = function(matrix) {
     gl.uniformMatrix4fv(this.viewModelID, false, matrix);
 }
-Shader.prototype.loadNormalMatrix(matrix) {
+Shader.prototype.loadNormalMatrix = function(matrix) {
     gl.uniformMatrix3fv(this.normalID, false, matrix);
 }
-Shader.prototype.loadMaterial(material) {
+Shader.prototype.loadMaterial = function(material) {
     gl.uniform3fv(this.matAmbientID, material.Ka);
     gl.uniform3fv(this.matDiffuseID, material.Kd);
     gl.uniform3fv(this.matSpecularID, material.Ks);
     gl.uniform1f(this.matShininessID, material.Ns);
     gl.uniform1f(this.matTransparencyID, material.d);
 }
-Shader.prototype.loadDirectionalLight(light) {
+Shader.prototype.loadDirectionalLight = function(light) {
     var lightDir;
     multMatrixPoint(VIEW, light.direction, lightDir);
     var lightId = light.id;
@@ -120,15 +120,15 @@ Shader.prototype.loadDirectionalLight(light) {
     gl.uniform3fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 4], light.color);
     gl.uniform1f(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT * 5], light.intensity);
 }
-Shader.prototype.subLoadDirectionalLight(light) {
+Shader.prototype.subLoadDirectionalLight = function(light) {
     var lightDir;
     multMatrixPoint(VIEW, light.direction, lightDir);
     var lightId = light.id;
 
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
-    gl.uniform4fv(this.lightUniformslightId * ATTRIBS_PER_LIGHT + 3], lightDir);
+    gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 3], lightDir);
 }
-Shader.prototype.loadPointLight(light) {
+Shader.prototype.loadPointLight = function(light) {
     var lightPos;
     multMatrixPoint(VIEW, light.position, lightPos);
     var lightId = light.id;
@@ -144,7 +144,7 @@ Shader.prototype.loadPointLight(light) {
     gl.uniform1f(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 8], light.quadraticAttenuation);
 
 }
-Shader.prototype.subLoadPointLight(light) {
+Shader.prototype.subLoadPointLight = function(light) {
     var lightPos;
     multMatrixPoint(VIEW, light.position, lightPos);
     var lightId = light.id;
@@ -152,7 +152,7 @@ Shader.prototype.subLoadPointLight(light) {
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 2], lightPos);
 }
-Shader.prototype.loadSpotLight(light) {
+Shader.prototype.loadSpotLight = function(light) {
     var lightPos;
     var lightDir;
     multMatrixPoint(VIEW, light.position, lightPos);    
@@ -174,7 +174,7 @@ Shader.prototype.loadSpotLight(light) {
     gl.uniform1f(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 10], light.spotExponent);
 
 }
-Shader.prototype.subLoadSpotLight(light) {
+Shader.prototype.subLoadSpotLight = function(light) {
     var lightPos;
     var lightDir;
     multMatrixPoint(VIEW, light.position, lightPos);    
@@ -185,35 +185,35 @@ Shader.prototype.subLoadSpotLight(light) {
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 2], lightPos);
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 3], lightDir);
 }
-Shader.prototype.enableTextures() {
+Shader.prototype.enableTextures = function() {
     gl.uniform1i(this.useTexturesID, true);
 }
-Shader.prototype.disableTextures() {
+Shader.prototype.disableTextures = function() {
     gl.uniform1i(this.useTexturesID, false);
 }
-Shader.prototype.loadTextureMode(mode) {
+Shader.prototype.loadTextureMode = function(mode) {
      gl.uniform1i(this.textureModeID, mode);
 }
-Shader.prototype.loadWoodDiffuse(id) {
+Shader.prototype.loadWoodDiffuse = function(id) {
      gl.uniform1i(this.woodDiffuseID, id);
 }
-Shader.prototype.loadWoodSpecular(id) {
+Shader.prototype.loadWoodSpecular = function(id) {
      gl.uniform1i(this.woodSpecularID, id);
 }
-Shader.prototype.loadBambooDiffuse(id) {
+Shader.prototype.loadBambooDiffuse = function(id) {
      gl.uniform1i(this.bambooDiffuseID, id);
 }
-Shader.prototype.loadBambooSpecular(id) {
+Shader.prototype.loadBambooSpecular = function(id) {
      gl.uniform1i(this.bambooSpecularID, id);
 }
-Shader.prototype.loadMask(id) {
+Shader.prototype.loadMask = function(id) {
      gl.uniform1i(this.maskID, id);
 }
-Shader.prototype.loadTree(id) {
+Shader.prototype.loadTree = function(id) {
      gl.uniform1i(this.treeID, id);
 }
 
-Shader.prototype.loadMatrices() {
+Shader.prototype.loadMatrices = function() {
     computeMatrices();
     this.loadProjViewModelMatrix(projModelViewMatrix);
     this.loadViewModelMatrix(modelViewMatrix);
@@ -222,9 +222,6 @@ Shader.prototype.loadMatrices() {
 
 
 function initShader(vsShader, fsShader) {
-
-    // var vertexShader = getShader(gl, "shader-vs");
-    //var fragmentShader = getShader(gl, "shader-fs");
 
     var vertexShader = getShader(gl, vsShader);
     var fragmentShader = getShader(gl, fsShader);
@@ -269,7 +266,7 @@ function getShader(gl, id) {
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert(gl.getShaderInfoLog(shader));
+        alert(shaderScript.type + '\n' + gl.getShaderInfoLog(shader));
         return null;
     }
 

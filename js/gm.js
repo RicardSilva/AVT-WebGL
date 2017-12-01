@@ -9,6 +9,10 @@ function GameManager(width, height) {
     this.pause          = false;
     this.score          = 0;
 
+    this.shader;
+    this.cameras = [];
+    this.activeCamera;
+
     this.init();
 
 
@@ -24,9 +28,8 @@ GameManager.prototype.init = function() {
 
 }
 
-GameManager.prototype.initShader = function() {
-    //FIXME
-     initShaders();
+GameManager.prototype.initShaders = function() {
+    this.shader = new Shader("shader-vs", "shader-fs");
 }
 
 GameManager.prototype.initMeshes = function() {
@@ -53,6 +56,45 @@ GameManager.prototype.initTextures = function(urls, callback) {
 }
 
 GameManager.prototype.initCameras = function() {
+	mat4.identity(viewMatrix);
+
+	var topCamera = new OrthoCamera(-750, 750,-550,550, 0.1,150);
+	topCamera.setEye(vec3.fromValues(0,100,0));
+	topCamera.setTarget(vec3.fromValues(0,0,0));
+	topCamera.setUp(vec3.fromValues(0,0,-1));
+	
+
+	this.cameras.push(topCamera);
+
+	var topPerspCamera = new PerspectiveCamera(70, this.width / this.height, 0.1, 1500.0);
+	topPerspCamera.setEye(vec3.fromValues(0, 500, 900));
+	topPerspCamera.setTarget(vec3.fromValues(0, 0, 150));
+	topPerspCamera.setUp(vec3.fromValues(0, 0, -1));
+
+	this.cameras.push(topPerspCamera);
+
+	var carCamera = new PerspectiveCamera(60, this.width / this.height, 0.1, 1000.0);
+	carCamera.setEye(vec3.fromValues(0, 50, -80));
+	carCamera.setTarget(vec3.fromValues(0, 0, 0));
+	carCamera.setUp(vec3.fromValues(0, 1, 0));
+
+	this.cameras.push(carCamera);
+
+	var cockpitCamera = new PerspectiveCamera(90, this.width / this.height, 0.1, 1000.0);
+	cockpitCamera.setEye(vec3.fromValues(0, 50, -80));
+	cockpitCamera.setTarget(vec3.fromValues(0, 0, 0));
+	cockpitCamera.setUp(vec3.fromValues(0, 1, 0));
+
+	this.cameras.push(cockpitCamera);
+
+	var backCamera = new PerspectiveCamera(130, this.width / this.height, 0.1, 1000.0);
+	backCamera.setEye(vec3.fromValues(0, 50, -80));
+	backCamera.setTarget(vec3.fromValues(0, 0, 0));
+	backCamera.setUp(vec3.fromValues(0, 1, 0));
+
+	this.cameras.push(backCamera);
+
+	this.activeCamera = carCamera;
 }
 
 GameManager.prototype.initLights = function() {
@@ -61,6 +103,7 @@ GameManager.prototype.initLights = function() {
 GameManager.prototype.initGameObjects = function() {
 	//var car = new Car([0,0,0]);
 }
+
 
 GameManager.prototype.draw = function() {
 	
@@ -177,6 +220,15 @@ GameManager.prototype.processObsCollisions = function() {
 		}
 	}
 }
+
+GameManager.prototype.keyDown = function(key) {
+	
+}
+GameManager.prototype.keyUp = function(key) {
+
+}
+
+
 
 function loadImage(url, callback) {
   var image = new Image();
