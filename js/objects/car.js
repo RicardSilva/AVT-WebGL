@@ -45,8 +45,101 @@ Car.prototype.drawMirror = function() {
 	
 }
 
-Car.prototype.update = function() {
-	
+Car.prototype.update = function(timeStep) {
+	timeStep = timeStep / 1000;	// convert ms to seconds
+
+	var cosAngle;
+	var sinAngle;
+
+	var posX = position[0];
+	var posZ = position[2];
+
+	var speedX = speed[0];
+	var speedZ = speed[2];
+
+	// update angle
+	if (this.turnLeft) {
+		this.angle += this.angleInc; 
+		this.angle = this.angle % 360;
+	}
+	else if (this.turnRight) {
+		this.angle -= this.angleInc;
+		this.angle = this.angle % 360;
+	}
+
+	cosAngle = cos(angle * 3.14 / 180);	// TODO sin/cos lib
+	sinAngle = sin(angle * 3.14 / 180);
+
+	// update speed
+	if (this.goForward) {
+		speedX = speedX + this.acceleration * timeStep;
+		if (speedX > this.maxSpeed) {
+			speedX = this.maxSpeed;
+		}
+		speed[0] = speedX;
+
+		speedZ = speedZ + this.acceleration * timeStep;
+		if (speedZ > this.maxSpeed) {
+			speedZ = this.maxSpeed;
+		}
+		speed[2] = speedZ;
+
+	}
+	else if (!this.goForward && !this.goBack) {
+		if (speedX > 0) {
+			speedX = speedX - this.inercia * timeStep;
+			if (speedX < 0) {
+				speedX = 0;
+			}
+			speed[0] = speedX;
+		}
+		else if (speedX < 0) {
+			speedX = speedX + this.inercia * timeStep;
+			if (speedX > 0) {
+				speedX = 0;
+			}
+			speed[0] = speedX;
+		}
+
+		if (speedZ > 0) {
+			speedZ = speedZ - this.inercia * timeStep;
+			if (speedZ < 0) {
+				speedZ = 0;
+			}
+			speed[2] = speedZ;
+		}
+		else if (speedZ < 0) {
+			speedZ = speedZ + this.inercia * timeStep;
+			if (speedZ > 0) {
+				speedZ = 0;
+			}
+			speed[2] = speedZ;
+		}
+	}
+	else if (this.goBack) {
+		if (speedX > this.maxBackwardsSpeed) {
+			speedX = speedX - this.backwardsAcceleration * timeStep;
+			if (speedX < this.maxBackwardsSpeed) {
+				speedX = this.maxBackwardsSpeed;
+			}
+			speed[0] = speedX;
+		}
+		if (speedZ > this.maxBackwardsSpeed) {
+			speedZ = speedZ - this.backwardsAcceleration * timeStep;
+			if (speedZ < this.maxBackwardsSpeed) {
+				speedZ = this.maxBackwardsSpeed;
+			}
+			speed[2] = speedZ;
+		}
+	}
+
+	// update position
+	position[0] = posX + speedX * cosAngle * timeStep;
+	position[2] = posZ + speedZ * -sinAngle * timeStep;
+
+	updateLights();
+
+	updateHitbox();
 }
 
 Car.prototype.updateLights = function() {
