@@ -1,6 +1,5 @@
 var gl, gameManager;
 var ctx;
-var cube = {}, torus = {}, quad = {}, sphere = {};
 
 
 function initGL(canvas, over) {
@@ -67,20 +66,16 @@ function tick() {
 }
 
 
-var currentlyPressedKeys = {};
 
 function handleKeyDown(event) {
-    currentlyPressedKeys[event.keyCode] = true;
+    gameManager.keyDown(event.keyCode);
 }
 
 
 function handleKeyUp(event) {
-    currentlyPressedKeys[event.keyCode] = false;
+     gameManager.keyUp(event.keyCode);
 }
 
-function handleKeys() {
-    
-}
 function resize(canvas, over) {
   // Lookup the size the browser is displaying the canvas.
   var displayWidth  = canvas.clientWidth;

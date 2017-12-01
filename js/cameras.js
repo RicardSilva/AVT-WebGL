@@ -81,7 +81,7 @@ Camera.convertWorldToScreen(worldPosition) {
 
 
 }
-
+OrthogonalCamera.prototype = Object.create(Camera.prototype);
 function OrthogonalCamera(right, left, bottom, top, near, far) {
 	this.right  = right;
 	this.left   = left;
@@ -92,7 +92,13 @@ function OrthogonalCamera(right, left, bottom, top, near, far) {
 	this.near   = near;
 	this.far    = far;
 }
+OrthogonalCamera.prototype.computeProjection = function() {
+	mat4.identity(projectionMatrix);
+	mat4.ortho(projectionMatrix, this.right, this.left, this.bottom, this.top, this.near, this.far);
+}
 
+
+PerspectiveCamera.prototype = Object.create(Camera.prototype);
 function PerspectiveCamera(fov, ratio, near, far, position, direction) {
 	this.fov       = fov;
 	this.ratio     = ratio;
@@ -108,10 +114,6 @@ function PerspectiveCamera(fov, ratio, near, far, position, direction) {
 	this.camZ      = 0;
 }
 
-OrthogonalCamera.prototype.computeProjection = function() {
-	mat4.identity(projectionMatrix);
-	mat4.ortho(projectionMatrix, this.right, this.left, this.bottom, this.top, this.near, this.far);
-}
 
 PerspectiveCamera.prototype.computeProjection = function() {
 	mat4.identity(projectionMatrix);
