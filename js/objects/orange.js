@@ -44,7 +44,13 @@ Orange.prototype.update = function(timestep) {
 }
 
 Orange.prototype.increaseSpeed = function() {
-	
+	this.speed.x += 20;
+	this.speed.z += 20;
+
+	if (this.speed.x > 400)
+		this.speed.x = 400;
+	if (this.speed.z > 400)
+		this.speed.z = 400;
 }
 
 Orange.prototype.updateCenter = function() {

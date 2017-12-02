@@ -174,6 +174,17 @@ GameManager.prototype.processCarObstacleCollision = function(obj) {
 	this.computePositionAfterCollision(car, obj);
 }
 
+GameManager.prototype.resetCar = function() {
+	this.car.angle = 0;
+	this.car.speed.set(0, 0, 0);
+	this.car.position.set(this.track.startingPosition);
+
+	if (--this.carLives == 0) {
+		this.gameOver = true;
+		this.pause = true;
+	}
+}
+
 GameManager.prototype.processCarCollisions = function() {
     for (cheerio of this.track.cheerios){
 		if(this.checkCollision(this.car, cheerio))
@@ -187,7 +198,7 @@ GameManager.prototype.processCarCollisions = function() {
 	
 	for (orange of this.track.oranges){
 		if(this.checkCollision(this.car, orange))
-			this.processCarObstacleCollision(orange);
+			this.resetCar();
 	}
 	
 	for (lamp of this.track.lamps){
@@ -195,7 +206,10 @@ GameManager.prototype.processCarCollisions = function() {
 			this.processCarObstacleCollision(lamp);
 	}
 	
-	//TODO borders
+	for (border of this.track.borders){
+		if(this.checkCollision(this.car, border))
+			this.resetCar();
+	}
 	
 	//TODO finishline
 }
@@ -219,12 +233,6 @@ GameManager.prototype.processObsCollisions = function() {
 		}
 	}
 	
-	for (orange of this.track.oranges){
-		for (border of this.track.borders){
-			if(this.checkCollision(orange, border))
-				this.processOrangeCollision(orange);
-		}
-	}
 	for (i = 0; i < this.track.oranges.length; i++){
 		for (border of this.track.borders){
 			if(this.checkCollision(oranges[i], border))
