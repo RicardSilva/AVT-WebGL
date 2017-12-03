@@ -13,6 +13,9 @@ function GameManager(width, height) {
     this.cameras = [];
     this.activeCamera;
 
+    this.car;
+    this.track;
+
     this.init();
 
 
@@ -101,12 +104,20 @@ GameManager.prototype.initLights = function() {
 }
 
 GameManager.prototype.initGameObjects = function() {
-	//var car = new Car([0,0,0]);
+	this.track = new Track(vec3.fromValues(0,-0.1,0));
+	this.car = new Car(track.getStartingPosition());
 }
 
 
 GameManager.prototype.draw = function() {
-	
+	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    mat4.identity(modelMatrix);
+
+    this.activeCamera.computeView();
+    this.activeCamera.computeProjection();
+    this.shader.use();
+}
 }
 
 GameManager.prototype.drawHUD = function() {
@@ -122,8 +133,8 @@ GameManager.prototype.drawFlare = function() {
 }
 
 GameManager.prototype.update = function(timeStep) {
-   this.car.update(timeStep);
-   this.track.update(timeStep);
+   //this.car.update(timeStep);
+   //this.track.update(timeStep);
    
    this.processCarCollisions();
    this.processObsCollisions();
