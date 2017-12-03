@@ -1,6 +1,6 @@
 function Car(position) {
 	this.position = position;
-	this.speed = vec3.create(0, 0, 0);
+	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
 	this.isActive = true;
 	
@@ -151,7 +151,7 @@ Car.prototype.restart = function() {
 }
 
 Car.prototype.updateCenter = function() {
-	this.center = vec3.create(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
+	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
 							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
 							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
 }
@@ -160,10 +160,10 @@ Car.prototype.updateHitbox = function() { //TODO sin/cos/abs lib
 	var sinAngle = fabs(sin(this.angle * 3.14 / 180));
 	var cosAngle = fabs(cos(this.angle * 3.14 / 180));
 	
-	this.minCorner = vec3.create(this.position.x - (this.length * cosAngle + this.width * sinAngle) / 2,
+	this.minCorner = vec3.fromValues(this.position.x - (this.length * cosAngle + this.width * sinAngle) / 2,
 								this.position.y - this.height / 2,
 								this.position.z - (this.length * sinAngle + this.width * cosAngle) / 2;
-	this.maxCorner = vec3.create(this.position.x + (this.length * cosAngle + this.width * sinAngle) / 2,
+	this.maxCorner = vec3.fromValues(this.position.x + (this.length * cosAngle + this.width * sinAngle) / 2,
 								this.position.y + this.height / 2,
 								this.position.z + (this.length * sinAngle + this.width * cosAngle) / 2;
 }
