@@ -23,18 +23,18 @@ Orange.prototype.draw = function() {
 Orange.prototype.update = function(timestep) {
 	timeStep = timeStep / 1000;
 	
-	var speedX = speed[0];
-	var speedZ = speed[2];
+	var speedX = this.speed.x;
+	var speedZ = this.speed.z;
 	
-	var cosAngle = cos(angle * 3.14 / 180);
-	var sinAngle = sin(angle * 3.14 / 180);
+	var cosAngle = cos(this.angle * 3.14 / 180);
+	var sinAngle = sin(this.angle * 3.14 / 180);
 
-	var posX = position[0];
-	var posZ = position[2];
+	var posX = this.position.x;
+	var posZ = this.position.z;
 	
 	// update position
-	position[0] = posX + speedX * cosAngle * timeStep;
-	position[2] = posZ + speedZ * -sinAngle * timeStep;
+	this.position.x = posX + speedX * cosAngle * timeStep;
+	this.position.z = posZ + speedZ * -sinAngle * timeStep;
 	
 	// update rotation angle
 	this.rotationAngle = this.rotationAngle + speed[0] * 0.04;
@@ -44,18 +44,26 @@ Orange.prototype.update = function(timestep) {
 }
 
 Orange.prototype.increaseSpeed = function() {
-	
+	this.speed.x += 20;
+	this.speed.z += 20;
+
+	if (this.speed.x > 400)
+		this.speed.x = 400;
+	if (this.speed.z > 400)
+		this.speed.z = 400;
 }
 
 Orange.prototype.updateCenter = function() {
-	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
+	this.center = vec3.create(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
+							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
+							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
 }
 
 Orange.prototype.updateHitbox = function() {
-	this.xMin = this.position[0] - this.radius;
-    this.yMin = this.position[1] - this.radius + 30;
-	this.zMin = this.position[2] - this.radius;
-	this.xMax = this.position[0] + this.radius;
-    this.yMax = this.position[1] + this.radius + 30;
-	this.zMax = this.position[2] + this.radius;
+	this.minCorner = vec3.create(this.position.x - this.radius,
+								this.position.y - this.radius + 30,
+								this.position.z - this.radius);
+	this.maxCorner = vec3.create(this.position.x + this.radius,
+								this.position.y + this.radius + 30,
+								this.position.z + this.radius);
 }

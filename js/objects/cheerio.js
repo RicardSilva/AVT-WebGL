@@ -1,6 +1,6 @@
 function Cheerio(position) {
 	this.position = position;
-	this.speed = [0, 0, 0];
+	this.speed = vec3.create(0, 0, 0);
 	this.angle = 0;
 	this.isActive = true;
 
@@ -22,59 +22,61 @@ Cheerio.prototype.draw = function() {
 Cheerio.prototype.update = function(timestep) {
 	timeStep = timeStep / 1000;
 	
-	var speedX = speed[0];
-	var speedZ = speed[2];
+	var speedX = this.speed.x;
+	var speedZ = this.speed.z;
 	
 	if (!(speedX == 0 && speedZ == 0)) { //TODO sin/cos lib
-		var cosAngle = cos(angle * 3.14 / 180);
-		var sinAngle = sin(angle * 3.14 / 180);
+		var cosAngle = cos(this.angle * 3.14 / 180);
+		var sinAngle = sin(this.angle * 3.14 / 180);
 		
-		var posX = position[0];
-		var posZ = position[2];
+		var posX = this.position.x;
+		var posZ = this.position.z;
 		
 		if (speedX > 0) {
 			speedX = speedX - this.inercia * timeStep;
 			if (speedX < 0)
 				speedX = 0;
-			speed[0] = speedX;
+			this.speed.x = speedX;
 		}
 		else if (speedX < 0) {
 			speedX = speedX + this.inercia * timeStep;
 			if (speedX > 0)
 				speedX = 0;
-			speed[0] = speedX;
+			this.speed.x = speedX;
 		}
 
 		if (speedZ > 0) {
 			speedZ = speedX - this.inercia * timeStep;
 			if (speedZ < 0)
 				speedZ = 0;
-			speed[2] = speedZ;
+			this.speed.z = speedZ;
 		}
 		else if (speedZ < 0) {
 			speedZ = speedZ + this.inercia * timeStep;
 			if (speedZ > 0)
 				speedZ = 0;
-			speed[2] = speedZ;
+			this.speed.z = speedZ;
 		}
 
 		// update position
-		position[0] = posX + speedX * cosAngle * timeStep;
-		position[2] = posZ + speedZ * -sinAngle * timeStep;
+		this.position.x = posX + speedX * cosAngle * timeStep;
+		this.position.z = posZ + speedZ * -sinAngle * timeStep;
 
 		this.updateHitbox();
 	}
 }
 
 Cheerio.prototype.updateCenter = function() {
-	this.center = [xMin + (xMax - xMin) / 2, yMin + (yMax - yMin) / 2, zMin + (zMax - zMin) / 2];
+	this.center = vec3.create(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
+						this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
+						this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
 }
 
 Cheerio.prototype.updateHitbox = function() {
-	this.xMin = this.position[0] - this.width / 2;
-    this.yMin = this.position[1] - this.height / 2;
-	this.zMin = this.position[2] - this.length / 2;
-	this.xMax = this.position[0] + this.width / 2;
-    this.yMax = this.position[1] + this.height / 2;
-	this.zMax = this.position[2] + this.length / 2;
+	this.minCorner = vec3.create(this.position.x - this.width / 2,
+								this.position.y - this.height / 2,
+								this.position.z - this.length / 2);
+	this.maxCorner = vec3.create(this.position.x + this.width / 2,
+								this.position.y + this.height / 2,
+								this.position.z + this.length / 2);
 }
