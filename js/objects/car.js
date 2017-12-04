@@ -30,6 +30,7 @@ function Car(position, model, shader) {
 	//model
 	this.model = model;
 	this.shader = shader;
+	
 	this.updateHitbox();
 	this.updateCenter();
 	

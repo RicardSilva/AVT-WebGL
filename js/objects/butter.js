@@ -10,6 +10,15 @@ function Butter(position) {
 	this.height = 20;
 	this.length = 40;
 	
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
+	
+	//model
+	this.model = model;
+	this.shader = shader;
+	
 	this.updateCenter();
 	
 	this.updateHitbox();

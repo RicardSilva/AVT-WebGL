@@ -12,8 +12,16 @@ function Lamp(position) {
 	this.height = 37;
 	this.length = 7.8;
 	
-	this.updateCenter();
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 	
+	//model
+	this.model = model;
+	this.shader = shader;
+	
+	this.updateCenter();
 	this.updateHitbox();
 }
 

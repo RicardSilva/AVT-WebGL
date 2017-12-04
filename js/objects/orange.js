@@ -11,8 +11,16 @@ function Orange(position, speed, rotationAngle, rotationAxle) {
 	
 	this.radius = 15;
 	
-	this.updateCenter();
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 	
+	//model
+	this.model = model;
+	this.shader = shader;
+	
+	this.updateCenter();
 	this.updateHitbox();
 }
 

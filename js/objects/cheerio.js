@@ -10,6 +10,15 @@ function Cheerio(position) {
 	this.height = 4.5;
 	this.length = 15;
 	
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
+	
+	//model
+	this.model = model;
+	this.shader = shader;
+	
 	this.updateCenter();
 	
 	this.updateHitbox();
