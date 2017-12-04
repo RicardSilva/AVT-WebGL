@@ -16,7 +16,14 @@ function Cheerio(position) {
 }
 
 Cheerio.prototype.draw = function() {
-	
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	this.shader.loadMatrices();
+
+	this.shader.loadMaterial[this.model.meshes[0].material];
+	this.model.meshes[0].draw(this.shader);
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Cheerio.prototype.update = function(timestep) {

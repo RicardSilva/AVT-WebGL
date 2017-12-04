@@ -17,7 +17,19 @@ function Orange(position, speed, rotationAngle, rotationAxle) {
 }
 
 Orange.prototype.draw = function() {
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	mat4.rotate(modelMatrix, modelMatrix, this.rotationAngle, [this.rotationAngle.x, this.rotationAngle.y, this.rotationAngle.z]);
 	
+	this.shader.loadMatrices();
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.model.meshes[i].draw(this.shader);
+	}
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Orange.prototype.update = function(timestep) {

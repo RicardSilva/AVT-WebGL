@@ -23,7 +23,18 @@ Lamp.prototype.createLight = function() {
 }
 
 Lamp.prototype.draw = function() {
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
 	
+	this.shader.loadMatrices();
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.model.meshes[i].draw(this.shader);
+	}
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Lamp.prototype.drawLight = function() {
