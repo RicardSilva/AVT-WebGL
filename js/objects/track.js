@@ -14,11 +14,10 @@ function Track(position, shader) {
 	this.orangeSpeed = 125;
 	this.orangeStartingSpeed = 125;
 	
+	//model
 	this.model = new ObjModel();
 	this.model.loadFromFile(this.model, "../resources/objModels/track.txt");
 	this.shader = shader;
-
-	
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -75,8 +74,6 @@ Track.prototype.getStartingPosition = function() {
 }
 
 Track.prototype.draw = function() {
-	
-
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	this.shader.loadMatrices();
@@ -84,34 +81,32 @@ Track.prototype.draw = function() {
 	//load textures
 	this.shader.enableTextures();
 	this.shader.loadTextureMode(0);
-/*
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureArray[0]);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, TextureArray[1]);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, TextureArray[2]);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, TextureArray[3]);
-	glActiveTexture(GL_TEXTURE4);
-	glBindTexture(GL_TEXTURE_2D, TextureArray[4]);
-
-	shader->loadWoodDiffuse(0);
-	shader->loadWoodSpecular(1);
-	shader->loadBambooDiffuse(2);
-	shader->loadBambooSpecular(3);
-	shader->loadMask(4);
-*/
+	
+	/*gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, TextureArray[0]);
+	gl.activeTexture(gl.TEXTURE1);
+	gl.bindTexture(gl.TEXTURE_2D, TextureArray[1]);
+	gl.activeTexture(gl.TEXTURE2);
+	gl.bindTexture(gl.TEXTURE_2D, TextureArray[2]);
+	gl.activeTexture(gl.TEXTURE3);
+	gl.bindTexture(gl.TEXTURE_2D, TextureArray[3]);
+	gl.activeTexture(gl.TEXTURE4);
+	gl.bindTexture(gl.TEXTURE_2D, TextureArray[4]);
+	
+	this.shader.loadWoodDiffuse(0);
+	this.shader.loadWoodSpecular(1);
+	this.shader.loadBambooDiffuse(2);
+	this.shader.loadBambooSpecular(3);
+	this.shader.loadMask(4);*/
 
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
 		this.shader.loadMaterial[this.model.meshes[i].material];
 		this.model.meshes[i].draw(this.shader);
 	}
-
 	
 	this.shader.disableTextures();
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	gl.bindTexture(gl.TEXTURE_2D, 0);
 
 	this.shader.loadMaterial(this.cheerios[0].model.meshes[0].material);
 	for (cheerio of this.cheerios)
@@ -151,7 +146,6 @@ Track.prototype.update = function(timeStep) {
 }
 
 Track.prototype.restart = function() {
-
 	this.cheerios.length = 0;
 	this.butters.length = 0;
 	this.oranges.length = 0;
@@ -218,7 +212,7 @@ Track.prototype.attemptToSpawnOrange = function() {
 	var angle = 0;
 	var axleAngle = 0;
 	
-	if (this.orangeCounter < 3) { //TODO rand lib
+	if (this.orangeCounter < 3) {
 		randomNumber = Math.random() * trackPerimeter;	// number in the range of 1 to track_perimeter
 		
 		// COMPUTES RANDOM POSITION using perimeter

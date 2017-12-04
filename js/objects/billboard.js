@@ -8,22 +8,48 @@ function Billboard(position, shader) {
 	this.model = new ObjModel();
 	this.model.loadFromFile(this.model, "../resources/objModels/billboard.txt");
 	this.shader = shader;
+	
+	this.image = new Image();
+	//image.src = "../resources/textures/billboard.tga"
 }
 
-Billboard.prototype.draw = function() {
+Billboard.prototype.draw = function(cam) {
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	
 	mat4.scale(modelMatrix, modelMatrix, [3.5, 3.5, 3.5]);
 	
+	var pos = [position[0] , position[1], position[2]];
+	var camPos = [cam[0] , cam[1], cam[2]];
+	
+	this.l3dBillboardCylindricalBegin(camPos, pos);
+	
 	this.shader.loadMatrices();
-	//this.shader.enableTextures(); TODO
-	//this.shader.loadTextureMode(1);
+	
+	this.shader.enableTextures();
+	this.shader.loadTextureMode(1);
+	
+	/*gl.activeTexture(gl.TEXTURE10);
+	gl.bindTexture(gl.TEXTURE_2D, TextureArray[0]);*/
+	
+	/*
+	var texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, this.image);
+	gl.generateMipmap(gl.TEXTURE_2D);
+	*/
+	
+	
+	//this.shader.loadTree(10);
+	//this.shader.loadMatDiffuse(vec4.fromValues(0, 0.2, 0, 1));
 	
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
 		this.model.meshes[i].draw(this.shader);
 	}
+	
+	this.shader.disableTextures();
+	gl.bindTexture(gl.TEXTURE_2D, 0);
 
 	gameManager.matrices.popMatrix(modelID);
 }

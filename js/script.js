@@ -16,8 +16,6 @@ function initGL(canvas, over) {
     }
 }
 
-
-
 function drawScene() {
     gameManager.draw();
     drawText();
@@ -58,9 +56,7 @@ function update() {
     else {
         oldTime = new Date().getTime();
     }
-
 }
-
 
 function tick() {
     requestAnimFrame(tick);
@@ -69,21 +65,17 @@ function tick() {
     update();
     drawScene();
 }
-
-
-
 //var currentlyPressedKeys = {};
 
 function handleKeyDown(event) {
    // currentlyPressedKeys[event.keyCode] = true;
    gameManager.keyDown(event.keyCode);
 }
+
 function handleKeyUp(event) {
    // currentlyPressedKeys[event.keyCode] = false;
    gameManager.keyUp(event.keyCode);
 }
-
-
 
 function resize(canvas, over) {
   // Lookup the size the browser is displaying the canvas.
