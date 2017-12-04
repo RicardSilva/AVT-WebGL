@@ -42,13 +42,13 @@ function Shader (vsShader, fsShader) {
 
 Shader.prototype.initAttributes = function() {
     this.vertexPositionAttribute = gl.getAttribLocation(this.program, "inPosition");
-    gl.enableVertexAttribArray(this.vertexPositionAttribute);
+    //gl.enableVertexAttribArray(this.vertexPositionAttribute);
 
     this.vertexNormalAttribute = gl.getAttribLocation(this.program, "inNormal");
-    gl.enableVertexAttribArray(this.vertexNormalAttribute);
+   // gl.enableVertexAttribArray(this.vertexNormalAttribute);
 
     this.textureCoordAttribute = gl.getAttribLocation(this.program, "inTexCoord");
-    gl.enableVertexAttribArray(this.textureCoordAttribute);
+    //gl.enableVertexAttribArray(this.textureCoordAttribute);
 }
 
 Shader.prototype.getUniformLocations = function() {

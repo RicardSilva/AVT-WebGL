@@ -37,7 +37,6 @@ function Car(position, model, shader) {
 
 Car.prototype.createLights = function() {
 	this.lights = [];
-	//this.lights.push(/*new Spotlight()*/);
 }
 
 Car.prototype.draw = function() {
@@ -46,10 +45,11 @@ Car.prototype.draw = function() {
 	mat4.rotate(modelMatrix, modelMatrix, this.angle, [0, 1, 0]);
 	this.shader.loadMatrices();
 
+
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
-		this.shader.loadMaterial[this.model.meshes[i]];
-		this.model.meshes[i].draw();
+		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.model.meshes[i].draw(this.shader);
 	}
 
 
@@ -70,11 +70,11 @@ Car.prototype.update = function(timeStep) {
 	var cosAngle;
 	var sinAngle;
 
-	var posX = this.position.x;
-	var posZ = this.position.z;
+	var posX = this.position[0];
+	var posZ = this.position[2];
 
-	var speedX = this.speed.x;
-	var speedZ = this.speed.z;
+	var speedX = this.speed[0];
+	var speedZ = this.speed[2];
 
 	// update angle
 	if (this.turnLeft) {
@@ -86,8 +86,8 @@ Car.prototype.update = function(timeStep) {
 		this.angle = this.angle % 360;
 	}
 
-	cosAngle = cos(this.angle * 3.14 / 180);	// TODO sin/cos lib
-	sinAngle = sin(this.angle * 3.14 / 180);
+	cosAngle = Math.cos(this.angle * 3.14 / 180);	// TODO sin/cos lib
+	sinAngle = Math.sin(this.angle * 3.14 / 180);
 
 	// update speed
 	if (this.goForward) {
@@ -95,13 +95,13 @@ Car.prototype.update = function(timeStep) {
 		if (speedX > this.maxSpeed) {
 			speedX = this.maxSpeed;
 		}
-		this.speed.x = speedX;
+		this.speed[0] = speedX;
 
 		speedZ = speedZ + this.acceleration * timeStep;
 		if (speedZ > this.maxSpeed) {
 			speedZ = this.maxSpeed;
 		}
-		this.speed.z = speedZ;
+		this.speed[2] = speedZ;
 
 	}
 	else if (!this.goForward && !this.goBack) {
@@ -110,14 +110,14 @@ Car.prototype.update = function(timeStep) {
 			if (speedX < 0) {
 				speedX = 0;
 			}
-			this.speed.x = speedX;
+			this.speed[0] = speedX;
 		}
 		else if (speedX < 0) {
 			speedX = speedX + this.inercia * timeStep;
 			if (speedX > 0) {
 				speedX = 0;
 			}
-			this.speed.x = speedX;
+			this.speed[0] = speedX;
 		}
 
 		if (speedZ > 0) {
@@ -125,14 +125,14 @@ Car.prototype.update = function(timeStep) {
 			if (speedZ < 0) {
 				speedZ = 0;
 			}
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 		else if (speedZ < 0) {
 			speedZ = speedZ + this.inercia * timeStep;
 			if (speedZ > 0) {
 				speedZ = 0;
 			}
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 	}
 	else if (this.goBack) {
@@ -141,24 +141,24 @@ Car.prototype.update = function(timeStep) {
 			if (speedX < this.maxBackwardsSpeed) {
 				speedX = this.maxBackwardsSpeed;
 			}
-			this.speed.x = speedX;
+			this.speed[0]= speedX;
 		}
 		if (speedZ > this.maxBackwardsSpeed) {
 			speedZ = speedZ - this.backwardsAcceleration * timeStep;
 			if (speedZ < this.maxBackwardsSpeed) {
 				speedZ = this.maxBackwardsSpeed;
 			}
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 	}
 
 	// update position
-	this.position.x = posX + speedX * cosAngle * timeStep;
-	this.position.z = posZ + speedZ * -sinAngle * timeStep;
+	this.position[0] = posX + speedX * cosAngle * timeStep;
+	this.position[2] = posZ + speedZ * -sinAngle * timeStep;
 
-	updateLights();
+	this.updateLights();
 
-	updateHitbox();
+	this.updateHitbox();
 }
 
 Car.prototype.updateLights = function() {
