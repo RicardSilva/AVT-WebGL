@@ -54,7 +54,6 @@ Car.prototype.draw = function() {
 
 
 	gameManager.matrices.popMatrix(modelID);
-	alert(this.position);
 }
 
 Car.prototype.drawLights = function() {
@@ -175,8 +174,8 @@ Car.prototype.updateCenter = function() {
 							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
 							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 
-
-Car.prototype.updateHitbox = function() { //TODO sin/cos/abs lib
+}
+Car.prototype.updateHitbox = function() { 
 	var sinAngle = Math.abs(Math.sin(this.angle * 3.14 / 180));
 	var cosAngle = Math.abs(Math.cos(this.angle * 3.14 / 180));
 	
