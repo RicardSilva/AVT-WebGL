@@ -1,4 +1,4 @@
-function Cheerio(position) {
+function Cheerio(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
@@ -10,73 +10,84 @@ function Cheerio(position) {
 	this.height = 4.5;
 	this.length = 15;
 	
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/cheerio.txt");
+	this.shader = shader;
+
+	this.updateHitbox();
 	this.updateCenter();
 	
-	this.updateHitbox();
 }
 
 Cheerio.prototype.draw = function() {
 	
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	this.shader.loadMatrices();
+
+	this.model.meshes[0].draw(this.shader);
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Cheerio.prototype.update = function(timestep) {
 	timeStep = timeStep / 1000;
 	
-	var speedX = this.speed.x;
-	var speedZ = this.speed.z;
+	var speedX = this.speed[0];
+	var speedZ = this.speed[2];
 	
-	if (!(speedX == 0 && speedZ == 0)) { //TODO sin/cos lib
-		var cosAngle = cos(this.angle * 3.14 / 180);
-		var sinAngle = sin(this.angle * 3.14 / 180);
+	if (!(speedX == 0 && speedZ == 0)) { 
+		var cosAngle = Math.cos(this.angle * 3.14 / 180);
+		var sinAngle = Math.sin(this.angle * 3.14 / 180);
 		
-		var posX = this.position.x;
-		var posZ = this.position.z;
+		var posX = this.position[0];
+		var posZ = this.position[1];
 		
 		if (speedX > 0) {
 			speedX = speedX - this.inercia * timeStep;
 			if (speedX < 0)
 				speedX = 0;
-			this.speed.x = speedX;
+			this.speed[0] = speedX;
 		}
 		else if (speedX < 0) {
 			speedX = speedX + this.inercia * timeStep;
 			if (speedX > 0)
 				speedX = 0;
-			this.speed.x = speedX;
+			this.speed[0] = speedX;
 		}
 
 		if (speedZ > 0) {
 			speedZ = speedX - this.inercia * timeStep;
 			if (speedZ < 0)
 				speedZ = 0;
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 		else if (speedZ < 0) {
 			speedZ = speedZ + this.inercia * timeStep;
 			if (speedZ > 0)
 				speedZ = 0;
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 
 		// update position
-		this.position.x = posX + speedX * cosAngle * timeStep;
-		this.position.z = posZ + speedZ * -sinAngle * timeStep;
+		this.position[0] = posX + speedX * cosAngle * timeStep;
+		this.position[2] = posZ + speedZ * -sinAngle * timeStep;
 
 		this.updateHitbox();
 	}
 }
 
 Cheerio.prototype.updateCenter = function() {
-	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
-						this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
-						this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+						this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+						this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }
 
 Cheerio.prototype.updateHitbox = function() {
-	this.minCorner = vec3.fromValues(this.position.x - this.width / 2,
-								this.position.y - this.height / 2,
-								this.position.z - this.length / 2);
-	this.maxCorner = vec3.fromValues(this.position.x + this.width / 2,
-								this.position.y + this.height / 2,
-								this.position.z + this.length / 2);
+	this.minCorner = vec3.fromValues(this.position[0] - this.width / 2,
+								this.position[1] - this.height / 2,
+								this.position[2] - this.length / 2);
+	this.maxCorner = vec3.fromValues(this.position[0] + this.width / 2,
+								this.position[1] + this.height / 2,
+								this.position[2] + this.length / 2);
 }

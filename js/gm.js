@@ -104,11 +104,11 @@ GameManager.prototype.initLights = function() {
 }
 
 GameManager.prototype.initGameObjects = function() {
-	var model = new ObjModel();
-	this.track = new Track(vec3.fromValues(0,-0.1,0));
-	model = new ObjModel();
-	model.readTextFile(model, "/resources/objModels/car.txt");
-	this.car = new Car(this.track.getStartingPosition(), model, this.shader);
+	
+	this.track = new Track(vec3.fromValues(0,-0.1,0), this.shader);
+	this.track.loadFromFile(this.track, "../resources/tracks/track.txt");
+	
+	this.car = new Car(this.track.getStartingPosition(), this.shader);
 }
 
 
@@ -121,6 +121,7 @@ GameManager.prototype.draw = function() {
     this.activeCamera.computeProjection();
     this.shader.use();
     this.car.draw();
+    this.track.draw();
 
 }
 

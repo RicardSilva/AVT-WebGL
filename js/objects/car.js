@@ -1,4 +1,4 @@
-function Car(position, model, shader) {
+function Car(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
@@ -28,10 +28,11 @@ function Car(position, model, shader) {
 	this.center;
 	
 	//model
-	this.model = model;
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/car.txt");
 	this.shader = shader;
 	this.updateHitbox();
-	this.updateCenter();
+	this.computeCenter();
 	
 }
 
@@ -161,15 +162,17 @@ Car.prototype.update = function(timeStep) {
 	this.updateHitbox();
 }
 
-Car.prototype.updateLights = function() {
+Car.prototype.updateLights = function() {}
+Car.prototype.toogleLights = function() {}
+
+Car.prototype.restart = function(position) {
+	this.position = position;
+	this.angle = 0;
+	this.speed = vec3.create();
 	
 }
 
-Car.prototype.restart = function() {
-	
-}
-
-Car.prototype.updateCenter = function() {
+Car.prototype.computeCenter = function() {
 	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
 							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
 							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);

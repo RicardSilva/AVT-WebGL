@@ -1,4 +1,4 @@
-function Orange(position, speed, rotationAngle, rotationAxle) {
+function Orange(position, speed, rotationAngle, rotationAxle, shader) {
 	this.position = position;
 	this.speed = speed;
 	this.angle = 0;
@@ -11,30 +11,48 @@ function Orange(position, speed, rotationAngle, rotationAxle) {
 	
 	this.radius = 15;
 	
-	this.updateCenter();
+	this.shader = shader;
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/orange.txt");
 	
 	this.updateHitbox();
+	this.updateCenter();
 }
 
 Orange.prototype.draw = function() {
-	
+	gameManager.matrices.pushMatrix(modelID);
+
+	var pos;
+	vec3.add(pos, this.position, vec3.fromValues(0,30,0));
+	mat4.translate(modelMatrix, modelMatrix, pos);
+	mat4.rotate(modelMatrix, modelMatrix, this.rotationAngle, this.rotationAxle);
+
+	this.shader.loadMatrices();
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.model.meshes[i].draw(this.shader);
+	}
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Orange.prototype.update = function(timestep) {
 	timeStep = timeStep / 1000;
 	
-	var speedX = this.speed.x;
-	var speedZ = this.speed.z;
+	var speedX = this.speed[0];
+	var speedZ = this.speed[2];
 	
-	var cosAngle = cos(this.angle * 3.14 / 180);
-	var sinAngle = sin(this.angle * 3.14 / 180);
+	var cosAngle = Math.cos(this.angle * 3.14 / 180);
+	var sinAngle = Math.sin(this.angle * 3.14 / 180);
 
-	var posX = this.position.x;
-	var posZ = this.position.z;
+	var posX = this.position[0];
+	var posZ = this.position[2];
 	
 	// update position
-	this.position.x = posX + speedX * cosAngle * timeStep;
-	this.position.z = posZ + speedZ * -sinAngle * timeStep;
+	this.position[0] = posX + speedX * cosAngle * timeStep;
+	this.position[2] = posZ + speedZ * -sinAngle * timeStep;
 	
 	// update rotation angle
 	this.rotationAngle = this.rotationAngle + speed[0] * 0.04;
@@ -44,26 +62,26 @@ Orange.prototype.update = function(timestep) {
 }
 
 Orange.prototype.increaseSpeed = function() {
-	this.speed.x += 20;
-	this.speed.z += 20;
+	this.speed[0] += 20;
+	this.speed[0] += 20;
 
-	if (this.speed.x > 400)
-		this.speed.x = 400;
-	if (this.speed.z > 400)
-		this.speed.z = 400;
+	if (this.speed[0] > 400)
+		this.speed[0] = 400;
+	if (this.speed[2] > 400)
+		this.speed[2] = 400;
 }
 
 Orange.prototype.updateCenter = function() {
-	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
-							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
-							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }
 
 Orange.prototype.updateHitbox = function() {
-	this.minCorner = vec3.fromValues(this.position.x - this.radius,
-								this.position.y - this.radius + 30,
-								this.position.z - this.radius);
-	this.maxCorner = vec3.fromValues(this.position.x + this.radius,
-								this.position.y + this.radius + 30,
-								this.position.z + this.radius);
+	this.minCorner = vec3.fromValues(this.position[0] - this.radius,
+								this.position[1] - this.radius + 30,
+								this.position[2] - this.radius);
+	this.maxCorner = vec3.fromValues(this.position[0] + this.radius,
+								this.position[1] + this.radius + 30,
+								this.position[2] + this.radius);
 }

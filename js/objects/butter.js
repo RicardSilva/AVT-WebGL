@@ -1,4 +1,4 @@
-function Butter(position) {
+function Butter(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
@@ -10,57 +10,72 @@ function Butter(position) {
 	this.height = 20;
 	this.length = 40;
 	
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/butter.txt");
+	this.shader = shader;
+
+	this.updateHitbox();
 	this.updateCenter();
 	
-	this.updateHitbox();
 }
 
 Butter.prototype.draw = function() {
-	
+
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	this.shader.loadMatrices();
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.model.meshes[i].draw(this.shader);
+	}
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Butter.prototype.update = function(timestep) {
 	timeStep = timeStep / 1000;
 	
-	var speedX = this.speed.x;
-	var speedZ = this.speed.z;
+	var speedX = this.speed[0];
+	var speedZ = this.speed[2];
 	
-	if (!(speedX == 0 && speedZ == 0)) { //TODO sin/cos lib
-		var cosAngle = cos(this.angle * 3.14 / 180);
-		var sinAngle = sin(this.angle * 3.14 / 180);
+	if (!(speedX == 0 && speedZ == 0)) { 
+		var cosAngle = Math.cos(this.angle * 3.14 / 180);
+		var sinAngle = Math.sin(this.angle * 3.14 / 180);
 		
-		var posX = this.position.x;
-		var posZ = this.position.z;
+		var posX = this.position[0];
+		var posZ = this.position[2];
 		
 		if (speedX > 0) {
 			speedX = speedX - this.inercia * timeStep;
 			if (speedX < 0)
 				speedX = 0;
-			this.speed.x = speedX;
+			this.speed[0] = speedX;
 		}
 		else if (speedX < 0) {
 			speedX = speedX + this.inercia * timeStep;
 			if (speedX > 0)
 				speedX = 0;
-			this.speed.x = speedX;
+			this.speed[0] = speedX;
 		}
 
 		if (speedZ > 0) {
 			speedZ = speedX - this.inercia * timeStep;
 			if (speedZ < 0)
 				speedZ = 0;
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 		else if (speedZ < 0) {
 			speedZ = speedZ + this.inercia * timeStep;
 			if (speedZ > 0)
 				speedZ = 0;
-			this.speed.z = speedZ;
+			this.speed[2] = speedZ;
 		}
 
 		// update position
-		this.position.x = posX + speedX * cosAngle * timeStep;
-		this.position.z = posZ + speedZ * -sinAngle * timeStep;
+		this.position[0] = posX + speedX * cosAngle * timeStep;
+		this.position[2] = posZ + speedZ * -sinAngle * timeStep;
 
 		this.updateHitbox();
 	}
