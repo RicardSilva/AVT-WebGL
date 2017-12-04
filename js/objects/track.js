@@ -46,7 +46,7 @@ Track.prototype.loadFromFile = function(track, file) {
 					}
 					else if (data[c] == 2) {
 						//new candle
-						track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500))));
+						track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 3) {
 						//new butter

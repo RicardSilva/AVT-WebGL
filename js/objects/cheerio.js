@@ -10,21 +10,26 @@ function Cheerio(position, shader) {
 	this.height = 4.5;
 	this.length = 15;
 	
+
 	this.model = new ObjModel();
 	this.model.loadFromFile(this.model, "../resources/objModels/cheerio.txt");
 	this.shader = shader;
 
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 	this.updateHitbox();
 	this.updateCenter();
 	
 }
 
 Cheerio.prototype.draw = function() {
-	
+
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	this.shader.loadMatrices();
-
+	
 	this.model.meshes[0].draw(this.shader);
 
 	gameManager.matrices.popMatrix(modelID);

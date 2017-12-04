@@ -9,11 +9,16 @@ function Butter(position, shader) {
 	this.width = 18;
 	this.height = 20;
 	this.length = 40;
-	
+
 	this.model = new ObjModel();
 	this.model.loadFromFile(this.model, "../resources/objModels/butter.txt");
 	this.shader = shader;
 
+
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 	this.updateHitbox();
 	this.updateCenter();
 	

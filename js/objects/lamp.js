@@ -1,4 +1,4 @@
-function Lamp(position) {
+function Lamp(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
@@ -12,10 +12,21 @@ function Lamp(position) {
 	this.height = 37;
 	this.length = 7.8;
 	
+	//model
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/lamp.txt");
+	this.shader = shader;
+
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 
 	this.updateHitbox();
 	this.updateCenter();
 	
+
+
 }
 
 Lamp.prototype.createLight = function() {
@@ -24,7 +35,18 @@ Lamp.prototype.createLight = function() {
 }
 
 Lamp.prototype.draw = function() {
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
 	
+	this.shader.loadMatrices();
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.model.meshes[i].draw(this.shader);
+	}
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Lamp.prototype.drawLight = function() {
