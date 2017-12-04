@@ -28,7 +28,7 @@ GameManager.prototype.init = function() {
     this.initCameras();
     this.initLights();
     this.initGameObjects();
-
+    document.getElementById("loadingtext").textContent = "";
 }
 
 GameManager.prototype.initShaders = function() {
@@ -104,8 +104,11 @@ GameManager.prototype.initLights = function() {
 }
 
 GameManager.prototype.initGameObjects = function() {
+	var model = new ObjModel();
 	this.track = new Track(vec3.fromValues(0,-0.1,0));
-	this.car = new Car(track.getStartingPosition());
+	model = new ObjModel();
+	model.readTextFile("/resources/objModels/car.txt");
+	this.car = new Car(this.track.getStartingPosition(), model, this.shader);
 }
 
 
@@ -117,7 +120,8 @@ GameManager.prototype.draw = function() {
     this.activeCamera.computeView();
     this.activeCamera.computeProjection();
     this.shader.use();
-}
+    this.car.draw();
+
 }
 
 GameManager.prototype.drawHUD = function() {
@@ -171,7 +175,7 @@ GameManager.prototype.computePositionAfterCollision = function(obj1, obj2) {
 	else {
 		if (distance.z > 0)
 			z = -z;
-		obj1.position.set(obj1.position.x, obj1.position.y, obj.position.z + z]);
+		obj1.position.set(obj1.position.x, obj1.position.y, obj.position.z + z);
 	}
 	
 	obj1.updateHitbox();

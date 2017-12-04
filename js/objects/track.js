@@ -1,10 +1,10 @@
 function Track(position) {
 	this.position = position;
-	this.speed = vec3.create(0, 0, 0);
+	this.speed = vec3.create();
 	this.angle = 0;
 	this.isActive = true;
 	
-	this.startingPosition = vec3.create(0, 0, 0);
+	this.startingPosition = vec3.create();
 	this.orangeCounter = 0;
 	this.orangeSpeed = 125;
 	this.orangeStartingSpeed = 125;
@@ -23,6 +23,10 @@ Track.prototype.createObjects = function() {
 	//this.lamps.push(/*new Spotlight()*/);
 	this.borders = [];
 	//this.borders.push(/*new Spotlight()*/);
+}
+
+Track.prototype.getStartingPosition = function() {
+	return this.startingPosition;
 }
 
 Track.prototype.draw = function() {

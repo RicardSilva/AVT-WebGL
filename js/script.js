@@ -111,7 +111,7 @@ function webGLStart() {
     initGL(canvas, overCanvas);
     resize(canvas, overCanvas);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.1, 0.1, 0.1, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
     document.onkeydown = handleKeyDown;

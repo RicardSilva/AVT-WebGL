@@ -1,27 +1,3 @@
-function ObjModel (path) {
-
-	this.meshes = [];
-
-}
-
-ObjModel.prototype.loadFromFile = function(filePath) {
-	var reader = new FileReader();
-
-	reader.onload = function(e) {
-		var lines = reader.result.split('\n');
-		for(var line = 0; line < lines.length; line++){
-	      console.log(lines[line]);
-	    }
-	}
-
-	reader.readAsText(file);
-
-
-
-
-
-}
-
 function Material() {
 
 	this.Ka = [];
@@ -87,3 +63,181 @@ Mesh.prototype.draw = function(shader) {
     setMatrixUniforms();
     gl.drawElements(gl.TRIANGLES, this.VertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 }
+
+
+function ObjModel (path) {
+
+	this.meshes = [];
+
+}
+
+ObjModel.prototype.loadFromFile = function(filePath) {
+	var reader = new FileReader();
+	var currentMesh;
+	var currentMaterial;
+	reader.onload = function(e) {
+		var lines = reader.result.split('\n');
+		for(var counter = 0; counter < lines.length; counter++){
+	     	var line = lines[counter];
+	      	var tokens = line.split(" ");
+	      	if(tokens[0] == "newmesh") {
+	      		currentMesh = new Mesh();
+	      	}
+	     	else if (tokens[0] == "p") {
+		      	var position = [];
+		      	position.push(Number(tokens[1]));
+		      	position.push(Number(tokens[2]));
+		      	position.push(Number(tokens[3]));
+		      	position.push(Number(tokens[4]));
+		      	currentMesh.positions.push(position);
+	      	}
+		    else if (tokens[0] == "n") {
+		    	var normal = [];
+		      	normal.push(Number(tokens[1]));
+		      	normal.push(Number(tokens[2]));
+		      	normal.push(Number(tokens[3]));
+		      	currentMesh.normals.push(normal);
+		    }
+		    else if (tokens[0] == "t") {
+		      	var texC = [];
+		      	texC.push(Number(tokens[1]));
+		      	texC.push(Number(tokens[2]));
+		      	currentMesh.textCoords.push(texC);
+		    }
+		    else if (tokens[0] == "i") {
+		      	currentMesh.indices.push(Number(tokens[1]));
+		    }
+		    else if (tokens[0] == "endmesh") {
+		    	this.meshes.push(currentMesh);
+		    }
+		    else if(tokens[0] == "newmaterial") {
+		    	currentMaterial = new Material();
+		    }
+		    else if(tokens[0] == "ka") {
+		    	var ka = [];
+		      	ka.push(Number(tokens[1]));
+		      	ka.push(Number(tokens[2]));
+		      	ka.push(Number(tokens[3]));
+		    	currentMaterial.Ka = ka;
+		    }
+		    else if(tokens[0] == "kd") {
+		    	var kd = [];
+		      	kd.push(Number(tokens[1]));
+		      	kd.push(Number(tokens[2]));
+		      	kd.push(Number(tokens[3]));
+		    	currentMaterial.Kd = kd;
+		    }
+		    else if(tokens[0] == "ks") {
+		    	var ks = [];
+		      	ks.push(Number(tokens[1]));
+		      	ks.push(Number(tokens[2]));
+		      	ks.push(Number(tokens[3]));
+		    	currentMaterial.Ks = ks;
+		    }
+		    else if(tokens[0] == "ns") {
+		    	currentMaterial.Ns = Number(tokens[1]);
+		    }
+		    else if(tokens[0] == "d") {
+		    	currentMaterial.d = Number(tokens[1]);
+		    }
+		    else if(tokens[0] == "endmaterial") {
+		    	currentMesh.material = currentMaterial;
+		    }
+
+	    }
+	}
+	alert(filePath);
+	reader.readAsText(filePath);
+}
+
+ObjModel.prototype.readTextFile = function(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+            	var currentMesh = new Mesh();
+				var currentMaterial = new Material();
+				var lines = rawFile.responseText.split('\n');
+				for(var counter = 0; counter < lines.length; counter++){
+			     	var line = lines[counter];
+			      	var tokens = line.split(" ");
+			      	if(tokens[0] == "newmesh") {
+			      		currentMesh = new Mesh();
+			      	}
+			     	else if (tokens[0] == "p") {
+				      	var position = [];
+				      	position.push(Number(tokens[1]));
+				      	position.push(Number(tokens[2]));
+				      	position.push(Number(tokens[3]));
+				      	position.push(Number(tokens[4]));
+				      	currentMesh.positions.push(position);
+			      	}
+				    else if (tokens[0] == "n") {
+				    	var normal = [];
+				      	normal.push(Number(tokens[1]));
+				      	normal.push(Number(tokens[2]));
+				      	normal.push(Number(tokens[3]));
+				      	currentMesh.normals.push(normal);
+				    }
+				    else if (tokens[0] == "t") {
+				      	var texC = [];
+				      	texC.push(Number(tokens[1]));
+				      	texC.push(Number(tokens[2]));
+				      	currentMesh.textCoords.push(texC);
+				    }
+				    else if (tokens[0] == "i") {
+				      	currentMesh.indices.push(Number(tokens[1]));
+				    }
+				    else if (tokens[0] == "endmesh") {
+				    	this.meshes.push(currentMesh);
+				    }
+				    else if(tokens[0] == "newmaterial") {
+				    	currentMaterial = new Material();
+				    }
+				    else if(tokens[0] == "ka") {
+				    	var ka = [];
+				      	ka.push(Number(tokens[1]));
+				      	ka.push(Number(tokens[2]));
+				      	ka.push(Number(tokens[3]));
+				    	currentMaterial.Ka = ka;
+				    }
+				    else if(tokens[0] == "kd") {
+				    	var kd = [];
+				      	kd.push(Number(tokens[1]));
+				      	kd.push(Number(tokens[2]));
+				      	kd.push(Number(tokens[3]));
+				    	currentMaterial.Kd = kd;
+				    }
+				    else if(tokens[0] == "ks") {
+				    	var ks = [];
+				      	ks.push(Number(tokens[1]));
+				      	ks.push(Number(tokens[2]));
+				      	ks.push(Number(tokens[3]));
+				    	currentMaterial.Ks = ks;
+				    }
+				    else if(tokens[0] == "ns") {
+				    	currentMaterial.Ns = Number(tokens[1]);
+				    }
+				    else if(tokens[0] == "d") {
+				    	currentMaterial.d = Number(tokens[1]);
+				    }
+				    else if(tokens[0] == "endmaterial") {
+				    	currentMesh.material = currentMaterial;
+				    }
+
+			    }
+
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
+
+
+

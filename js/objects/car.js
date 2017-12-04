@@ -1,8 +1,7 @@
-function Car(position) {
+function Car(position, model, shader) {
 	this.position = position;
 	this.speed = vec3.create(0, 0, 0);
 	this.angle = 0;
-	this.isActive = true;
 	
 	this.turnLeft = false;
 	this.turnRight = false;
@@ -22,10 +21,18 @@ function Car(position) {
 	this.width = 16.2;
 	this.height = 11.7;
 	this.length = 30;
+
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 	
+	//model
+	this.model = model;
+	this.shader = shader;
+	this.updateHitbox();
 	this.updateCenter();
 	
-	this.updateHitbox();
 }
 
 Car.prototype.createLights = function() {
@@ -34,7 +41,20 @@ Car.prototype.createLights = function() {
 }
 
 Car.prototype.draw = function() {
-	
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	mat4.rotate(modelMatrix, modelMatrix, this.angle, [0, 1, 0]);
+	this.shader.loadMatrices();
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial[this.model.meshes[i]];
+		this.model.meshes[i].draw();
+	}
+
+
+	gameManager.matrices.popMatrix(modelID);
+	alert(this.position);
 }
 
 Car.prototype.drawLights = function() {
@@ -151,19 +171,19 @@ Car.prototype.restart = function() {
 }
 
 Car.prototype.updateCenter = function() {
-	this.center = vec3.create(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
-							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
-							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }
 
 Car.prototype.updateHitbox = function() { //TODO sin/cos/abs lib
-	var sinAngle = fabs(sin(this.angle * 3.14 / 180));
-	var cosAngle = fabs(cos(this.angle * 3.14 / 180));
+	var sinAngle = Math.abs(Math.sin(this.angle * 3.14 / 180));
+	var cosAngle = Math.abs(Math.cos(this.angle * 3.14 / 180));
 	
-	this.minCorner = vec3.create(this.position.x - (this.length * cosAngle + this.width * sinAngle) / 2,
-								this.position.y - this.height / 2,
-								this.position.z - (this.length * sinAngle + this.width * cosAngle) / 2;
-	this.maxCorner = vec3.create(this.position.x + (this.length * cosAngle + this.width * sinAngle) / 2,
-								this.position.y + this.height / 2,
-								this.position.z + (this.length * sinAngle + this.width * cosAngle) / 2;
+	this.minCorner = vec3.fromValues(this.position[0] - (this.length * cosAngle + this.width * sinAngle) / 2,
+								this.position[1] - this.height / 2,
+								this.position[2] - (this.length * sinAngle + this.width * cosAngle) / 2);
+	this.maxCorner = vec3.fromValues(this.position[0] + (this.length * cosAngle + this.width * sinAngle) / 2,
+								this.position[1] + this.height / 2,
+								this.position[2] + (this.length * sinAngle + this.width * cosAngle) / 2);
 }
