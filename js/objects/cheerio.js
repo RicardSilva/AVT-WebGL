@@ -10,15 +10,16 @@ function Cheerio(position, shader) {
 	this.height = 4.5;
 	this.length = 15;
 	
-
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/cheerio.txt");
-	this.shader = shader;
-
 	//hitbox
 	this.minCorner;
 	this.maxCorner;
 	this.center;
+	
+	//model
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/cheerio.txt");
+	this.shader = shader;
+	
 	this.updateHitbox();
 	this.updateCenter();
 	

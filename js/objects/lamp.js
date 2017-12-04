@@ -11,22 +11,19 @@ function Lamp(position, shader) {
 	this.width = 7.8;
 	this.height = 37;
 	this.length = 7.8;
+
+	//hitbox
+	this.minCorner;
+	this.maxCorner;
+	this.center;
 	
 	//model
 	this.model = new ObjModel();
 	this.model.loadFromFile(this.model, "../resources/objModels/lamp.txt");
 	this.shader = shader;
 
-	//hitbox
-	this.minCorner;
-	this.maxCorner;
-	this.center;
-
 	this.updateHitbox();
 	this.updateCenter();
-	
-
-
 }
 
 Lamp.prototype.createLight = function() {

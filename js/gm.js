@@ -265,13 +265,161 @@ GameManager.prototype.processObsCollisions = function() {
 }
 
 GameManager.prototype.keyDown = function(key) {
-	
+	switch (key) {
+	/*case 27:
+		glutLeaveMainLoop();
+		break;*/
+	case 49:
+		//activeCamera = cameras[0];
+		break;
+	case 50:
+		//activeCamera = cameras[1];
+		break;
+	case 51:
+		//activeCamera = cameras[2];
+		break;
+	case 52:
+		//activeCamera = cameras[3];
+		break;
+	case 53:
+		//activeCamera = cameras[4];
+		break;
+	/*case '8':
+		track->toogleDirectionalLight();
+		day = !day;
+		if (day) {
+			if (raining && foggy)
+				setDayRainingFoggyColor();
+			else if (raining)
+				setDayRainingColor();
+			else if (foggy)
+				setDayFoggyColor();
+			else {
+				setDayClearColor();
+			}
+		}
+
+		else
+			if (foggy)
+				setNightFoggyColor();
+			else
+				setNightColor();
+
+		break;
+	case '9':
+		track->tooglePointLights();
+		break;
+	case '0':
+		car->toogleSpotLights();
+		break;*/
+	case 68:
+		this.car.turnRight = true;
+		break;
+	case 83:
+		this.car.goBack = true;
+		break;
+	case 87:
+		this.car.goForward = true;
+		break;
+	case 65:
+		this.car.turnLeft = true;
+		break;
+	case 80:
+		this.pause = !this.pause;
+		break;
+	case 49:
+		this.restart();
+		break;
+	case 39:
+		this.car.turnRight = true;
+		break;
+	case 37:
+		this.car.turnLeft = true;
+		break;
+	case 38:
+		this.car.goForward = true;
+		break;
+	case 40:
+		this.car.goBack = true;
+		break;
+	/*case 112:
+		raining = !raining;
+		if (day) {
+			if (raining) {
+				if (foggy)
+					setDayRainingFoggyColor();
+				else
+					setDayRainingColor();
+
+			}
+			else {
+				if (foggy)
+					setDayFoggyColor();
+				else
+					setDayClearColor();
+			}
+		}
+		break;
+	case 113:
+		/*foggy = !foggy;
+		if (foggy) {
+			fog->on();
+			if (day) {
+				if (raining)
+					setDayRainingFoggyColor();
+				else
+					setDayFoggyColor();
+			}
+			else
+				setNightFoggyColor();
+		}
+		else {
+			fog->off();
+			if (day) {
+				if (raining)
+					setDayRainingColor();
+				else
+					setDayClearColor();
+			}
+			else
+				setNightColor();
+		}
+
+		break;*/
+	case 114:
+		//lensFlaring = !lensFlaring;
+		break;
+	}
+
 }
 GameManager.prototype.keyUp = function(key) {
-
+	switch (key) {
+	case 68:
+		this.car.turnRight = false;
+		break;
+	case 83:
+		this.car.goBack = false;
+		break;
+	case 87:
+		this.car.goForward = false;
+		break;
+	case 65:
+		this.car.turnLeft = false;
+		break;
+	case 39:
+		this.car.turnRight = false;
+		break;
+	case 37:
+		this.car.turnLeft = false;
+		break;
+	case 38:
+		this.car.goForward = false;
+		break;
+	case 40:
+		this.car.goBack = false;
+		break;
+	}
 }
-
-
 
 function loadImage(url, callback) {
   var image = new Image();

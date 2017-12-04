@@ -11,18 +11,16 @@ function Orange(position, speed, rotationAngle, rotationAxle, shader) {
 	
 	this.radius = 15;
 	
-
-	this.shader = shader;
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/orange.txt");
-
 	//hitbox
 	this.minCorner;
 	this.maxCorner;
 	this.center;
 	
+	//model
+	this.shader = shader;
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/orange.txt");
 	
-	this.updateCenter();
 	this.updateHitbox();
 	this.updateCenter();
 }

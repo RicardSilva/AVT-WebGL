@@ -1,11 +1,12 @@
-function Billboard(position, model, shader) {
+function Billboard(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
 	this.isActive = true;
 	
 	//model
-	this.model = model;
+	this.model = new ObjModel();
+	this.model.loadFromFile(this.model, "../resources/objModels/billboard.txt");
 	this.shader = shader;
 }
 
