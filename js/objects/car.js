@@ -1,6 +1,6 @@
 function Car(position, model, shader) {
 	this.position = position;
-	this.speed = vec3.create(0, 0, 0);
+	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
 	
 	this.turnLeft = false;
@@ -174,7 +174,7 @@ Car.prototype.updateCenter = function() {
 	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
 							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
 							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
-}
+
 
 Car.prototype.updateHitbox = function() { //TODO sin/cos/abs lib
 	var sinAngle = Math.abs(Math.sin(this.angle * 3.14 / 180));

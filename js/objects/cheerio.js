@@ -1,6 +1,6 @@
 function Cheerio(position) {
 	this.position = position;
-	this.speed = vec3.create(0, 0, 0);
+	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
 	this.isActive = true;
 
@@ -67,16 +67,16 @@ Cheerio.prototype.update = function(timestep) {
 }
 
 Cheerio.prototype.updateCenter = function() {
-	this.center = vec3.create(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
+	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
 						this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
 						this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
 }
 
 Cheerio.prototype.updateHitbox = function() {
-	this.minCorner = vec3.create(this.position.x - this.width / 2,
+	this.minCorner = vec3.fromValues(this.position.x - this.width / 2,
 								this.position.y - this.height / 2,
 								this.position.z - this.length / 2);
-	this.maxCorner = vec3.create(this.position.x + this.width / 2,
+	this.maxCorner = vec3.fromValues(this.position.x + this.width / 2,
 								this.position.y + this.height / 2,
 								this.position.z + this.length / 2);
 }

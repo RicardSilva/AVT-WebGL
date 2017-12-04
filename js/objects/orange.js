@@ -54,16 +54,16 @@ Orange.prototype.increaseSpeed = function() {
 }
 
 Orange.prototype.updateCenter = function() {
-	this.center = vec3.create(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
+	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
 							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
 							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
 }
 
 Orange.prototype.updateHitbox = function() {
-	this.minCorner = vec3.create(this.position.x - this.radius,
+	this.minCorner = vec3.fromValues(this.position.x - this.radius,
 								this.position.y - this.radius + 30,
 								this.position.z - this.radius);
-	this.maxCorner = vec3.create(this.position.x + this.radius,
+	this.maxCorner = vec3.fromValues(this.position.x + this.radius,
 								this.position.y + this.radius + 30,
 								this.position.z + this.radius);
 }

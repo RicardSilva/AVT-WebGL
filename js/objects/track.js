@@ -1,10 +1,12 @@
 function Track(position) {
 	this.position = position;
+
 	this.speed = vec3.create();
 	this.angle = 0;
 	this.isActive = true;
 	
 	this.startingPosition = vec3.create();
+	
 	this.orangeCounter = 0;
 	this.orangeSpeed = 125;
 	this.orangeStartingSpeed = 125;
@@ -116,7 +118,7 @@ Track.prototype.attemptToSpawnOrange = function() {
 		var cosAngle = cos(degToRad(axleAngle));	// convert from degrees to rads
 		var sinAngle = sin(degToRad(axleAngle));
 
-		this.oranges.push(new Orange(vec3.create(x, 0, z), vec3.create(speed, 0, speed), angle, vec3.create(cosAngle, 0, -sinAngle)));
+		this.oranges.push(new Orange(vec3.fromValues(x, 0, z), vec3.fromValues(speed, 0, speed), angle, vec3.fromValues(cosAngle, 0, -sinAngle)));
 		this.oranges[this.oranges.length].isActive = true;
 		this.orangeCounter++;
 	}
