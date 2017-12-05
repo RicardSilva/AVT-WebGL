@@ -152,7 +152,10 @@ function webGLStart() {
     resize(canvas, overCanvas);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
 	
-	loadImages(["../resources/textures/tree.tga"], createTextures);
+	loadImages(["../resources/textures/christmastree.tga", "../resources/textures/particle2.tga",
+				"../resources/textures/lensFlare/flare2.tga", "../resources/textures/lensFlare/flare3.tga",
+				"../resources/textures/lensFlare/flare4.tga", "../resources/textures/lensFlare/flare5.tga",
+				"../resources/textures/lensFlare/flare5.tga"], createTextures);
 	
     gl.clearColor(0.1, 0.1, 0.1, 1.0);
     gl.enable(gl.DEPTH_TEST);

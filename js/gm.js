@@ -17,8 +17,6 @@ function GameManager(width, height) {
     this.track;
 
     this.init();
-
-
 }
 
 GameManager.prototype.init = function() {
@@ -392,6 +390,7 @@ GameManager.prototype.keyDown = function(key) {
 	}
 
 }
+
 GameManager.prototype.keyUp = function(key) {
 	switch (key) {
 	case 68:
@@ -427,6 +426,7 @@ function loadImage(url, callback) {
   image.onload = callback;
   return image;
 }
+
 var textures = [];
 function createTextures(images) {
     for (var i = 0; i < images.length; ++i) {
