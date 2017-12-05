@@ -97,12 +97,63 @@ function resize(canvas, over) {
   }
 }
 
+var textures = [];
+
+function loadImage(url, callback) {
+  var image = new Image();
+  image.src = url;
+  image.onload = callback;
+  return image;
+}
+
+function loadImages(urls, callback) {
+  var images = [];
+  var imagesToLoad = urls.length;
+
+  // Called each time an image finished
+  // loading.
+  var onImageLoad = function() {
+    --imagesToLoad;
+    // If all the images are loaded call the callback.
+    if (imagesToLoad == 0) {
+      callback(images);
+    }
+  };
+
+  for (var i = 0; i < imagesToLoad; ++i) {
+    var image = loadImage(urls[i], onImageLoad);
+    images.push(image);
+  }
+}
+
+function createTextures(images) {
+    for (var i = 0; i < images.length; ++i) {
+        var texture = gl.createTexture();
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
+
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+
+        // gl.generateMipmap(gl.TEXTURE_2D);
+        // add the texture to the array of textures.
+        textures.push(texture);
+    }
+    document.getElementById("loadingtext").textContent = "";
+}
+
 function webGLStart() {
     var canvas = document.getElementById("micromachines-canvas");
     var overCanvas = document.getElementById("text-canvas");
     initGL(canvas, overCanvas);
     resize(canvas, overCanvas);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
+	
+	loadImages(["../resources/textures/tree.tga"], createTextures);
+	
     gl.clearColor(0.1, 0.1, 0.1, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
