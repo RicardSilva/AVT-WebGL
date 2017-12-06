@@ -1,12 +1,15 @@
-function Orange(position, speed, rotationAngle, rotationAxle, shader) {
+const LIMIT_X = 800;
+const LIMIT_Z = 600;
+
+function Orange(position, speed, angle, rotationAxle, shader) {
 	this.position = position;
 	this.speed = speed;
-	this.angle = 0;
+	this.angle = angle;
 	this.isActive = true;
 	
 	this.maxSpeed = 325;
 	this.acceleration = 150;
-	this.rotationAngle = rotationAngle;
+	this.rotationAngle = 0;
 	this.rotationAxle = rotationAxle;
 	
 	this.radius = 15;
@@ -26,10 +29,11 @@ function Orange(position, speed, rotationAngle, rotationAxle, shader) {
 Orange.prototype.draw = function() {
 	gameManager.matrices.pushMatrix(modelID);
 
-	var pos;
+	var pos = vec3.create();
 	vec3.add(pos, this.position, vec3.fromValues(0,30,0));
 	mat4.translate(modelMatrix, modelMatrix, pos);
-	mat4.rotate(modelMatrix, modelMatrix, this.rotationAngle, this.rotationAxle);
+	console.log(this.rotationAngle, this.rotationAxle);
+	mat4.rotate(modelMatrix, modelMatrix, (this.rotationAngle * 3.14 / 180), this.rotationAxle);
 
 	this.shader.loadMatrices();
 
@@ -59,7 +63,7 @@ Orange.prototype.update = function(timeStep) {
 	this.position[2] = posZ + speedZ * -sinAngle * timeStep;
 	
 	// update rotation angle
-	this.rotationAngle = this.rotationAngle + speed[0] * 0.04;
+	this.rotationAngle = this.rotationAngle + this.speed[0] * 0.04;
 	this.rotationAngle = this.rotationAngle % 360;
 	
 	this.updateHitbox();
@@ -67,7 +71,7 @@ Orange.prototype.update = function(timeStep) {
 
 Orange.prototype.increaseSpeed = function() {
 	this.speed[0] += 20;
-	this.speed[0] += 20;
+	this.speed[2] += 20;
 
 	if (this.speed[0] > 400)
 		this.speed[0] = 400;
@@ -75,6 +79,9 @@ Orange.prototype.increaseSpeed = function() {
 		this.speed[2] = 400;
 }
 
+Orange.prototype.outOfBounds = function() {
+	return (Math.abs(this.position[0]) > LIMIT_X | (Math.abs(this.position[2]) > LIMIT_Z));
+}
 
 Orange.prototype.updateHitbox = function() {
 	this.minCorner = vec3.fromValues(this.position[0] - this.radius,

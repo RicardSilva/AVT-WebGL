@@ -138,6 +138,27 @@ GameManager.prototype.initGameObjects = function() {
 	this.car = new Car(this.track.getStartingPosition(), this.shader);
 }
 
+GameManager.prototype.onSpawnOrangeTimer = function() {
+	if (this.pause == false)
+		this.track.attemptToSpawnOrange();
+}
+GameManager.prototype.onIncreaseOrangeSpeedTimer = function() {
+	this.track.increaseOrangeSpeed();
+}
+
+
+GameManager.prototype.update = function(timeStep) {
+   this.car.update(timeStep);
+   this.track.update(timeStep);
+   
+   this.processCarCollisions();
+   this.processObsCollisions();
+   
+   //compute cameras position
+   this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
+   this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
+   this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+}
 
 GameManager.prototype.draw = function() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -166,18 +187,7 @@ GameManager.prototype.drawFlare = function() {
     
 }
 
-GameManager.prototype.update = function(timeStep) {
-   this.car.update(timeStep);
-   this.track.update(timeStep);
-   
-   this.processCarCollisions();
-   this.processObsCollisions();
-   
-   //compute cameras position
-   this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
-   this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
-   this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
-}
+
 
 GameManager.prototype.resetCar = function() {
     this.car.angle = 0;
@@ -264,9 +274,7 @@ GameManager.prototype.processCarCollisions = function() {
 	//TODO finishline
 }
 
-GameManager.prototype.processOrangeCollision = function(i) {
-    track.removeOrange(i);
-}
+
 
 GameManager.prototype.processObsCollisions = function() {
     for (cheerio of this.track.cheerios){
@@ -283,12 +291,6 @@ GameManager.prototype.processObsCollisions = function() {
 		}
 	}
 	
-	for (i = 0; i < this.track.oranges.length; i++){
-		for (border of this.track.borders){
-			if(this.checkCollision(oranges[i], border))
-				this.processOrangeCollision(i);
-		}
-	}
 	
 	for (lamp of this.track.lamps){
 		for (border of this.track.borders){
@@ -427,7 +429,6 @@ GameManager.prototype.keyDown = function(key) {
 	}
 
 }
-
 GameManager.prototype.keyUp = function(key) {
 	switch (key) {
 	case 68:

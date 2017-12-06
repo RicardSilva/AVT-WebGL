@@ -155,8 +155,14 @@ Track.prototype.update = function(timeStep) {
 	for (butter of this.butters) {
 		butter.update(timeStep);
 	}
-	for (orange of this.oranges) {
+	
+	for (i = 0; i < this.oranges.length; i++){
+		var orange = this.oranges[i];
 		orange.update(timeStep);
+		if(orange.outOfBounds()) {
+			this.oranges.splice(i, 1);
+			this.orangeCounter--;
+		}
 	}
 }
 
@@ -249,9 +255,8 @@ Track.prototype.attemptToSpawnOrange = function() {
 		}
 		
 		// SELECT RANDOM ANGLE 
-		angle = -Math.asin(z / (Math.sqrt(x * x + z * z)));	// normalize y coordinate
+		angle = -Math.asin(z / (Math.sqrt(x * x + z * z)));	
 		angle = angle * 180.0 / 3.14;	// convert from rads to degrees
-
 								// computes angle from spawn point to origin (0, 0)
 		if (x >= 0 && z < 0) {	// first quadrant
 			angle = 180 + angle;
@@ -266,7 +271,7 @@ Track.prototype.attemptToSpawnOrange = function() {
 			angle = 180 + angle;
 		}
 		
-		angle = angle + 40 + Math.random() * 40;	// randomize angle
+		angle = angle - 40 + Math.random() * 80;	// randomize angle
 
 		speed = Math.random() * 20 + this.orangeStartingSpeed;	
 
@@ -276,10 +281,10 @@ Track.prototype.attemptToSpawnOrange = function() {
 
 		var cosAngle = Math.cos(axleAngle * 3.14 / 180);	// convert from degrees to rads
 		var sinAngle = Math.sin(axleAngle * 3.14 / 180);
-
+		
 		this.oranges.push(new Orange(vec3.fromValues(x, 0, z), vec3.fromValues(speed, 0, speed), 
 			angle, vec3.fromValues(cosAngle, 0, -sinAngle), this.shader));
-		this.oranges[this.oranges.length].isActive = true;
+		//this.oranges[this.oranges.length].isActive = true;
 		this.orangeCounter++;
 	}
 }
@@ -289,11 +294,6 @@ Track.prototype.increaseOrangeSpeed = function() {
 	for (orange of this.oranges){
 		orange.increaseSpeed();
 	}
-}
-
-Track.prototype.removeOrange = function(i) {
-	this.oranges.splice(1, 1);
-	this.orangeCounter--;
 }
 
 Track.prototype.toogleDirectionalLight = function() {

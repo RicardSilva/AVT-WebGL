@@ -27,10 +27,10 @@ function drawText() {
     ctx.font="25px Verdana";
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'black';
-    var text = "Score: "+gameManager.score.toFixed(0);
+    var text = "Score: " + gameManager.score.toFixed(0);
     ctx.fillText(text, 1150, 40);
     ctx.strokeText(text, 1150, 40);
-    text = "Lives left: "+gameManager.lives;
+    text = "Lives left: " + gameManager.lives;
     ctx.fillText(text, 1150, 80);
     ctx.strokeText(text, 1150, 80);
     ctx.textAlign = "center";
@@ -66,7 +66,17 @@ function tick() {
     resize(ncanvas, nover);
     drawScene();
 }
-//var currentlyPressedKeys = {};
+
+function spawnOrangeTimer(value) {
+  gameManager.onSpawnOrangeTimer();
+  setTimeout(spawnOrangeTimer, 2000 + 7000 * Math.random());
+}
+function increaseOrangeSpeedTimer(value) {
+  gameManager.onIncreaseOrangeSpeedTimer();
+  setTimeout(increaseOrangeSpeedTimer, 10000);
+}
+
+
 
 function handleKeyDown(event) {
    // currentlyPressedKeys[event.keyCode] = true;
@@ -154,7 +164,7 @@ function webGLStart() {
     resize(ncanvas, nover);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
 	
-	loadImages(["../resources/textures/christmastree.tga", "../resources/textures/particle2.tga",
+	  loadImages(["../resources/textures/christmastree.tga", "../resources/textures/particle2.tga",
 				"../resources/textures/lensFlare/flare2.tga", "../resources/textures/lensFlare/flare3.tga",
 				"../resources/textures/lensFlare/flare4.tga", "../resources/textures/lensFlare/flare5.tga",
 				"../resources/textures/lensFlare/flare5.tga"], createTextures);
@@ -165,5 +175,7 @@ function webGLStart() {
     document.onkeydown = handleKeyDown;
     document.onkeyup   = handleKeyUp;
 
+    setTimeout(spawnOrangeTimer, 2000 + 7000 * Math.random());
+    setTimeout(increaseOrangeSpeedTimer, 10000);
     tick();
 }
