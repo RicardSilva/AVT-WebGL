@@ -102,7 +102,6 @@ GameManager.prototype.initCameras = function() {
 	this.cameras.push(topPerspCamera);
 
 	var carCamera = new PerspectiveCamera(60 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
-	console.log(this.width, this.height);
 	carCamera.setEye(vec3.fromValues(0, 50, -80));
 	carCamera.setTarget(vec3.fromValues(0, 0, 0));
 	carCamera.setUp(vec3.fromValues(0, 1, 0));

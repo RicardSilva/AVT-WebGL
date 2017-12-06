@@ -53,7 +53,7 @@ Car.prototype.draw = function() {
 
 	gameManager.matrices.popMatrix(modelID);
 
-	this.drawHitbox();
+	//this.drawHitbox();
 
 }
 Car.prototype.drawHitbox = function() {

@@ -57,6 +57,8 @@ Track.prototype.loadFromFile = function(track, file) {
 					c++;
 					if (x == 140) {
 						x = 0;
+						c++;
+						c++;
 						z--;
 				}
 	}

@@ -31,7 +31,7 @@ Cheerio.prototype.draw = function() {
 	this.model.meshes[0].draw(this.shader);
 
 	gameManager.matrices.popMatrix(modelID);
-	this.drawHitbox();
+	//this.drawHitbox();
 }
 Cheerio.prototype.drawHitbox = function() {
 	gameManager.matrices.pushMatrix(modelID);
