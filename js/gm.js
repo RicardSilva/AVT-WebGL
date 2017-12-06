@@ -18,6 +18,8 @@ function GameManager(width, height) {
 
     this.car;
     this.track;
+	
+	this.rain;
 
     this.init();
 }
@@ -41,6 +43,7 @@ GameManager.prototype.init = function() {
 GameManager.prototype.initShaders = function() {
     this.shader = new Shader("shader-vs", "shader-fs");
 }
+
 var models = {}
 GameManager.prototype.initMeshes = function() {
 	var m = new ObjModel();
@@ -78,6 +81,10 @@ GameManager.prototype.initMeshes = function() {
 	var m9 = new ObjModel();
 	m9.loadFromFile(m9, "../resources/objModels/finish.txt");
 	models.finishline = m9;
+	
+	var m10 = new ObjModel();
+	m10.loadFromFile(m10, "../resources/objModels/particle.txt");
+	models.particle = m10;
 }
 
 GameManager.prototype.initTextures = function(urls, callback) {
@@ -147,6 +154,8 @@ GameManager.prototype.initGameObjects = function() {
 	this.track.loadFromFile(this.track, "../resources/tracks/track.txt");
 	
 	this.car = new Car(vec3.clone(this.track.getStartingPosition()), this.shader);
+	
+	this.rain = new ParticleSystem(this.shader);
 }
 
 GameManager.prototype.onSpawnOrangeTimer = function() {
@@ -190,7 +199,9 @@ GameManager.prototype.draw = function() {
 
     if(this.activeCamera == this.cameras[3])
 		this.drawMirrorReflection();
-
+	
+	if(this.raining)
+		this.rain.draw();
 }
 
 

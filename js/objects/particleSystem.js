@@ -8,8 +8,7 @@ function ParticleSystem(shader) {
 	}
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/particle.txt");
+	this.model = models.particle;
 	this.shader = shader;
 }
 

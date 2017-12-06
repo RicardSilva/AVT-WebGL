@@ -4,12 +4,12 @@ function Particle(shader) {
 	this.randomNumber3 = Math.random() % 1100 + 1;
 	this.randomNumber4 = Math.random() % 70 + 50;
 	
-	this.x = -700 + randomNumber;
-	this.y = 50 + randomNumber2;
-	this.z = -500 + randomNumber3;
+	this.x = -700 + this.randomNumber;
+	this.y = 50 + this.randomNumber2;
+	this.z = -500 + this.randomNumber3;
 	
 	this.vx = 0;
-	this.vy = -randomNumber4;
+	this.vy = -this.randomNumber4;
 	this.vz = 0;
 	
 	this.ax = 20; /* simular um pouco de vento */
