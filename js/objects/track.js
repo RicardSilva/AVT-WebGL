@@ -177,23 +177,25 @@ Track.prototype.restart = function(track, file) {
 					}
 					else if (data[c] == 1) {
 						//new cheerio
-						cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+						track.cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 2) {
 						//new candle
-						lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+						track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 3) {
 						//new butter
-						butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+						track.butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 4) {
-						startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));
+						track.startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));
 					}
 					x++;
 					c++;
 					if (x == 140) {
 						x = 0;
+						c++;
+						c++;
 						z--;
 				}
 	}

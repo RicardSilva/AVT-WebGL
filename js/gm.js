@@ -4,6 +4,7 @@ function GameManager(width, height) {
 
 	this.width          = width;
 	this.height         = height;
+
     this.lives          = 5;
     this.gameOver       = false;
     this.pause          = false;
@@ -179,11 +180,22 @@ GameManager.prototype.update = function(timeStep) {
 }
 
 GameManager.prototype.resetCar = function() {
-    
+    this.car.angle = 0;
+	this.car.speed = vec3.create();
+	this.car.position = this.track.startingPosition;
+
+	if (--this.lives == 0) {
+		this.gameOver = true;
+		this.pause = true;
+	}
 }
 
 GameManager.prototype.restartGame = function() {
-    
+    this.track.restart(this.track, "../resources/tracks/track.txt");
+	this.car.restart(this.track.startingPosition);
+	this.lives = 5;
+	this.pause = false;
+	this.gameOver = false;
 }
 
 GameManager.prototype.checkCollision = function(obj1, obj2) {
@@ -221,16 +233,7 @@ GameManager.prototype.processCarObstacleCollision = function(obj) {
 	this.computePositionAfterCollision(this.car, obj);
 }
 
-GameManager.prototype.resetCar = function() {
-	this.car.angle = 0;
-	vec3.set(this.car.speed, 0, 0, 0);
-	vec3.copy(this.car.position, this.track.startingPosition);
 
-	if (--this.carLives == 0) {
-		this.gameOver = true;
-		this.pause = true;
-	}
-}
 
 GameManager.prototype.processCarCollisions = function() {
     for (cheerio of this.track.cheerios){
@@ -359,8 +362,8 @@ GameManager.prototype.keyDown = function(key) {
 	case 80:
 		this.pause = !this.pause;
 		break;
-	case 49:
-		this.restart();
+	case 82:
+		this.restartGame();
 		break;
 	case 39: //right arrow
 		this.car.turnRight = true;
