@@ -42,18 +42,34 @@ function Car(position, shader) {
 
 
 Car.prototype.draw = function() {
+
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	mat4.rotateY(modelMatrix, modelMatrix, (this.angle * 3.14 / 180), [0, 1, 0]);
 	this.shader.loadMatrices();
 
+	gl.cullFace(gl.FRONT);
+
+
+	this.shader.loadMaterial(this.model.meshes[2].material);
+	this.model.meshes[2].draw(this.shader);
+	this.shader.loadMaterial(this.model.meshes[3].material);
+	this.model.meshes[3].draw(this.shader);
+	this.shader.loadMaterial(this.model.meshes[4].material);
+	this.model.meshes[4].draw(this.shader);
+	this.shader.loadMaterial(this.model.meshes[5].material);
+	this.model.meshes[5].draw(this.shader);
+	this.shader.loadMaterial(this.model.meshes[8].material);
+	this.model.meshes[8].draw(this.shader);
+	
+	gl.cullFace(gl.BACK);
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
 		this.shader.loadMaterial(this.model.meshes[i].material);
 		this.model.meshes[i].draw(this.shader);
 	}
-
 	gameManager.matrices.popMatrix(modelID);
+
 
 	//this.drawHitbox();
 
@@ -83,7 +99,16 @@ Car.prototype.drawLights = function() {
 }
 
 Car.prototype.drawMirror = function() {
-	
+	gameManager.matrices.pushMatrix(modelID);
+
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	mat4.rotateY(modelMatrix, modelMatrix, (this.angle * 3.14 / 180), [0, 1, 0]);
+	this.shader.loadMatrices();
+
+	this.shader.loadMaterial(this.model.meshes[0].material);
+	this.model.meshes[0].draw(this.shader);
+
+	gameManager.matrices.popMatrix(modelID);
 }
 
 Car.prototype.update = function(timeStep) {

@@ -28,11 +28,11 @@ function drawText() {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'black';
     var text = "Score: " + gameManager.score.toFixed(0);
-    ctx.fillText(text, 900, 40);
-    ctx.strokeText(text, 900, 40);
+    ctx.fillText(text, 800, 40);
+    ctx.strokeText(text, 800, 40);
     text = "Lives left: " + gameManager.lives;
-    ctx.fillText(text, 900, 80);
-    ctx.strokeText(text, 900, 80);
+    ctx.fillText(text, 800, 80);
+    ctx.strokeText(text, 800, 80);
     ctx.textAlign = "center";
     if (gameManager.gameOver) {
         ctx.fillText("Game Over! Press R to restart the game", 500, 350);
@@ -99,9 +99,9 @@ function resize(canvas, over) {
 
     // Make the canvas the same size
     canvas.width  = displayWidth;
-    canvas.height = displayHeight / 1.4;
+    canvas.height = displayHeight ;
     over.width    = displayWidth;
-    over.height   = displayHeight / 1.4;
+    over.height   = displayHeight ;
 
     gl.viewportWidth  = canvas.width;
     gl.viewportHeight = canvas.height;
@@ -177,6 +177,9 @@ function webGLStart() {
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    gl.enable(gl.CULL_FACE);
+    gl.cullFace(gl.BACK);
 
     document.onkeydown = handleKeyDown;
     document.onkeyup   = handleKeyUp;

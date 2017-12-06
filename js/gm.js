@@ -103,7 +103,6 @@ GameManager.prototype.initCameras = function() {
 	topPerspCamera.setUp(vec3.fromValues(0, 0, -1));
 
 	this.cameras.push(topPerspCamera);
-
 	var carCamera = new PerspectiveCamera(60 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
 	carCamera.setEye(vec3.fromValues(0, 50, -80));
 	carCamera.setTarget(vec3.fromValues(0, 0, 0));
@@ -137,7 +136,7 @@ GameManager.prototype.initGameObjects = function() {
 	this.track = new Track(vec3.fromValues(0,-0.1,0), this.shader);
 	this.track.loadFromFile(this.track, "../resources/tracks/track.txt");
 	
-	this.car = new Car(this.track.getStartingPosition(), this.shader);
+	this.car = new Car(vec3.clone(this.track.getStartingPosition()), this.shader);
 }
 
 GameManager.prototype.onSpawnOrangeTimer = function() {
@@ -173,18 +172,49 @@ GameManager.prototype.draw = function() {
     this.activeCamera.computeProjection();
     this.shader.loadMatrices();
     this.shader.use();
-    
+
     this.track.drawLights();
     this.car.drawLights();
 
     this.track.draw();
     this.car.draw();
 
+    if(this.activeCamera == this.cameras[3])
+		this.drawMirrorReflection();
+
 }
 
 
 GameManager.prototype.drawMirrorReflection = function() {
-    
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+	gl.enable(gl.STENCIL_TEST);
+	// Draw mirror
+
+	gl.clear(gl.STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
+	gl.stencilFunc(gl.ALWAYS, 1, 0xFF); // Set any stencil to 1
+	gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+	gl.stencilMask(0xFF); // Write to stencil buffer
+	gl.depthMask(false); // Don't write to depth buffer
+
+	this.car.drawMirror();
+
+	// Draw back camera
+	gl.stencilFunc(gl.EQUAL, 1, 0xFF); // Pass test if stencil value is 1
+	gl.stencilMask(0x00); // Don't write anything to stencil buffer
+	gl.depthMask(true); // Write to depth buffer
+
+	this.cameras[4].computeView();
+	this.cameras[4].computeProjection();
+	// Render objects
+	
+	this.track.drawLights();
+	this.car.drawLights();
+
+	this.track.draw();
+	this.car.draw();
+
+
+	gl.disable(gl.STENCIL_TEST);
 }
 
 GameManager.prototype.drawFlare = function() {
