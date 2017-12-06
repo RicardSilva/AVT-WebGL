@@ -91,33 +91,34 @@ Track.prototype.draw = function() {
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	this.shader.loadMatrices();
 
-	//load textures
-	//this.shader.enableTextures();
-	//this.shader.loadTextureMode(0);
+/*	//load textures
+	this.shader.enableTextures();
+	this.shader.loadTextureMode(0);
 	
-	/*gl.activeTexture(gl.TEXTURE0);
-	gl.bindTexture(gl.TEXTURE_2D, TextureArray[0]);
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, textures[7]);
 	gl.activeTexture(gl.TEXTURE1);
-	gl.bindTexture(gl.TEXTURE_2D, TextureArray[1]);
+	gl.bindTexture(gl.TEXTURE_2D, textures[8]);
 	gl.activeTexture(gl.TEXTURE2);
-	gl.bindTexture(gl.TEXTURE_2D, TextureArray[2]);
+	gl.bindTexture(gl.TEXTURE_2D, textures[9]);
 	gl.activeTexture(gl.TEXTURE3);
-	gl.bindTexture(gl.TEXTURE_2D, TextureArray[3]);
+	gl.bindTexture(gl.TEXTURE_2D, textures[10]);
 	gl.activeTexture(gl.TEXTURE4);
-	gl.bindTexture(gl.TEXTURE_2D, TextureArray[4]);
+	gl.bindTexture(gl.TEXTURE_2D, textures[11]);
 	
-	this.shader.loadWoodDiffuse(0);
-	this.shader.loadWoodSpecular(1);
-	this.shader.loadBambooDiffuse(2);
-	this.shader.loadBambooSpecular(3);
-	this.shader.loadMask(4);*/
-
+	this.shader.loadWoodDiffuse(7);
+	this.shader.loadWoodSpecular(8);
+	this.shader.loadBambooDiffuse(9);
+	this.shader.loadBambooSpecular(10);
+	this.shader.loadMask(11);
+*/
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
 		this.shader.loadMaterial(this.model.meshes[i].material);
 		this.model.meshes[i].draw(this.shader);
 	}
 	
+
 	//this.shader.disableTextures();
 	//gl.bindTexture(gl.TEXTURE_2D, 0);
 
@@ -126,12 +127,9 @@ Track.prototype.draw = function() {
 		cheerio.draw();
 	for (butter of this.butters)
 		butter.draw();
-	
 	for (orange of this.oranges) {
 		orange.draw();
 	}
-	
-	
 	for (lamp of this.lamps) {
 		lamp.draw();
 	}

@@ -22,6 +22,8 @@ function Shader (vsShader, fsShader) {
 
     this.useTexturesID;
     this.textureModeID;
+	this.textureID;
+	this.matDiffuseID;
     this.woodDiffuseID;
     this.woodSpecularID;
     this.bambooDiffuseID;
@@ -64,6 +66,8 @@ Shader.prototype.getUniformLocations = function() {
     
     this.useTexturesID = gl.getUniformLocation(this.program, "useTextures");
     this.textureModeID = gl.getUniformLocation(this.program, "textureMode");
+	this.textureID = gl.getUniformLocation(this.program, "textureMap");
+	this.matDiffuseID = gl.getUniformLocation(this.program, "matDiffuse");
     this.woodDiffuseID = gl.getUniformLocation(this.program, "woodDiffuse");
     this.woodSpecularID = gl.getUniformLocation(this.program, "woodSpecular");
     this.bambooDiffuseID = gl.getUniformLocation(this.program, "bambooDiffuse");
@@ -109,7 +113,6 @@ Shader.prototype.loadDirectionalLight = function(light) {
     var lightDir = [];
     multMatrixPoint(viewMatrix, light.direction, lightDir);
     var lightId = light.id;
-    console.log(light.intensity);
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 1], light.type);
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 3], lightDir);
@@ -187,7 +190,13 @@ Shader.prototype.disableTextures = function() {
     gl.uniform1i(this.useTexturesID, false);
 }
 Shader.prototype.loadTextureMode = function(mode) {
-     gl.uniform1i(this.textureModeID, mode);
+    gl.uniform1i(this.textureModeID, mode);
+}
+Shader.prototype.loadTexture = function(id) {
+	gl.uniform1i(this.textureID, id);
+}
+Shader.prototype.loadMatDiffuse = function(color) {
+	gl.uniform4fv(this.matDiffuseID, color); //TODO is this right?
 }
 Shader.prototype.loadWoodDiffuse = function(id) {
      gl.uniform1i(this.woodDiffuseID, id);

@@ -25,7 +25,7 @@ ParticleSystem.prototype.draw = function() {
 	//shader->use();
 	this.shader.loadTextureMode(1);
 	this.shader.loadTexture(1);
-	//shader->loadMatDiffuse(particles[0].color);
+	this.shader.loadMatDiffuse(particles[0].color);
 	
 	for (var i = 0; i < this.max_particles; i++){	
 		gameManager.matrices.pushMatrix(modelID);
