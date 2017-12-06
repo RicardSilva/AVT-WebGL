@@ -106,9 +106,10 @@ Shader.prototype.loadMaterial = function(material) {
     gl.uniform1f(this.matTransparencyID, material.d);
 }
 Shader.prototype.loadDirectionalLight = function(light) {
-    var lightDir;
-    multMatrixPoint(VIEW, light.direction, lightDir);
+    var lightDir = [];
+    multMatrixPoint(viewMatrix, light.direction, lightDir);
     var lightId = light.id;
+    console.log(light.intensity);
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 1], light.type);
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 3], lightDir);
@@ -116,16 +117,15 @@ Shader.prototype.loadDirectionalLight = function(light) {
     gl.uniform1f(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT * 5], light.intensity);
 }
 Shader.prototype.subLoadDirectionalLight = function(light) {
-    var lightDir;
-    multMatrixPoint(VIEW, light.direction, lightDir);
+    var lightDir = [];
+    multMatrixPoint(viewMatrix, light.direction, lightDir);
     var lightId = light.id;
-
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 3], lightDir);
 }
 Shader.prototype.loadPointLight = function(light) {
-    var lightPos;
-    multMatrixPoint(VIEW, light.position, lightPos);
+    var lightPos = [];
+    multMatrixPoint(viewMatrix, light.position, lightPos);
     var lightId = light.id;
 
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
@@ -140,18 +140,18 @@ Shader.prototype.loadPointLight = function(light) {
 
 }
 Shader.prototype.subLoadPointLight = function(light) {
-    var lightPos;
-    multMatrixPoint(VIEW, light.position, lightPos);
+    var lightPos = [];
+    multMatrixPoint(viewMatrix, light.position, lightPos);
     var lightId = light.id;
 
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
     gl.uniform4fv(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 2], lightPos);
 }
 Shader.prototype.loadSpotLight = function(light) {
-    var lightPos;
-    var lightDir;
-    multMatrixPoint(VIEW, light.position, lightPos);    
-    multMatrixPoint(VIEW, light.direction, lightDir);
+    var lightPos = [];
+    var lightDir = [];
+    multMatrixPoint(viewMatrix, light.position, lightPos);    
+    multMatrixPoint(viewMatrix, light.direction, lightDir);
     var lightId = light.id;
 
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);
@@ -170,10 +170,10 @@ Shader.prototype.loadSpotLight = function(light) {
 
 }
 Shader.prototype.subLoadSpotLight = function(light) {
-    var lightPos;
-    var lightDir;
-    multMatrixPoint(VIEW, light.position, lightPos);    
-    multMatrixPoint(VIEW, light.direction, lightDir);
+    var lightPos = [];
+    var lightDir = [];
+    multMatrixPoint(viewMatrix, light.position, lightPos);    
+    multMatrixPoint(viewMatrix, light.direction, lightDir);
     var lightId = light.id;
 
     gl.uniform1i(this.lightUniforms[lightId * ATTRIBS_PER_LIGHT + 0], light.isActive);

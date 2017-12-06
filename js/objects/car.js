@@ -16,7 +16,12 @@ function Car(position, shader) {
 	this.backwardsAcceleration = 200;
 	this.inercia = 175;
 	
-	this.createLights();
+	this.leftLight = new SpotLight(vec4.fromValues(position[0] + 14.4, position[1] + 20,
+												   position[2] - 4.60, 1),
+									vec4.fromValues(1, 0, 0, 0), [1,1,1], 1, shader);
+	this.rightLight = new SpotLight(vec4.fromValues(position[0] + 14.4, position[1] + 20,
+												    position[2] + 4.60, 1),
+									vec4.fromValues(1, 0, 0, 0), [1,1,1], 1, shader);
 	
 	this.width = 16.2;
 	this.height = 11.7;
@@ -35,9 +40,6 @@ function Car(position, shader) {
 	
 }
 
-Car.prototype.createLights = function() {
-	this.lights = [];
-}
 
 Car.prototype.draw = function() {
 	gameManager.matrices.pushMatrix(modelID);
@@ -76,7 +78,8 @@ Car.prototype.drawHitbox = function() {
 }
 
 Car.prototype.drawLights = function() {
-	
+	this.leftLight.draw();
+	this.rightLight.draw();
 }
 
 Car.prototype.drawMirror = function() {
@@ -176,12 +179,48 @@ Car.prototype.update = function(timeStep) {
 	this.position[2] = posZ + speedZ * -sinAngle * timeStep;
 
 	this.updateLights();
-
 	this.updateHitbox();
 }
 
-Car.prototype.updateLights = function() {}
-Car.prototype.toogleLights = function() {}
+Car.prototype.updateLights = function() {
+	var posX;
+	var posZ;
+
+	var cosAngle = Math.cos(this.angle * 3.14 / 180);
+	var sinAngle = Math.sin(this.angle * 3.14 / 180);
+
+	//left
+	//update light position
+	posX = 10 * cosAngle + 
+	       -4.5 * sinAngle + this.position[0];
+	posZ = -4.5 * cosAngle -
+		   10 * sinAngle + this.position[2];
+	this.leftLight.position = vec4.fromValues(posX, 1, posZ, 1);
+
+	//update light direction
+	this.leftLight.direction = vec4.fromValues(cosAngle, -0.1,
+											  -sinAngle, 0);
+
+	//right
+	posX = 10 * cosAngle + 
+	       4.5 * sinAngle + this.position[0];
+	posZ = 4.5 * cosAngle - 
+	       10 * sinAngle + this.position[2];
+	this.rightLight.position = vec4.fromValues(posX, 1, posZ, 1);
+	
+	this.rightLight.direction = vec4.fromValues(cosAngle, -0.1, 
+		                                       -sinAngle, 0);
+}
+Car.prototype.toogleLights = function() {
+	if (this.leftLight.isActive || this.rightLight.isActive) {
+			this.leftLight.isActive = false;
+			this.rightLight.isActive = false;
+		}
+		else {
+			this.leftLight.isActive = true;
+			this.rightLight.isActive = true;
+		}
+}
 
 Car.prototype.restart = function(position) {
 	this.position = position;

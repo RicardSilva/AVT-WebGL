@@ -5,7 +5,8 @@ function Lamp(position, shader) {
 	
 	this.inercia = 370;
 	
-	this.createLight();
+	this.light = new PointLight([this.position[0], this.position[1] + 35,
+					 this.position[2], 1], [0.5, 0.5, 0.3], 0.8, shader);
 	
 	this.width = 7.8;
 	this.height = 37;
@@ -23,10 +24,6 @@ function Lamp(position, shader) {
 	this.updateHitbox();
 }
 
-Lamp.prototype.createLight = function() {
-	//this.light = [];
-	//this.light.push(/*new Pointlight()*/);
-}
 
 Lamp.prototype.draw = function() {
 	gameManager.matrices.pushMatrix(modelID);
@@ -43,65 +40,20 @@ Lamp.prototype.draw = function() {
 	gameManager.matrices.popMatrix(modelID);
 }
 
-Lamp.prototype.drawLight = function() {
-	
+Lamp.prototype.drawLights = function() {
+	this.light.draw();
 }
 
-Lamp.prototype.update = function(timestep) {
-	timeStep = timeStep / 1000;
-	
-	var speedX = this.speed[0];
-	var speedZ = this.speed[2];
-	
-	if (!(speedX == 0 && speedZ == 0)) { 
-		var cosAngle = Math.cos(this.angle * 3.14 / 180);
-		var sinAngle = Math.sin(this.angle * 3.14 / 180);
-		
-		var posX = this.position[0];
-		var posZ = this.position[2];
-		
-		if (speedX > 0) {
-			speedX = speedX - this.inercia * timeStep;
-			if (speedX < 0)
-				speedX = 0;
-			this.speed[0] = speedX;
-		}
-		else if (speedX < 0) {
-			speedX = speedX + this.inercia * timeStep;
-			if (speedX > 0)
-				speedX = 0;
-			this.speed[0] = speedX;
-		}
+Lamp.prototype.update = function(timeStep) {}
 
-		if (speedZ > 0) {
-			speedZ = speedX - this.inercia * timeStep;
-			if (speedZ < 0)
-				speedZ = 0;
-			this.speed[2] = speedZ;
-		}
-		else if (speedZ < 0) {
-			speedZ = speedZ + this.inercia * timeStep;
-			if (speedZ > 0)
-				speedZ = 0;
-			this.speed[2] = speedZ;
-		}
-
-		// update position
-		this.position[0] = posX + speedX * cosAngle * timeStep;
-		this.position[2] = posZ + speedZ * -sinAngle * timeStep;
-
-		this.updateLight();
-		
-		this.updateHitbox();
-	}
-}
-
-Lamp.prototype.updateLight = function() {
-	
-}
 
 Lamp.prototype.toggleLight = function() {
-	
+	if (this.light.isActive) {
+		this.light.isActive = false;
+	}
+	else {
+		this.light.isActive = true;
+	}
 }
 
 

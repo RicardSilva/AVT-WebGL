@@ -32,7 +32,6 @@ Orange.prototype.draw = function() {
 	var pos = vec3.create();
 	vec3.add(pos, this.position, vec3.fromValues(0,30,0));
 	mat4.translate(modelMatrix, modelMatrix, pos);
-	console.log(this.rotationAngle, this.rotationAxle);
 	mat4.rotate(modelMatrix, modelMatrix, (this.rotationAngle * 3.14 / 180), this.rotationAxle);
 
 	this.shader.loadMatrices();

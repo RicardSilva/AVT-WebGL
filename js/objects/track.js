@@ -27,6 +27,8 @@ function Track(position, shader) {
 	this.borders.push(new Border([-HALF_TRACK_WIDTH - 50, 0, 0], 20.0, TRACK_HEIGHT + 50));
 	this.borders.push(new Border([0, 0, HALF_TRACK_HEIGHT + 50], TRACK_WIDTH + 50, 20.0));
 	this.borders.push(new Border([0, 0, -HALF_TRACK_HEIGHT - 50], TRACK_WIDTH + 50, 20.0));
+
+	this.directionalLight = new DirectionalLight([-1, -1, 0, 0], [1, 1, 1], 0.5, this.shader);
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -90,8 +92,8 @@ Track.prototype.draw = function() {
 	this.shader.loadMatrices();
 
 	//load textures
-	this.shader.enableTextures();
-	this.shader.loadTextureMode(0);
+	//this.shader.enableTextures();
+	//this.shader.loadTextureMode(0);
 	
 	/*gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_2D, TextureArray[0]);
@@ -116,7 +118,7 @@ Track.prototype.draw = function() {
 		this.model.meshes[i].draw(this.shader);
 	}
 	
-	this.shader.disableTextures();
+	//this.shader.disableTextures();
 	//gl.bindTexture(gl.TEXTURE_2D, 0);
 
 	this.shader.loadMaterial(this.cheerios[0].model.meshes[0].material);
@@ -145,7 +147,9 @@ Track.prototype.draw = function() {
 }
 
 Track.prototype.drawLights = function() {
-	
+	this.directionalLight.draw();
+	for (lamp of this.lamps)
+		lamp.drawLights();
 }
 
 Track.prototype.update = function(timeStep) {
@@ -297,9 +301,15 @@ Track.prototype.increaseOrangeSpeed = function() {
 }
 
 Track.prototype.toogleDirectionalLight = function() {
-	
+	if (this.directionalLight.isActive) {
+		this.directionalLight.isActive = false;
+	}
+	else {
+		this.directionalLight.isActive = true;
+	}
 }
 
 Track.prototype.tooglePointLights = function() {
-	
+	for (lamp of this.lamps)
+		lamp.toggleLight();
 }

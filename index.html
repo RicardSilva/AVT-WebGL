@@ -69,8 +69,6 @@
 
 			// the set of lights to apply, per invocation of this shader
 
-			const float density = 0.005;
-			const float gradient = 1.3;
 			const int MaxLights = 9;
 			uniform Light lights[MaxLights];
 
@@ -232,7 +230,7 @@
 							outColor += calcSpotLight(light, exPosition, normal, exEyeDirection, materialDiffuse, materialSpecular) * light.intensity;
 						else if(light.type == 0)	
 							outColor += calcDirLight(light, normal, exEyeDirection, materialDiffuse, materialSpecular)
-							 * light.intensity;
+							 * 0.5;
 						
 					}
 				}

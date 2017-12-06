@@ -28,19 +28,19 @@ function drawText() {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'black';
     var text = "Score: " + gameManager.score.toFixed(0);
-    ctx.fillText(text, 1150, 40);
-    ctx.strokeText(text, 1150, 40);
+    ctx.fillText(text, 900, 40);
+    ctx.strokeText(text, 900, 40);
     text = "Lives left: " + gameManager.lives;
-    ctx.fillText(text, 1150, 80);
-    ctx.strokeText(text, 1150, 80);
+    ctx.fillText(text, 900, 80);
+    ctx.strokeText(text, 900, 80);
     ctx.textAlign = "center";
     if (gameManager.gameOver) {
-        ctx.fillText("Game Over! Press R to restart the game", 700, 350);
-        ctx.strokeText("Game Over! Press R to restart the game", 700, 350);
+        ctx.fillText("Game Over! Press R to restart the game", 500, 350);
+        ctx.strokeText("Game Over! Press R to restart the game", 500, 350);
     }
     else if(gameManager.pause) {
-        ctx.fillText("Game is paused!", 700, 350);
-        ctx.strokeText("Game is paused!", 700, 350);
+        ctx.fillText("Game is paused!", 500, 350);
+        ctx.strokeText("Game is paused!", 500, 350);
     }
 }
 
@@ -171,6 +171,9 @@ function webGLStart() {
 	
     gl.clearColor(0.53, 0.81, 0.92, 1);
     gl.enable(gl.DEPTH_TEST);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     document.onkeydown = handleKeyDown;
     document.onkeyup   = handleKeyUp;

@@ -9,6 +9,8 @@ function GameManager(width, height) {
     this.gameOver       = false;
     this.pause          = false;
     this.score          = 0;
+    this.day            = true;
+    this.raining        = false;
 
     this.shader;
     this.cameras = [];
@@ -166,18 +168,20 @@ GameManager.prototype.draw = function() {
     mat4.identity(modelMatrix);
     mat4.identity(viewMatrix);
     mat4.identity(projectionMatrix);
-
+	
     this.activeCamera.computeView();
     this.activeCamera.computeProjection();
+    this.shader.loadMatrices();
     this.shader.use();
-    this.car.draw();
-    this.track.draw();
-
-}
-
-GameManager.prototype.drawHUD = function() {
     
+    this.track.drawLights();
+    this.car.drawLights();
+
+    this.track.draw();
+    this.car.draw();
+
 }
+
 
 GameManager.prototype.drawMirrorReflection = function() {
     
@@ -300,11 +304,19 @@ GameManager.prototype.processObsCollisions = function() {
 	}
 }
 
+GameManager.prototype.setDayRainingColor = function() {
+	gl.clearColor(0.35, 0.60, 0.70, 1);
+}
+GameManager.prototype.setDayClearColor = function() {
+	gl.clearColor(0.53, 0.81, 0.92, 1);
+}
+GameManager.prototype.setNightColor = function() {
+	gl.clearColor(0.2, 0.2, 0.2, 1);
+}
+
 GameManager.prototype.keyDown = function(key) {
 	switch (key) {
-	/*case 27:
-		glutLeaveMainLoop();
-		break;*/
+	
 	case 49:
 		this.activeCamera = this.cameras[0];
 		break;
@@ -321,34 +333,27 @@ GameManager.prototype.keyDown = function(key) {
 	case 53:
 		this.activeCamera = this.cameras[4];
 		break;
-	/*case '8':
-		track->toogleDirectionalLight();
-		day = !day;
-		if (day) {
-			if (raining && foggy)
-				setDayRainingFoggyColor();
-			else if (raining)
-				setDayRainingColor();
-			else if (foggy)
-				setDayFoggyColor();
+	case 56:
+		this.track.toogleDirectionalLight();
+		this.day = !this.day;
+		if (this.day) {
+			if (this.raining)
+				this.setDayRainingColor();
 			else {
-				setDayClearColor();
+				this.setDayClearColor();
 			}
 		}
 
 		else
-			if (foggy)
-				setNightFoggyColor();
-			else
-				setNightColor();
-
+			this.setNightColor();
+	
 		break;
-	case '9':
-		track->tooglePointLights();
+	case 57:
+		this.track.tooglePointLights();
 		break;
-	case '0':
-		car->toogleSpotLights();
-		break;*/
+	case 48:
+		this.car.toogleLights();
+		break;
 	case 68:
 		this.car.turnRight = true;
 		break;
