@@ -108,53 +108,8 @@ function resize(canvas, over) {
   }
 }
 
-var textures = [];
 
-function loadImage(url, callback) {
-  var image = new Image();
-  image.src = url;
-  image.onload = callback;
-  return image;
-}
 
-function loadImages(urls, callback) {
-  var images = [];
-  var imagesToLoad = urls.length;
-
-  // Called each time an image finished
-  // loading.
-  var onImageLoad = function() {
-    --imagesToLoad;
-    // If all the images are loaded call the callback.
-    if (imagesToLoad == 0) {
-      callback(images);
-    }
-  };
-
-  for (var i = 0; i < imagesToLoad; ++i) {
-    var image = loadImage(urls[i], onImageLoad);
-    images.push(image);
-  }
-}
-
-function createTextures(images) {
-    for (var i = 0; i < images.length; ++i) {
-        var texture = gl.createTexture();
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
-
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-
-        // gl.generateMipmap(gl.TEXTURE_2D);
-        // add the texture to the array of textures.
-        textures.push(texture);
-    }
-    document.getElementById("loadingtext").textContent = "";
-}
 var ncanvas;
 var nover;
 function webGLStart() {
@@ -163,16 +118,7 @@ function webGLStart() {
     initGL(ncanvas, nover);
     resize(ncanvas, nover);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
-	
-	loadImages(["../resources/textures/christmastree.gif", "../resources/textures/particle2.gif",
-				"../resources/textures/lensFlare/flare2.gif", "../resources/textures/lensFlare/flare3.gif",
-				"../resources/textures/lensFlare/flare4.gif", "../resources/textures/lensFlare/flare1.gif",
-				"../resources/textures/lensFlare/flare6.gif", "../resources/textures/track/wood_diffuse.gif",
-				"../resources/textures/track/wood_specular.gif", "../resources/textures/track/bamboo_diffuse.gif",
-				"../resources/textures/track/bamboo_specular.gif", "../resources/textures/track/mask.gif",
-				"../resources/textures/finish.gif", "../resources/textures/lensFlare/flare5.gif"], 
-				createTextures);
-	
+		
     gl.clearColor(0.53, 0.81, 0.92, 1);
     gl.enable(gl.DEPTH_TEST);
 

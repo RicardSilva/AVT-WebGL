@@ -97,15 +97,16 @@ Track.prototype.draw = function(cam) {
 	this.shader.enableTextures();
 	this.shader.loadTextureMode(0);
 	
-	gl.activeTexture(gl.TEXTURE0);
+	
+	gl.activeTexture(gl.TEXTURE7);
 	gl.bindTexture(gl.TEXTURE_2D, textures[7]);
-	gl.activeTexture(gl.TEXTURE1);
+	gl.activeTexture(gl.TEXTURE8);
 	gl.bindTexture(gl.TEXTURE_2D, textures[8]);
-	gl.activeTexture(gl.TEXTURE2);
+	gl.activeTexture(gl.TEXTURE9);
 	gl.bindTexture(gl.TEXTURE_2D, textures[9]);
-	gl.activeTexture(gl.TEXTURE3);
+	gl.activeTexture(gl.TEXTURE10);
 	gl.bindTexture(gl.TEXTURE_2D, textures[10]);
-	gl.activeTexture(gl.TEXTURE4);
+	gl.activeTexture(gl.TEXTURE11);
 	gl.bindTexture(gl.TEXTURE_2D, textures[11]);
 	
 	this.shader.loadWoodDiffuse(7);

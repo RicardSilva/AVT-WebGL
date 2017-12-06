@@ -25,9 +25,15 @@ function GameManager(width, height) {
 GameManager.prototype.init = function() {
     this.initShaders();
     this.initMeshes();
-   // this.initTextures(["resources/title.gif"], createTextures);
+    this.initTextures(["../resources/textures/christmastree.gif", "../resources/textures/particle2.gif",
+				"../resources/textures/lensFlare/flare2.gif", "../resources/textures/lensFlare/flare3.gif",
+				"../resources/textures/lensFlare/flare4.gif", "../resources/textures/lensFlare/flare1.gif",
+				"../resources/textures/lensFlare/flare6.gif", "../resources/textures/track/wood_diffuse.gif",
+				"../resources/textures/track/wood_specular.gif", "../resources/textures/track/bamboo_diffuse.gif",
+				"../resources/textures/track/bamboo_specular.gif", "../resources/textures/track/mask.gif",
+				"../resources/textures/finish.gif", "../resources/textures/lensFlare/flare5.gif"], 
+				createTextures);
     this.initCameras();
-    this.initLights();
     this.initGameObjects();
     document.getElementById("loadingtext").textContent = "";
 }
@@ -127,8 +133,6 @@ GameManager.prototype.initCameras = function() {
 	this.activeCamera = carCamera;
 }
 
-GameManager.prototype.initLights = function() {
-}
 
 
 GameManager.prototype.initGameObjects = function() {
@@ -509,11 +513,12 @@ function createTextures(images) {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, images[i]);
 
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+		gl.generateMipmap(gl.TEXTURE_2D);
         gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
         gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
-        // gl.generateMipmap(gl.TEXTURE_2D);
+      
         // add the texture to the array of textures.
         textures.push(texture);
     }
