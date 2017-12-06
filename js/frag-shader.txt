@@ -33,6 +33,7 @@ struct Material {
 
 			uniform bool useTextures;
 			uniform int textureMode;
+			uniform sampler2D textureMap; //TODO
 			uniform Material mat;
 
 			uniform sampler2D woodDiffuse;
