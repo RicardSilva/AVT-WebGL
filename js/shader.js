@@ -23,7 +23,7 @@ function Shader (vsShader, fsShader) {
     this.useTexturesID;
     this.textureModeID;
 	this.textureID;
-	this.matDiffuseID;
+	this.diffuseID;
     this.woodDiffuseID;
     this.woodSpecularID;
     this.bambooDiffuseID;
@@ -67,7 +67,7 @@ Shader.prototype.getUniformLocations = function() {
     this.useTexturesID = gl.getUniformLocation(this.program, "useTextures");
     this.textureModeID = gl.getUniformLocation(this.program, "textureMode");
 	this.textureID = gl.getUniformLocation(this.program, "textureMap");
-	this.matDiffuseID = gl.getUniformLocation(this.program, "matDiffuse");
+	this.diffuseID = gl.getUniformLocation(this.program, "matDiffuse");
     this.woodDiffuseID = gl.getUniformLocation(this.program, "woodDiffuse");
     this.woodSpecularID = gl.getUniformLocation(this.program, "woodSpecular");
     this.bambooDiffuseID = gl.getUniformLocation(this.program, "bambooDiffuse");
@@ -196,7 +196,7 @@ Shader.prototype.loadTexture = function(id) {
 	gl.uniform1i(this.textureID, id);
 }
 Shader.prototype.loadMatDiffuse = function(color) {
-	gl.uniform4fv(this.matDiffuseID, color); //TODO is this right?
+	gl.uniform4fv(this.diffuseID, color); //TODO is this right?
 }
 Shader.prototype.loadWoodDiffuse = function(id) {
      gl.uniform1i(this.woodDiffuseID, id);
