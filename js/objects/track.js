@@ -148,7 +148,7 @@ Track.prototype.update = function(timeStep) {
 	}
 }
 
-Track.prototype.restart = function() {
+Track.prototype.restart = function(track, file) {
 	this.cheerios.length = 0;
 	this.butters.length = 0;
 	this.oranges.length = 0;
@@ -175,15 +175,15 @@ Track.prototype.restart = function() {
 					}
 					else if (data[c] == 1) {
 						//new cheerio
-						cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500))));
+						cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 2) {
 						//new candle
-						lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500))));
+						lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 3) {
 						//new butter
-						butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500))));
+						butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
 					}
 					else if (data[c] == 4) {
 						startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));

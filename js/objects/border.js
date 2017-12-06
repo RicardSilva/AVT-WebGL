@@ -2,7 +2,6 @@ function Border(position, width, length) {
 	this.position = position;
 	this.speed = speed;
 	this.angle = 0;
-	this.isActive = true;
 	
 	this.width = width;
 	this.length = length;
@@ -13,18 +12,13 @@ function Border(position, width, length) {
 	this.center;
 	
 	this.updateHitbox();
-	this.updateCenter();
 }
 
 Border.prototype.draw = function() {}
 
 Border.prototype.update = function() {}
 
-Border.prototype.updateCenter = function() {
-	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
-							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
-							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
-}
+
 
 Border.prototype.updateHitbox = function() {
 	this.minCorner = vec3.fromValues(this.position.x - this.width / 2,
@@ -33,4 +27,7 @@ Border.prototype.updateHitbox = function() {
 	this.maxCorner = vec3.fromValues(this.position.x + this.width / 2,
 								this.position.y + this.height / 2,
 								this.position.z + this.length / 2);
+	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
+							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
+							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
 }

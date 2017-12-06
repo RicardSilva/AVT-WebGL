@@ -52,11 +52,15 @@ GameManager.prototype.initMeshes = function() {
 
 	var m5 = new ObjModel();
 	m5.loadFromFile(m5, "../resources/objModels/lamp.txt");
-	models.track = m5;
+	models.lamp = m5;
 
 	var m6 = new ObjModel();
 	m6.loadFromFile(m6, "../resources/objModels/orange.txt");
 	models.orange = m6;
+
+	var m7 = new ObjModel();
+	m7.loadFromFile(m7, "../resources/objModels/cube.txt");
+	models.cube = m7;
 }
 
 GameManager.prototype.initTextures = function(urls, callback) {
@@ -90,35 +94,36 @@ GameManager.prototype.initCameras = function() {
 
 	this.cameras.push(topCamera);
 
-	var topPerspCamera = new PerspectiveCamera(70, this.width / this.height, 0.1, 1500.0);
+	var topPerspCamera = new PerspectiveCamera(70 * 3.14 / 180, this.width / this.height, 0.1, 1500.0);
 	topPerspCamera.setEye(vec3.fromValues(0, 500, 900));
 	topPerspCamera.setTarget(vec3.fromValues(0, 0, 150));
 	topPerspCamera.setUp(vec3.fromValues(0, 0, -1));
 
 	this.cameras.push(topPerspCamera);
 
-	var carCamera = new PerspectiveCamera(60, this.width / this.height, 0.1, 1000.0);
+	var carCamera = new PerspectiveCamera(60 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
+	console.log(this.width, this.height);
 	carCamera.setEye(vec3.fromValues(0, 50, -80));
 	carCamera.setTarget(vec3.fromValues(0, 0, 0));
 	carCamera.setUp(vec3.fromValues(0, 1, 0));
 
 	this.cameras.push(carCamera);
 
-	var cockpitCamera = new PerspectiveCamera(90, this.width / this.height, 0.1, 1000.0);
+	var cockpitCamera = new PerspectiveCamera(90 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
 	cockpitCamera.setEye(vec3.fromValues(0, 50, -80));
 	cockpitCamera.setTarget(vec3.fromValues(0, 0, 0));
 	cockpitCamera.setUp(vec3.fromValues(0, 1, 0));
 
 	this.cameras.push(cockpitCamera);
 
-	var backCamera = new PerspectiveCamera(130, this.width / this.height, 0.1, 1000.0);
+	var backCamera = new PerspectiveCamera(130 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
 	backCamera.setEye(vec3.fromValues(0, 50, -80));
 	backCamera.setTarget(vec3.fromValues(0, 0, 0));
 	backCamera.setUp(vec3.fromValues(0, 1, 0));
 
 	this.cameras.push(backCamera);
 
-	this.activeCamera = topCamera;
+	this.activeCamera = carCamera;
 }
 
 GameManager.prototype.initLights = function() {
@@ -138,6 +143,8 @@ GameManager.prototype.draw = function() {
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     mat4.identity(modelMatrix);
+    mat4.identity(viewMatrix);
+    mat4.identity(projectionMatrix);
 
     this.activeCamera.computeView();
     this.activeCamera.computeProjection();
@@ -161,12 +168,15 @@ GameManager.prototype.drawFlare = function() {
 
 GameManager.prototype.update = function(timeStep) {
    this.car.update(timeStep);
-   //this.track.update(timeStep);
+   this.track.update(timeStep);
    
    this.processCarCollisions();
    this.processObsCollisions();
    
    //compute cameras position
+   this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
+   this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
+   this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
 }
 
 GameManager.prototype.resetCar = function() {
@@ -178,44 +188,44 @@ GameManager.prototype.restartGame = function() {
 }
 
 GameManager.prototype.checkCollision = function(obj1, obj2) {
-    return ((obj1.maxCorner.x > obj2.minCorner.x) && (obj1.minCorner.x < obj2.maxCorner.x) 
-			&& (obj1.maxCorner.z > obj2.minCorner.z) && (obj1.minCorner.z < obj2.maxCorner.z));
+    return ((obj1.maxCorner[0] > obj2.minCorner[0]) && (obj1.minCorner[0] < obj2.maxCorner[0]) 
+			&& (obj1.maxCorner[2] > obj2.minCorner[2]) && (obj1.minCorner[2] < obj2.maxCorner[2]));
 }
 
 GameManager.prototype.computePositionAfterCollision = function(obj1, obj2) {
-    var distance = vec3.create(obj2.center.x - obj1.center.x,
-							obj2.center.y - obj1.center.y,
-							obj2.center.z - obj1.center.z);
+    var distance = vec3.fromValues(obj2.center[0] - obj1.center[0],
+								obj2.center[1] - obj1.center[1],
+								obj2.center[2] - obj1.center[2]);
 	
-	var x = (obj1.maxCorner.x - obj1.minCorner.x)/2 + (obj2.maxCorner.x - obj2.minCorner.x)/2 - fabs(distance.x);
-	var z = (obj1.maxCorner.z - obj1.minCorner.z)/2 + (obj2.maxCorner.z - obj2.minCorner.z)/2 - fabs(distance.x);
-	
+	var x = (obj1.maxCorner[0] - obj1.minCorner[0])/2.0 + (obj2.maxCorner[0] - obj2.minCorner[0])/2.0 - Math.abs(distance[0]);
+	var z = (obj1.maxCorner[2] - obj1.minCorner[2])/2.0 + (obj2.maxCorner[2] - obj2.minCorner[2])/2.0 - Math.abs(distance[2]);
+
 	if (x < z) {
-		if (distance.x < 0)
+		if (distance[0] < 0)
 			x = -x;
-		obj1.position.set(obj1.position.x - x, obj1.position.y, obj.position.z);
+		obj1.position = vec3.fromValues(obj1.position[0] - x, obj1.position[1], obj1.position[2]);
 	}
 	else {
-		if (distance.z > 0)
+		if (distance[2] > 0)
 			z = -z;
-		obj1.position.set(obj1.position.x, obj1.position.y, obj.position.z + z);
+		obj1.position = vec3.fromValues(obj1.position[0], obj1.position[1], obj1.position[2] + z);
 	}
 	
 	obj1.updateHitbox();
 }
 
 GameManager.prototype.processCarObstacleCollision = function(obj) {
-    obs.angle.copy(car.angle);
-	obs.speed.copy(car.speed);
-	car.speed = vec3.set(0, 0, 0);
+    obj.angle = this.car.angle;
+	vec3.copy(obj.speed, this.car.speed);
+	vec3.set(this.car.speed, 0, 0, 0);
 	
-	this.computePositionAfterCollision(car, obj);
+	this.computePositionAfterCollision(this.car, obj);
 }
 
 GameManager.prototype.resetCar = function() {
 	this.car.angle = 0;
-	this.car.speed.set(0, 0, 0);
-	this.car.position.set(this.track.startingPosition);
+	vec3.set(this.car.speed, 0, 0, 0);
+	vec3.copy(this.car.position, this.track.startingPosition);
 
 	if (--this.carLives == 0) {
 		this.gameOver = true;
@@ -292,19 +302,20 @@ GameManager.prototype.keyDown = function(key) {
 		glutLeaveMainLoop();
 		break;*/
 	case 49:
-		//activeCamera = cameras[0];
+		this.activeCamera = this.cameras[0];
 		break;
+	break;
 	case 50:
-		//activeCamera = cameras[1];
+		this.activeCamera = this.cameras[1];
 		break;
 	case 51:
-		//activeCamera = cameras[2];
+		this.activeCamera = this.cameras[2];
 		break;
 	case 52:
-		//activeCamera = cameras[3];
+		this.activeCamera = this.cameras[3];
 		break;
 	case 53:
-		//activeCamera = cameras[4];
+		this.activeCamera = this.cameras[4];
 		break;
 	/*case '8':
 		track->toogleDirectionalLight();

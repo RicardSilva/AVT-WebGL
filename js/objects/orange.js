@@ -21,7 +21,6 @@ function Orange(position, speed, rotationAngle, rotationAxle, shader) {
 	this.model = models.orange;
 	
 	this.updateHitbox();
-	this.updateCenter();
 }
 
 Orange.prototype.draw = function() {
@@ -43,7 +42,7 @@ Orange.prototype.draw = function() {
 	gameManager.matrices.popMatrix(modelID);
 }
 
-Orange.prototype.update = function(timestep) {
+Orange.prototype.update = function(timeStep) {
 	timeStep = timeStep / 1000;
 	
 	var speedX = this.speed[0];
@@ -76,11 +75,6 @@ Orange.prototype.increaseSpeed = function() {
 		this.speed[2] = 400;
 }
 
-Orange.prototype.updateCenter = function() {
-	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
-							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
-							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
-}
 
 Orange.prototype.updateHitbox = function() {
 	this.minCorner = vec3.fromValues(this.position[0] - this.radius,
@@ -89,4 +83,7 @@ Orange.prototype.updateHitbox = function() {
 	this.maxCorner = vec3.fromValues(this.position[0] + this.radius,
 								this.position[1] + this.radius + 30,
 								this.position[2] + this.radius);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }

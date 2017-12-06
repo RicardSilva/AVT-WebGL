@@ -32,7 +32,6 @@ function Car(position, shader) {
 	this.shader = shader;
 	
 	this.updateHitbox();
-	this.computeCenter();
 	
 }
 
@@ -53,6 +52,27 @@ Car.prototype.draw = function() {
 	}
 
 	gameManager.matrices.popMatrix(modelID);
+
+	this.drawHitbox();
+
+}
+Car.prototype.drawHitbox = function() {
+	gameManager.matrices.pushMatrix(modelID);
+
+	mat4.translate(modelMatrix, modelMatrix, this.center);
+
+	mat4.scale(modelMatrix, modelMatrix, [this.maxCorner[0] - this.minCorner[0],
+							  this.maxCorner[1] - this.minCorner[1],
+							  this.maxCorner[2] - this.minCorner[2]]);
+	this.shader.loadMatrices();
+
+
+	
+	this.shader.loadMaterial(models.cube.meshes[0].material);
+	models.cube.meshes[0].draw(this.shader);
+	
+	gameManager.matrices.popMatrix(modelID);
+
 }
 
 Car.prototype.drawLights = function() {
@@ -170,12 +190,6 @@ Car.prototype.restart = function(position) {
 	
 }
 
-Car.prototype.computeCenter = function() {
-	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
-							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
-							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
-
-}
 Car.prototype.updateHitbox = function() { 
 	var sinAngle = Math.abs(Math.sin(this.angle * 3.14 / 180));
 	var cosAngle = Math.abs(Math.cos(this.angle * 3.14 / 180));
@@ -186,4 +200,7 @@ Car.prototype.updateHitbox = function() {
 	this.maxCorner = vec3.fromValues(this.position[0] + (this.length * cosAngle + this.width * sinAngle) / 2,
 								this.position[1] + this.height / 2,
 								this.position[2] + (this.length * sinAngle + this.width * cosAngle) / 2);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }

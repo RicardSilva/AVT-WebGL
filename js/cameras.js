@@ -21,43 +21,43 @@ Camera.prototype.computeCarCameraPosition = function(position, orientation) {
 	var y = position[1];
 	var z = position[2];
 
-	copy(this.target, vec3.fromValues(x,y,z));
+	this.target = vec3.fromValues(x,y,z);
 
-	x = x - (60 * cos(orientation * 3.14 / 180));
+	x = x - (60 * Math.cos(orientation * 3.14 / 180));
 	y = y + 25;
-	z = z - (60 * -sin(orientation * 3.14 / 180));
+	z = z - (60 * -Math.sin(orientation * 3.14 / 180));
 
-	copy(this.eye, vec3.fromValues(x,y,z));
+	this.eye = vec3.fromValues(x,y,z);
 
 
 }
 Camera.prototype.computeCockpitCameraPosition = function(position, orientation) {
 
-	var x = position[0] - (4.5 * cos(orientation * 3.14 / 180)); // camera inside car
+	var x = position[0] - (4.5 * Math.cos(orientation * 3.14 / 180)); // camera inside car
 	var y = position[1] + 10;
-	var z = position[2] - (4.5 * -sin(orientation * 3.14 / 180));
+	var z = position[2] - (4.5 * -Math.sin(orientation * 3.14 / 180));
 
-	copy(this.eye, vec3.fromValues(x,y,z));
+	this.eye = vec3.fromValues(x,y,z);
 
-	x = x + (50 * cos(orientation * 3.14 / 180));
+	x = x + (50 * Math.cos(orientation * 3.14 / 180));
 	y = y;
-	z = z + (50 * -sin(orientation * 3.14 / 180));
+	z = z + (50 * -Math.sin(orientation * 3.14 / 180));
 
-	copy(this.target, vec3.fromValues(x,y,z));
+	this.target = vec3.fromValues(x,y,z);
 }
 Camera.prototype.computeBackCameraPosition = function(position, orientation) {
 	
-	var x = position[0] - (4.5 * cos(orientation * 3.14 / 180)); // camera inside car
+	var x = position[0] - (4.5 * Math.cos(orientation * 3.14 / 180)); // camera inside car
 	var y = position[1] + 10;
-	var z = position[2] - (4.5 * -sin(orientation * 3.14 / 180));
+	var z = position[2] - (4.5 * -Math.sin(orientation * 3.14 / 180));
 
-	copy(this.eye, vec3.fromValues(x,y,z));
+	this.eye = vec3.fromValues(x,y,z);
 
-	x = x - (50 * cos(orientation * 3.14 / 180));
+	x = x - (50 * Math.cos(orientation * 3.14 / 180));
 	y = y - 9;
-	z = z - (50 * -sin(orientation * 3.14 / 180));
+	z = z - (50 * -Math.sin(orientation * 3.14 / 180));
 
-	copy(this.target, vec3.fromValues(x,y,z));
+	this.target = vec3.fromValues(x,y,z);
 }
 
 function convertWorldToScreen(worldPosition) {

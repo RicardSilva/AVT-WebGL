@@ -2,7 +2,6 @@ function Lamp(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
-	this.isActive = true;
 	
 	this.inercia = 370;
 	
@@ -22,7 +21,6 @@ function Lamp(position, shader) {
 	this.shader = shader;
 
 	this.updateHitbox();
-	this.updateCenter();
 }
 
 Lamp.prototype.createLight = function() {
@@ -106,11 +104,6 @@ Lamp.prototype.toggleLight = function() {
 	
 }
 
-Lamp.prototype.updateCenter = function() {
-	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
-							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
-							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
-}
 
 Lamp.prototype.updateHitbox = function() {
 	this.minCorner = vec3.fromValues(this.position[0] - this.width / 2,
@@ -119,4 +112,7 @@ Lamp.prototype.updateHitbox = function() {
 	this.maxCorner = vec3.fromValues(this.position[0] + this.width / 2,
 								this.position[1] + this.height / 2,
 								this.position[2] + this.length / 2);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }

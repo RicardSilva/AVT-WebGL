@@ -2,7 +2,6 @@ function Butter(position, shader) {
 	this.position = position;
 	this.speed = vec3.fromValues(0, 0, 0);
 	this.angle = 0;
-	this.isActive = true;
 	
 	this.inercia = 350;
 	
@@ -20,7 +19,6 @@ function Butter(position, shader) {
 	this.shader = shader;
 	
 	this.updateHitbox();
-	this.updateCenter();
 	
 }
 
@@ -37,9 +35,27 @@ Butter.prototype.draw = function() {
 	
 
 	gameManager.matrices.popMatrix(modelID);
+	//this.drawHitbox();
 }
+Butter.prototype.drawHitbox = function() {
+	gameManager.matrices.pushMatrix(modelID);
 
-Butter.prototype.update = function(timestep) {
+	mat4.translate(modelMatrix, modelMatrix, this.center);
+
+	mat4.scale(modelMatrix, modelMatrix, [this.maxCorner[0] - this.minCorner[0],
+							  this.maxCorner[1] - this.minCorner[1],
+							  this.maxCorner[2] - this.minCorner[2]]);
+	this.shader.loadMatrices();
+
+
+	
+	this.shader.loadMaterial(models.cube.meshes[0].material);
+	models.cube.meshes[0].draw(this.shader);
+	
+	gameManager.matrices.popMatrix(modelID);
+
+}
+Butter.prototype.update = function(timeStep) {
 	timeStep = timeStep / 1000;
 	
 	var speedX = this.speed[0];
@@ -86,17 +102,16 @@ Butter.prototype.update = function(timestep) {
 	}
 }
 
-Butter.prototype.updateCenter = function() {
-	this.center = vec3.fromValues(this.minCorner.x + (this.maxCorner.x - this.minCorner.x) / 2,
-							this.minCorner.y + (this.maxCorner.y - this.minCorner.y) / 2,
-							this.minCorner.z + (this.maxCorner.z - this.minCorner.z) / 2);
-}
+
 
 Butter.prototype.updateHitbox = function() {
-	this.minCorner = vec3.fromValues(this.position.x - this.width / 2,
-								this.position.y - this.height / 2,
-								this.position.z - this.length / 2);
-	this.maxCorner = vec3.fromValues(this.position.x + this.width / 2,
-								this.position.y + this.height / 2,
-								this.position.z + this.length / 2);
+	this.minCorner = vec3.fromValues(this.position[0] - this.width / 2,
+								this.position[1] - this.height / 2,
+								this.position[2] - this.length / 2);
+	this.maxCorner = vec3.fromValues(this.position[0] + this.width / 2,
+								this.position[1] + this.height / 2,
+								this.position[2] + this.length / 2);
+	this.center = vec3.fromValues(this.minCorner[0] + (this.maxCorner[0] - this.minCorner[0]) / 2,
+							this.minCorner[1] + (this.maxCorner[1] - this.minCorner[1]) / 2,
+							this.minCorner[2] + (this.maxCorner[2] - this.minCorner[2]) / 2);
 }
