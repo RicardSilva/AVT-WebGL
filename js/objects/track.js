@@ -29,6 +29,8 @@ function Track(position, shader) {
 	this.borders.push(new Border([0, 0, -HALF_TRACK_HEIGHT - 50], TRACK_WIDTH + 50, 20.0));
 
 	this.directionalLight = new DirectionalLight([-1, -1, 0, 0], [1, 1, 1], 0.5, this.shader);
+	
+	//this.billboard = new Billboard([0, -10, 0], this.shader);
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -86,12 +88,12 @@ Track.prototype.getStartingPosition = function() {
 	return this.startingPosition;
 }
 
-Track.prototype.draw = function() {
+Track.prototype.draw = function(cam) {
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	this.shader.loadMatrices();
-
-/*	//load textures
+	
+	//load textures
 	this.shader.enableTextures();
 	this.shader.loadTextureMode(0);
 	
@@ -111,16 +113,15 @@ Track.prototype.draw = function() {
 	this.shader.loadBambooDiffuse(9);
 	this.shader.loadBambooSpecular(10);
 	this.shader.loadMask(11);
-*/
+
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
 		this.shader.loadMaterial(this.model.meshes[i].material);
 		this.model.meshes[i].draw(this.shader);
 	}
-	
 
-	//this.shader.disableTextures();
-	//gl.bindTexture(gl.TEXTURE_2D, 0);
+	this.shader.disableTextures();
+	gl.bindTexture(gl.TEXTURE_2D, null);
 
 	this.shader.loadMaterial(this.cheerios[0].model.meshes[0].material);
 	for (cheerio of this.cheerios)
@@ -138,7 +139,7 @@ Track.prototype.draw = function() {
 	}
 
 	//finishLine->draw();
-	//billboard->draw(cam);
+	//this.billboard.draw(cam);
 	
 
 	gameManager.matrices.popMatrix(modelID);

@@ -164,12 +164,13 @@ function webGLStart() {
     resize(ncanvas, nover);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
 	
-	  loadImages(["../resources/textures/christmastree.gif", "../resources/textures/particle2.gif",
+	loadImages(["../resources/textures/christmastree.gif", "../resources/textures/particle2.gif",
 				"../resources/textures/lensFlare/flare2.gif", "../resources/textures/lensFlare/flare3.gif",
-				"../resources/textures/lensFlare/flare4.gif", "../resources/textures/lensFlare/flare5.gif",
-				"../resources/textures/lensFlare/flare5.gif", "../resources/textures/track/wood_diffuse.gif",
+				"../resources/textures/lensFlare/flare4.gif", "../resources/textures/lensFlare/flare1.gif",
+				"../resources/textures/lensFlare/flare6.gif", "../resources/textures/track/wood_diffuse.gif",
 				"../resources/textures/track/wood_specular.gif", "../resources/textures/track/bamboo_diffuse.gif",
-				"../resources/textures/track/bamboo_specular.gif", "../resources/textures/track/mask.gif"], 
+				"../resources/textures/track/bamboo_specular.gif", "../resources/textures/track/mask.gif",
+				"../resources/textures/finish.gif", "../resources/textures/lensFlare/flare5.gif"], 
 				createTextures);
 	
     gl.clearColor(0.53, 0.81, 0.92, 1);
