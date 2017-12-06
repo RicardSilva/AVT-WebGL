@@ -72,7 +72,7 @@ Flare.prototype.draw = function(sunPosition) {
 		this.shader.loadTextureMode(2);
 		this.shader.loadTexture(i+2);
 		var color = vec4.fromValues(colors[i][0], colors[i][1], colors[i][2], alpha);
-		//shader->loadMatDiffuse(color);
+		this.shader.loadMatDiffuse(color);
 	
 		gameManager.matrices.pushMatrix(modelID);
 		
