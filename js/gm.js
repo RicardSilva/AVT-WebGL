@@ -176,7 +176,7 @@ GameManager.prototype.draw = function() {
     this.track.drawLights();
     this.car.drawLights();
 
-    this.track.draw();
+    this.track.draw(/*this.activeCamera.eye*/);
     this.car.draw();
 
     if(this.activeCamera == this.cameras[3])
