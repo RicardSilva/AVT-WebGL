@@ -182,7 +182,7 @@ GameManager.prototype.update = function(timeStep) {
 GameManager.prototype.resetCar = function() {
     this.car.angle = 0;
 	this.car.speed = vec3.create();
-	this.car.position = this.track.startingPosition;
+	vec3.copy(this.car.position, this.track.startingPosition);
 
 	if (--this.lives == 0) {
 		this.gameOver = true;

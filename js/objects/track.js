@@ -1,3 +1,8 @@
+const TRACK_WIDTH = 1400;
+const TRACK_HEIGHT = 1000;
+const HALF_TRACK_WIDTH = 700;
+const HALF_TRACK_HEIGHT = 500;
+
 function Track(position, shader) {
 	this.position = position;
 
@@ -17,6 +22,11 @@ function Track(position, shader) {
 	//model
 	this.model = models.track;
 	this.shader = shader;
+
+	this.borders.push(new Border([HALF_TRACK_WIDTH + 50, 0, 0], 20.0, TRACK_HEIGHT + 50));
+	this.borders.push(new Border([-HALF_TRACK_WIDTH - 50, 0, 0], 20.0, TRACK_HEIGHT + 50));
+	this.borders.push(new Border([0, 0, HALF_TRACK_HEIGHT + 50], TRACK_WIDTH + 50, 20.0));
+	this.borders.push(new Border([0, 0, -HALF_TRACK_HEIGHT - 50], TRACK_WIDTH + 50, 20.0));
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -119,17 +129,17 @@ Track.prototype.draw = function() {
 		orange.draw();
 	}
 	
-	/*
-	for (auto lamp : lamps) {
-		lamp->draw();
+	
+	for (lamp of this.lamps) {
+		lamp.draw();
 	}
-	for (auto border : borders) {
-		border->draw();
+	for (border of this.borders) {
+		border.draw();
 	}
 
 	//finishLine->draw();
 	//billboard->draw(cam);
-	*/
+	
 
 	gameManager.matrices.popMatrix(modelID);
 }
