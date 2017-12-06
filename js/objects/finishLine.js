@@ -1,4 +1,4 @@
-function FinishLine(position, width, length) {
+function FinishLine(position, width, length, shader) {
 	this.position = position;
 	
 	this.width = width;
@@ -8,6 +8,10 @@ function FinishLine(position, width, length) {
 	this.minCorner;
 	this.maxCorner;
 	this.center;
+	
+	//model
+	this.model = models.finishline;
+	this.shader = shader;
 	
 	this.updateHitbox();
 }

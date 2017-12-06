@@ -74,6 +74,10 @@ GameManager.prototype.initMeshes = function() {
 	var m8 = new ObjModel();
 	m8.loadFromFile(m8, "../resources/objModels/billboard.txt");
 	models.billboard = m8;
+	
+	var m9 = new ObjModel();
+	m9.loadFromFile(m9, "../resources/objModels/finish.txt");
+	models.finishline = m9;
 }
 
 GameManager.prototype.initTextures = function(urls, callback) {

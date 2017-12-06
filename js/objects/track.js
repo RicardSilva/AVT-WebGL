@@ -31,6 +31,9 @@ function Track(position, shader) {
 	this.directionalLight = new DirectionalLight([-1, -1, 0, 0], [1, 1, 1], 0.5, this.shader);
 	
 	this.billboard = new Billboard([0, -10, 0], this.shader);
+	
+	var linePos = [this.startingPosition[0]+45, this.startingPosition[1], this.startingPosition[2]+15];
+	this.finishLine = new FinishLine(linePos, 20, 50, this.shader);
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -139,7 +142,7 @@ Track.prototype.draw = function(cam) {
 		border.draw();
 	}
 
-	//finishLine->draw();
+	this.finishLine.draw();
 	this.billboard.draw(cam);
 	
 	gameManager.matrices.popMatrix(modelID);
