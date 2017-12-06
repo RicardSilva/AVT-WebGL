@@ -63,6 +63,7 @@ function tick() {
     //handleKeys();
 
     update();
+    resize(ncanvas, nover);
     drawScene();
 }
 //var currentlyPressedKeys = {};
@@ -88,9 +89,9 @@ function resize(canvas, over) {
 
     // Make the canvas the same size
     canvas.width  = displayWidth;
-    canvas.height = displayHeight;
+    canvas.height = displayHeight / 1.4;
     over.width    = displayWidth;
-    over.height   = displayHeight;
+    over.height   = displayHeight / 1.4;
 
     gl.viewportWidth  = canvas.width;
     gl.viewportHeight = canvas.height;
@@ -144,12 +145,13 @@ function createTextures(images) {
     }
     document.getElementById("loadingtext").textContent = "";
 }
-
+var ncanvas;
+var nover;
 function webGLStart() {
-    var canvas = document.getElementById("micromachines-canvas");
-    var overCanvas = document.getElementById("text-canvas");
-    initGL(canvas, overCanvas);
-    resize(canvas, overCanvas);
+    ncanvas = document.getElementById("micromachines-canvas");
+    nover = document.getElementById("text-canvas");
+    initGL(ncanvas, nover);
+    resize(ncanvas, nover);
     gameManager = new GameManager(gl.viewportWidth, gl.viewportHeight);
 	
 	loadImages(["../resources/textures/christmastree.tga", "../resources/textures/particle2.tga",
@@ -157,7 +159,7 @@ function webGLStart() {
 				"../resources/textures/lensFlare/flare4.tga", "../resources/textures/lensFlare/flare5.tga",
 				"../resources/textures/lensFlare/flare5.tga"], createTextures);
 	
-    gl.clearColor(0.1, 0.1, 0.1, 1.0);
+    gl.clearColor(0.53, 0.81, 0.92, 1);
     gl.enable(gl.DEPTH_TEST);
 
     document.onkeydown = handleKeyDown;

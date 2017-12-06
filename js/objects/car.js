@@ -28,8 +28,7 @@ function Car(position, shader) {
 	this.center;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/car.txt");
+	this.model = models.car;	
 	this.shader = shader;
 	
 	this.updateHitbox();
@@ -44,12 +43,12 @@ Car.prototype.createLights = function() {
 Car.prototype.draw = function() {
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
-	mat4.rotate(modelMatrix, modelMatrix, this.angle, [0, 1, 0]);
+	mat4.rotateY(modelMatrix, modelMatrix, (this.angle * 3.14 / 180), [0, 1, 0]);
 	this.shader.loadMatrices();
 
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
-		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.shader.loadMaterial(this.model.meshes[i].material);
 		this.model.meshes[i].draw(this.shader);
 	}
 
@@ -86,7 +85,7 @@ Car.prototype.update = function(timeStep) {
 		this.angle = this.angle % 360;
 	}
 
-	cosAngle = Math.cos(this.angle * 3.14 / 180);	// TODO sin/cos lib
+	cosAngle = Math.cos(this.angle * 3.14 / 180);	
 	sinAngle = Math.sin(this.angle * 3.14 / 180);
 
 	// update speed

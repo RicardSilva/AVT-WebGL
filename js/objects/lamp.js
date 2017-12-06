@@ -18,8 +18,7 @@ function Lamp(position, shader) {
 	this.center;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/lamp.txt");
+	this.model = models.lamp;
 	this.shader = shader;
 
 	this.updateHitbox();
@@ -39,7 +38,7 @@ Lamp.prototype.draw = function() {
 
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
-		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.shader.loadMaterial(this.model.meshes[i].material);
 		this.model.meshes[i].draw(this.shader);
 	}
 

@@ -122,9 +122,11 @@ ObjModel.prototype.loadFromFile = function(objModel, file)
 				    }
 				    else if(tokens[0].trim() == "ka") {
 				    	var ka = [];
+
 				      	ka.push(Number(tokens[1]));
 				      	ka.push(Number(tokens[2]));
 				      	ka.push(Number(tokens[3]));
+
 				    	currentMaterial.Ka = ka;
 				    }
 				    else if(tokens[0].trim() == "kd") {

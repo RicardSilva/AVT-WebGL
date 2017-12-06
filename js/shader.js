@@ -28,7 +28,6 @@ function Shader (vsShader, fsShader) {
     this.bambooSpecularID;
     this.maskID;
     this.treeID;
-    this.foggyID;
     this.lightUniforms = new Array(MAX_LIGHTS * ATTRIBS_PER_LIGHT);
     this.lightAttribNames = [ "isActive", "type", "position", "direction",
         "color", "intensity", "constantAttenuation", "linearAttenuation", 
@@ -71,7 +70,6 @@ Shader.prototype.getUniformLocations = function() {
     this.bambooSpecularID = gl.getUniformLocation(this.program, "bambooSpecular");
     this.maskID = gl.getUniformLocation(this.program, "mask");
     this.treeID = gl.getUniformLocation(this.program, "billboardTexture");
-    this.foggyID = gl.getUniformLocation(this.program, "foggy");
 
     var uniformName;
     for (i = 0; i < MAX_LIGHTS; i++) {
@@ -91,9 +89,6 @@ Shader.prototype.unUse = function() {
 }
 
 
-Shader.prototype.loadFoggy = function(value) {
-   gl.uniform1i(this.foggyID, value);
-}
 Shader.prototype.loadProjViewModelMatrix = function(matrix) {
     gl.uniformMatrix4fv(this.projViewModelID, false, matrix);
 }

@@ -16,8 +16,7 @@ function Butter(position, shader) {
 	this.center;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/butter.txt");
+	this.model = models.butter;
 	this.shader = shader;
 	
 	this.updateHitbox();
@@ -31,11 +30,11 @@ Butter.prototype.draw = function() {
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	this.shader.loadMatrices();
 
-	var arrayLength = this.model.meshes.length;
-	for (var i = 0; i < arrayLength; i++) {
-		this.shader.loadMaterial[this.model.meshes[i].material];
-		this.model.meshes[i].draw(this.shader);
-	}
+	
+	this.shader.loadMaterial(this.model.meshes[0].material);
+	//console.log(this.model.meshes[0].material);
+	this.model.meshes[0].draw(this.shader);
+	
 
 	gameManager.matrices.popMatrix(modelID);
 }

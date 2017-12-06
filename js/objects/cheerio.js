@@ -16,8 +16,7 @@ function Cheerio(position, shader) {
 	this.center;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/cheerio.txt");
+	this.model = models.cheerio;
 	this.shader = shader;
 	
 	this.updateHitbox();

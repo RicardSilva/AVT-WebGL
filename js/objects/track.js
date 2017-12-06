@@ -15,8 +15,7 @@ function Track(position, shader) {
 	this.orangeStartingSpeed = 125;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/track.txt");
+	this.model = models.track;
 	this.shader = shader;
 }
 
@@ -101,30 +100,34 @@ Track.prototype.draw = function() {
 
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
-		this.shader.loadMaterial[this.model.meshes[i].material];
+		this.shader.loadMaterial(this.model.meshes[i].material);
 		this.model.meshes[i].draw(this.shader);
 	}
 	
 	this.shader.disableTextures();
-	gl.bindTexture(gl.TEXTURE_2D, 0);
+	//gl.bindTexture(gl.TEXTURE_2D, 0);
 
 	this.shader.loadMaterial(this.cheerios[0].model.meshes[0].material);
 	for (cheerio of this.cheerios)
 		cheerio.draw();
 	for (butter of this.butters)
 		butter.draw();
+	
 	for (orange of this.oranges) {
 		orange.draw();
-	}/*
+	}
+	
+	/*
 	for (auto lamp : lamps) {
 		lamp->draw();
 	}
 	for (auto border : borders) {
 		border->draw();
-	}*/
+	}
 
 	//finishLine->draw();
 	//billboard->draw(cam);
+	*/
 
 	gameManager.matrices.popMatrix(modelID);
 }

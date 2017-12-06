@@ -32,8 +32,31 @@ GameManager.prototype.init = function() {
 GameManager.prototype.initShaders = function() {
     this.shader = new Shader("shader-vs", "shader-fs");
 }
-
+var models = {}
 GameManager.prototype.initMeshes = function() {
+	var m = new ObjModel();
+	m.loadFromFile(m, "../resources/objModels/cheerio.txt");
+	models.cheerio = m;
+
+	var m2 = new ObjModel();
+	m2.loadFromFile(m2, "../resources/objModels/butter.txt");
+	models.butter = m2;
+
+	var m3 = new ObjModel();
+	m3.loadFromFile(m3, "../resources/objModels/car.txt");
+	models.car = m3;
+
+	var m4 = new ObjModel();
+	m4.loadFromFile(m4, "../resources/objModels/track.txt");
+	models.track = m4;
+
+	var m5 = new ObjModel();
+	m5.loadFromFile(m5, "../resources/objModels/lamp.txt");
+	models.track = m5;
+
+	var m6 = new ObjModel();
+	m6.loadFromFile(m6, "../resources/objModels/orange.txt");
+	models.orange = m6;
 }
 
 GameManager.prototype.initTextures = function(urls, callback) {
@@ -100,6 +123,7 @@ GameManager.prototype.initCameras = function() {
 
 GameManager.prototype.initLights = function() {
 }
+
 
 GameManager.prototype.initGameObjects = function() {
 	
@@ -328,16 +352,16 @@ GameManager.prototype.keyDown = function(key) {
 	case 49:
 		this.restart();
 		break;
-	case 39:
+	case 39: //right arrow
 		this.car.turnRight = true;
 		break;
-	case 37:
+	case 37: //left arrow 
 		this.car.turnLeft = true;
 		break;
-	case 38:
+	case 38: //up arrow
 		this.car.goForward = true;
 		break;
-	case 40:
+	case 40: //down arrow
 		this.car.goBack = true;
 		break;
 	/*case 112:
