@@ -70,6 +70,10 @@ GameManager.prototype.initMeshes = function() {
 	var m7 = new ObjModel();
 	m7.loadFromFile(m7, "../resources/objModels/cube.txt");
 	models.cube = m7;
+	
+	var m8 = new ObjModel();
+	m8.loadFromFile(m8, "../resources/objModels/billboard.txt");
+	models.billboard = m8;
 }
 
 GameManager.prototype.initTextures = function(urls, callback) {
@@ -133,8 +137,6 @@ GameManager.prototype.initCameras = function() {
 	this.activeCamera = carCamera;
 }
 
-
-
 GameManager.prototype.initGameObjects = function() {
 	
 	this.track = new Track(vec3.fromValues(0,-0.1,0), this.shader);
@@ -150,7 +152,6 @@ GameManager.prototype.onSpawnOrangeTimer = function() {
 GameManager.prototype.onIncreaseOrangeSpeedTimer = function() {
 	this.track.increaseOrangeSpeed();
 }
-
 
 GameManager.prototype.update = function(timeStep) {
    this.car.update(timeStep);
@@ -180,7 +181,7 @@ GameManager.prototype.draw = function() {
     this.track.drawLights();
     this.car.drawLights();
 
-    this.track.draw(/*this.activeCamera.eye*/);
+    this.track.draw(this.activeCamera.eye);
     this.car.draw();
 
     if(this.activeCamera == this.cameras[3])

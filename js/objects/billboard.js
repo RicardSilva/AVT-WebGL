@@ -5,8 +5,7 @@ function Billboard(position, shader) {
 	this.isActive = true;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/billboard.txt");
+	this.model = models.billboard;
 	this.shader = shader;
 }
 
@@ -18,7 +17,7 @@ Billboard.prototype.draw = function(cam) {
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	mat4.scale(modelMatrix, modelMatrix, [3.5, 3.5, 3.5]);
 	
-	var pos = [position[0] , position[1], position[2]];
+	var pos = [this.position[0] , this.position[1], this.position[2]];
 	var camPos = [cam[0] , cam[1], cam[2]];
 	
 	this.l3dBillboardCylindricalBegin(camPos, pos);
@@ -59,7 +58,7 @@ Billboard.prototype.mathsCrossProduct = function(a, b) {
 }
 
 Billboard.prototype.mathsNormalize = function(v) {
-	var d = (sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
+	var d = (Math.sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
 	v[0] = v[0] / d;
 	v[1] = v[1] / d;
 	v[2] = v[2] / d;
@@ -75,12 +74,12 @@ Billboard.prototype.l3dBillboardCylindricalBegin = function(cam, worldPos) {
 	objToCamProj[1] = 0;
 	objToCamProj[2] = cam[2] - worldPos[2];
 	
-	mathsNormalize(objToCamProj);
+	this.mathsNormalize(objToCamProj);
 	
-	var upAux = mathsCrossProduct(lookAt, objToCamProj);
+	var upAux = this.mathsCrossProduct(lookAt, objToCamProj);
 	
-	var angleCosine = mathsInnerProduct(lookAt, objToCamProj);
+	var angleCosine = this.mathsInnerProduct(lookAt, objToCamProj);
 	
 	if ((angleCosine < 0.99990) && (angleCosine > -0.9999))
-		mat4.rotate(modelMatrix, modelMatrix, acos(angleCosine) * 180 / 3.14, upAux);
+		mat4.rotate(modelMatrix, modelMatrix, Math.acos(angleCosine) * 180 / 3.14, upAux);
 }

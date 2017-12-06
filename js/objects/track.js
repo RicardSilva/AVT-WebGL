@@ -30,7 +30,7 @@ function Track(position, shader) {
 
 	this.directionalLight = new DirectionalLight([-1, -1, 0, 0], [1, 1, 1], 0.5, this.shader);
 	
-	//this.billboard = new Billboard([0, -10, 0], this.shader);
+	this.billboard = new Billboard([0, -10, 0], this.shader);
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -140,9 +140,8 @@ Track.prototype.draw = function(cam) {
 	}
 
 	//finishLine->draw();
-	//this.billboard.draw(cam);
+	this.billboard.draw(cam);
 	
-
 	gameManager.matrices.popMatrix(modelID);
 }
 
