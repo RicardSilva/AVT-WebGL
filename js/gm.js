@@ -205,7 +205,6 @@ GameManager.prototype.draw = function() {
 		this.rain.draw();
 }
 
-
 GameManager.prototype.drawMirrorReflection = function() {
     gl.clear(gl.DEPTH_BUFFER_BIT);
 	gl.enable(gl.STENCIL_TEST);
@@ -241,8 +240,6 @@ GameManager.prototype.drawMirrorReflection = function() {
 GameManager.prototype.drawFlare = function() {
     
 }
-
-
 
 GameManager.prototype.resetCar = function() {
     this.car.angle = 0;
@@ -298,8 +295,6 @@ GameManager.prototype.processCarObstacleCollision = function(obj) {
 	this.computePositionAfterCollision(this.car, obj);
 }
 
-
-
 GameManager.prototype.processCarCollisions = function() {
     for (cheerio of this.track.cheerios){
 		if(this.checkCollision(this.car, cheerio))
@@ -328,8 +323,6 @@ GameManager.prototype.processCarCollisions = function() {
 	
 	//TODO finishline
 }
-
-
 
 GameManager.prototype.processObsCollisions = function() {
     for (cheerio of this.track.cheerios){

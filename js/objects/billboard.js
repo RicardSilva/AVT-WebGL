@@ -69,7 +69,7 @@ Billboard.prototype.mathsNormalize = function(v) {
 Billboard.prototype.l3dBillboardCylindricalBegin = function(cam, worldPos) {
 	var lookAt = [0, 0, 1];
 	
-	var objToCamProj = [0, 0, 0];
+	var objToCamProj = [];
 	objToCamProj[0] = cam[0] - worldPos[0];
 	objToCamProj[1] = 0;
 	objToCamProj[2] = cam[2] - worldPos[2];
@@ -81,5 +81,5 @@ Billboard.prototype.l3dBillboardCylindricalBegin = function(cam, worldPos) {
 	var angleCosine = this.mathsInnerProduct(lookAt, objToCamProj);
 	
 	if ((angleCosine < 0.99990) && (angleCosine > -0.9999))
-		mat4.rotate(modelMatrix, modelMatrix, Math.acos(angleCosine) * 180 / 3.14, upAux);
+		mat4.rotate(modelMatrix, modelMatrix, Math.acos(angleCosine)/* * 180 / 3.14*/, upAux);
 }

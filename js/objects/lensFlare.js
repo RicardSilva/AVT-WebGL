@@ -66,7 +66,7 @@ Flare.prototype.draw = function(sunPosition) {
 	
 		alpha = this.alphas[i] * distanceScale;
 
-		gl.activeTexture(gl.TEXTURE0);
+		gl.activeTexture(gl.TEXTURE2);
 		gl.bindTexture(gl.TEXTURE_2D, textures[i+2]);
 
 		this.shader.loadTextureMode(2);
