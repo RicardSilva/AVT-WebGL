@@ -152,6 +152,7 @@ GameManager.prototype.initGameObjects = function() {
 	
 	this.track = new Track(vec3.fromValues(0,-0.1,0), this.shader);
 	this.track.loadFromFile(this.track, "../resources/tracks/track.txt");
+	this.track.createFinishingLine();
 	
 	this.car = new Car(vec3.clone(this.track.getStartingPosition()), this.shader);
 	

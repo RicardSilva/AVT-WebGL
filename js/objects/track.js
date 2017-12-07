@@ -32,8 +32,7 @@ function Track(position, shader) {
 	
 	this.billboard = new Billboard([0, -10, 0], this.shader);
 	
-	var linePos = [this.startingPosition[0]+45, this.startingPosition[1], this.startingPosition[2]+15];
-	this.finishLine = new FinishLine(linePos, 20, 50, this.shader);
+	this.finishLine;
 }
 
 Track.prototype.loadFromFile = function(track, file) {
@@ -89,6 +88,11 @@ Track.prototype.loadFromFile = function(track, file) {
 
 Track.prototype.getStartingPosition = function() {
 	return this.startingPosition;
+}
+
+Track.prototype.createFinishingLine = function() {
+	var linePos = [this.startingPosition[0]+45, this.startingPosition[1], this.startingPosition[2]+15];
+	this.finishLine = new FinishLine(linePos, 20, 50, this.shader);
 }
 
 Track.prototype.draw = function(cam) {
