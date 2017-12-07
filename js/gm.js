@@ -212,8 +212,9 @@ GameManager.prototype.draw = function() {
 	if(this.raining)
 		this.rain.draw();
 	
-	if (day){
-	//this.sun.draw();}
+	if (this.day){
+	//this.sun.draw();
+	}
 	
 	
 }
@@ -459,32 +460,7 @@ GameManager.prototype.keyDown = function(key) {
 			}
 		}
 		break;
-	case 113:
-		/*foggy = !foggy;
-		if (foggy) {
-			fog->on();
-			if (day) {
-				if (raining)
-					setDayRainingFoggyColor();
-				else
-					setDayFoggyColor();
-			}
-			else
-				setNightFoggyColor();
-		}
-		else {
-			fog->off();
-			if (day) {
-				if (raining)
-					setDayRainingColor();
-				else
-					setDayClearColor();
-			}
-			else
-				setNightColor();
-		}
-
-		break;*/
+	*/
 	case 114:
 		//lensFlaring = !lensFlaring;
 		break;

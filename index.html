@@ -75,13 +75,14 @@
 			uniform bool useTextures;
 			uniform int textureMode;
 			uniform Material mat;
+			uniform vec4 matDiffuse;
 
 			uniform sampler2D woodDiffuse;
 			uniform sampler2D woodSpecular;
 			uniform sampler2D bambooDiffuse;
 			uniform sampler2D bambooSpecular;
 			uniform sampler2D mask;
-			uniform sampler2D billboardtexture;
+			uniform sampler2D billboardTexture;
 
 
 			vec4 calcDirLight(Light light, vec3 normal, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular) {
@@ -197,14 +198,14 @@
 						materialTransparency = 1.0;
 					}
 					else if (textureMode == 1) {
-						vec4 color = texture2D(billboardtexture, exTexCoord);
+						vec4 color = texture2D(billboardTexture, exTexCoord);
 						materialDiffuse = vec3(color);
 						outColor += vec4(materialDiffuse * 0.1, 1);
 						materialSpecular = vec3(0.4, 0.6, 0.4);
 						materialTransparency = color.w;
 					}
 					else if (textureMode == 2) {
-						vec4 color = texture2D(billboardtexture, exTexCoord);
+						vec4 color = texture2D(billboardTexture, exTexCoord);
 						materialDiffuse = vec3(color);
 						outColor += vec4(materialDiffuse * 0.1, 1);
 						materialSpecular = vec3(0.05, 0.05, 0.05);

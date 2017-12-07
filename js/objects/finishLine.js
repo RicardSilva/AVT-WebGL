@@ -27,11 +27,10 @@ FinishLine.prototype.draw = function() {
 	this.shader.enableTextures();
 	this.shader.loadTextureMode(2);
 
-	gl.activeTexture(gl.TEXTURE0);
+	gl.activeTexture(gl.TEXTURE12);
 	gl.bindTexture(gl.TEXTURE_2D, textures[12]);
 
-	this.shader.loadTree(1);
-	this.shader.loadMatDiffuse(vec4.fromValues(1, 1, 1, 1));
+	this.shader.loadTree(12);
 	
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {

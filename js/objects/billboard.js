@@ -31,7 +31,6 @@ Billboard.prototype.draw = function(cam) {
 	gl.bindTexture(gl.TEXTURE_2D, textures[0]);
 	
 	this.shader.loadTree(0);
-	this.shader.loadMatDiffuse(vec4.fromValues(0, 0.2, 0, 1));
 	
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {

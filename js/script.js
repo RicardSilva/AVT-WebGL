@@ -34,6 +34,7 @@ function drawText() {
     ctx.fillText(text, 800, 80);
     ctx.strokeText(text, 800, 80);
     ctx.textAlign = "center";
+    ctx.font="35px Verdana";
     if (gameManager.gameOver) {
         ctx.fillText("Game Over! Press R to restart the game", 500, 350);
         ctx.strokeText("Game Over! Press R to restart the game", 500, 350);
