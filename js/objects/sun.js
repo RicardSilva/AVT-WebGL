@@ -5,8 +5,7 @@ function Sun(position, shader) {
 	this.isActive = true;
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/Sun.txt");
+	this.model = models.flare;
 	this.shader = shader;
 }
 

@@ -9,8 +9,7 @@ function Flare(shader) {
 				vec4.create(1,1,1,1)];
 	
 	//model
-	this.model = new ObjModel();
-	this.model.loadFromFile(this.model, "../resources/objModels/flare.txt");
+	this.model = models.flare;
 	this.shader = shader;
 }
 
@@ -53,7 +52,7 @@ Flare.prototype.draw = function(sunPosition) {
 	var height = 0;
 
 	for (var i = 0; i < this.flare_elements; i++) {
-		elementDist =- 6 + i * 3.0f;
+		elementDist =- 6 + i * 3;
 		px = (1 - elementDist) * sunCoords.x + elementDist * dx;
 		py = (1 - elementDist) * sunCoords.y + elementDist * dy;
 	
