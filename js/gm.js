@@ -23,6 +23,11 @@ function GameManager(width, height) {
 	this.sun;
 	this.flare;
 
+	// animation variables
+	this.recording      = false;
+	this.playing        = false;
+	this.animationVariables = {};
+
     this.init();
 }
 
@@ -244,7 +249,7 @@ GameManager.prototype.drawMirrorReflection = function() {
 	this.track.drawLights();
 	this.car.drawLights();
 
-	this.track.draw();
+	this.track.draw(this.activeCamera.eye);
 	this.car.draw();
 
 
