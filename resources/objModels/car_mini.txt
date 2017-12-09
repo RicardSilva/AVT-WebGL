@@ -2965,7 +2965,7 @@ ka 0.4 0.4 0.4
 kd 0.2 0.31 0.306
 ks 2 2 2
 ns 780.392
-d 1
+d 0.34
 endmaterial
 endmesh
 newmesh

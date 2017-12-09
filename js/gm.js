@@ -25,8 +25,9 @@ function GameManager(width, height) {
 
 	// animation variables
 	this.recording      = false;
-	this.playing        = false;
-	this.animationVariables = {};
+	this.playing        = true;
+	this.animationVariables = [];
+	this.animationFrameCounter = 0;
 
     this.init();
 }
@@ -34,14 +35,21 @@ function GameManager(width, height) {
 GameManager.prototype.init = function() {
     this.initShaders();
     this.initMeshes();
-    this.initTextures(["../resources/textures/christmastree.gif", "../resources/textures/particle2.gif",
-				"../resources/textures/lensFlare/flare2.gif", "../resources/textures/lensFlare/flare3.gif",
-				"../resources/textures/lensFlare/flare4.gif", "../resources/textures/lensFlare/flare1.gif",
-				"../resources/textures/lensFlare/flare6.gif", "../resources/textures/track/wood_diffuse.gif",
-				"../resources/textures/track/wood_specular.gif", "../resources/textures/track/bamboo_diffuse.gif",
-				"../resources/textures/track/bamboo_specular.gif", "../resources/textures/track/mask.gif",
-				"../resources/textures/finish.gif", "../resources/textures/lensFlare/flare5.gif"], 
-				createTextures);
+    this.initTextures(["./resources/textures/christmastree.gif", 
+    				"./resources/textures/particle2.gif",
+					"./resources/textures/lensFlare/flare2.gif", 
+					"./resources/textures/lensFlare/flare3.gif",
+					"./resources/textures/lensFlare/flare4.gif", 
+					"./resources/textures/lensFlare/flare1.gif",
+					"./resources/textures/lensFlare/flare6.gif", 
+					"./resources/textures/track/wood_diffuse.gif",
+					"./resources/textures/track/wood_specular.gif", 
+					"./resources/textures/track/bamboo_diffuse.gif",
+					"./resources/textures/track/bamboo_specular.gif", 
+					"./resources/textures/track/mask.gif",
+					"./resources/textures/finish.gif", 
+					"./resources/textures/lensFlare/flare5.gif"], 
+					createTextures);
     this.initCameras();
     this.initGameObjects();
     document.getElementById("loadingtext").textContent = "";
@@ -54,47 +62,47 @@ GameManager.prototype.initShaders = function() {
 var models = {}
 GameManager.prototype.initMeshes = function() {
 	var m = new ObjModel();
-	m.loadFromFile(m, "../resources/objModels/cheerio.txt");
+	m.loadFromFile(m, cheerio_data);
 	models.cheerio = m;
 
 	var m2 = new ObjModel();
-	m2.loadFromFile(m2, "../resources/objModels/butter.txt");
+	m2.loadFromFile(m2, butter_data);
 	models.butter = m2;
 
 	var m3 = new ObjModel();
-	m3.loadFromFile(m3, "../resources/objModels/car.txt");
+	m3.loadFromFile(m3, car_data);
 	models.car = m3;
 
 	var m4 = new ObjModel();
-	m4.loadFromFile(m4, "../resources/objModels/track.txt");
+	m4.loadFromFile(m4, track_data);
 	models.track = m4;
 
 	var m5 = new ObjModel();
-	m5.loadFromFile(m5, "../resources/objModels/lamp.txt");
+	m5.loadFromFile(m5, lamp_data);
 	models.lamp = m5;
 
 	var m6 = new ObjModel();
-	m6.loadFromFile(m6, "../resources/objModels/orange.txt");
+	m6.loadFromFile(m6, orange_data);
 	models.orange = m6;
 
 	var m7 = new ObjModel();
-	m7.loadFromFile(m7, "../resources/objModels/cube.txt");
+	m7.loadFromFile(m7, cube_data);
 	models.cube = m7;
 	
 	var m8 = new ObjModel();
-	m8.loadFromFile(m8, "../resources/objModels/billboard.txt");
+	m8.loadFromFile(m8, billboard_data);
 	models.billboard = m8;
 	
 	var m9 = new ObjModel();
-	m9.loadFromFile(m9, "../resources/objModels/finish.txt");
+	m9.loadFromFile(m9, finish_data);
 	models.finishline = m9;
 	
 	var m10 = new ObjModel();
-	m10.loadFromFile(m10, "../resources/objModels/particle.txt");
+	m10.loadFromFile(m10, particle_data);
 	models.particle = m10;
 	
 	var m11 = new ObjModel();
-	m11.loadFromFile(m11, "../resources/objModels/flare.txt");
+	m11.loadFromFile(m11, flare_data);
 	models.flare = m11;
 }
 
@@ -162,7 +170,7 @@ GameManager.prototype.initCameras = function() {
 GameManager.prototype.initGameObjects = function() {
 	
 	this.track = new Track(vec3.fromValues(0,-0.1,0), this.shader);
-	this.track.loadFromFile(this.track, "../resources/tracks/track.txt");
+	this.track.loadFromFile(this.track, track_map);
 	this.track.createFinishingLine();
 	
 	this.car = new Car(vec3.clone(this.track.getStartingPosition()), this.shader);
@@ -181,16 +189,45 @@ GameManager.prototype.onIncreaseOrangeSpeedTimer = function() {
 }
 
 GameManager.prototype.update = function(timeStep) {
-   this.car.update(timeStep);
-   this.track.update(timeStep);
-   
-   this.processCarCollisions();
-   this.processObsCollisions();
-   
-   //compute cameras position
-   this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
-   this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
-   this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+	if(!this.playing) {
+		this.car.update(timeStep);
+	  	this.track.update(timeStep);
+	   
+		this.processCarCollisions();
+	   	this.processObsCollisions();
+	   
+		//compute cameras position
+		this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
+		this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
+		this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+	}
+	else {
+		var animationFrame = record[this.animationFrameCounter++];
+		vec3.copy(this.car.position, animationFrame[0]);
+		this.car.angle = animationFrame[1];
+		this.car.updateLights();
+		this.track.update(timeStep);
+
+	   	this.processObsCollisions();
+
+		this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
+		this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
+		this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+
+		//change cameras
+		if(Math.random() > 0.999) {
+			this.activeCamera = this.cameras[Math.round(Math.random() * 4)];
+		}
+		if(this.animationFrameCounter > record.length - 1) 
+			this.animationFrameCounter = 0;
+	}
+	if(this.recording) {
+		var animationFrame = {};
+		animationFrame.carPosition = vec3.clone(this.car.position);
+		animationFrame.carAngle = this.car.angle; 
+		this.animationVariables.push(animationFrame);
+	}
+
 }
 
 GameManager.prototype.draw = function() {
@@ -272,7 +309,7 @@ GameManager.prototype.resetCar = function() {
 }
 
 GameManager.prototype.restartGame = function() {
-    this.track.restart(this.track, "../resources/tracks/track.txt");
+    this.track.restart(this.track, track_map);
 	this.car.restart(this.track.startingPosition);
 	this.lives = 5;
 	this.pause = false;
@@ -377,13 +414,25 @@ GameManager.prototype.setNightColor = function() {
 	gl.clearColor(0.2, 0.2, 0.2, 1);
 }
 
+GameManager.prototype.exportAnimation = function() {
+	var s = "[";
+	for(i = 0; i < this.animationVariables.length; i++) {
+		s += "[[" + this.animationVariables[i].carPosition + "]," + this.animationVariables[i].carAngle + "],\n";
+	}
+	s = s.slice(0, -1);
+	s += "]";
+	console.log(s);
+}
+
 GameManager.prototype.keyDown = function(key) {
 	switch (key) {
 	
+	case 90:
+		this.exportAnimation();
+		break;
 	case 49:
 		this.activeCamera = this.cameras[0];
 		break;
-	break;
 	case 50:
 		this.activeCamera = this.cameras[1];
 		break;

@@ -8,8 +8,8 @@ function Car(position, shader) {
 	this.goForward = false;
 	this.goBack = false;
 	
-	this.angleInc = 3;
-	this.maxSpeed = 325;
+	this.angleInc = 1.5;
+	this.maxSpeed = 250;
 	this.maxBackwardsSpeed = -175;
 
 	this.acceleration = 150;
@@ -105,8 +105,8 @@ Car.prototype.drawMirror = function() {
 	mat4.rotateY(modelMatrix, modelMatrix, (this.angle * 3.14 / 180), [0, 1, 0]);
 	this.shader.loadMatrices();
 
-	this.shader.loadMaterial(this.model.meshes[0].material);
-	this.model.meshes[0].draw(this.shader);
+	this.shader.loadMaterial(this.model.meshes[9].material);
+	this.model.meshes[9].draw(this.shader);
 
 	gameManager.matrices.popMatrix(modelID);
 }

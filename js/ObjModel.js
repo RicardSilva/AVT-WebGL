@@ -59,12 +59,12 @@ Mesh.prototype.draw = function(shader) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.VertexNormalBuffer);
     gl.vertexAttribPointer(shader.vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.VertexIndexBuffer);
-    gl.drawElements(gl.TRIANGLES, this.VertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.VertexIndexBuffer);
+   // gl.drawElements(gl.TRIANGLES, this.VertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
    
    
     
-    //gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
+    gl.drawArrays(gl.TRIANGLES, 0, this.VertexPositionBuffer.numItems);
 }
 
 
@@ -75,90 +75,79 @@ function ObjModel () {
 }
 
 
-ObjModel.prototype.loadFromFile = function(objModel, file)
+ObjModel.prototype.loadFromFile = function(objModel, data)
 {
 	
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-            	var currentMesh = new Mesh();
-				var currentMaterial = new Material();
-				var lines = rawFile.responseText.split('\n');
-				for(var counter = 0; counter < lines.length; counter++){
-			     	var line = lines[counter];
-			      	var tokens = line.split(' ');
-			      	if(tokens[0].trim() == "newmesh") {
-			      		currentMesh = new Mesh();
-			      	}
-			     	else if (tokens[0].trim() == "p") {
-				      	currentMesh.positions.push(Number(tokens[1]));
-				      	currentMesh.positions.push(Number(tokens[2]));
-				      	currentMesh.positions.push(Number(tokens[3]));
-				      	currentMesh.positions.push(Number(tokens[4]));
-			      	}
-				    else if (tokens[0].trim() == "n") {
-				      	currentMesh.normals.push(Number(tokens[1]));
-				      	currentMesh.normals.push(Number(tokens[2]));
-				      	currentMesh.normals.push(Number(tokens[3]));
-				    }
-				    else if (tokens[0].trim() == "t") {
-				      	currentMesh.textCoords.push(Number(tokens[1]));				      	
-				      	currentMesh.textCoords.push(Number(tokens[2]));
-				    }
-				    else if (tokens[0].trim() == "i") {
-				      	currentMesh.indices.push(Number(tokens[1]));
-				    }
-				    else if (tokens[0].trim() == "endmesh") {
-				    	currentMesh.buildBuffers();
-				    	objModel.meshes.push(currentMesh);
-				    }
-				    else if(tokens[0].trim() == "newmaterial") {
-				    	currentMaterial = new Material();
-				    }
-				    else if(tokens[0].trim() == "ka") {
-				    	var ka = [];
+   
+	var currentMesh = new Mesh();
+	var currentMaterial = new Material();
+	var lines = data.split('\n');
+	for(var counter = 0; counter < lines.length; counter++){
+     	var line = lines[counter];
+      	var tokens = line.split(' ');
+      	if(tokens[0].trim() == "newmesh") {
+      		currentMesh = new Mesh();
+      	}
+     	else if (tokens[0].trim() == "p") {
+	      	currentMesh.positions.push(Number(tokens[1]));
+	      	currentMesh.positions.push(Number(tokens[2]));
+	      	currentMesh.positions.push(Number(tokens[3]));
+	      	currentMesh.positions.push(Number(tokens[4]));
+      	}
+	    else if (tokens[0].trim() == "n") {
+	      	currentMesh.normals.push(Number(tokens[1]));
+	      	currentMesh.normals.push(Number(tokens[2]));
+	      	currentMesh.normals.push(Number(tokens[3]));
+	    }
+	    else if (tokens[0].trim() == "t") {
+	      	currentMesh.textCoords.push(Number(tokens[1]));				      	
+	      	currentMesh.textCoords.push(Number(tokens[2]));
+	    }
+	    else if (tokens[0].trim() == "i") {
+	      	currentMesh.indices.push(Number(tokens[1]));
+	    }
+	    else if (tokens[0].trim() == "endmesh") {
+	    	currentMesh.buildBuffers();
+	    	objModel.meshes.push(currentMesh);
+	    }
+	    else if(tokens[0].trim() == "newmaterial") {
+	    	currentMaterial = new Material();
+	    }
+	    else if(tokens[0].trim() == "ka") {
+	    	var ka = [];
 
-				      	ka.push(Number(tokens[1]));
-				      	ka.push(Number(tokens[2]));
-				      	ka.push(Number(tokens[3]));
+	      	ka.push(Number(tokens[1]));
+	      	ka.push(Number(tokens[2]));
+	      	ka.push(Number(tokens[3]));
 
-				    	currentMaterial.Ka = ka;
-				    }
-				    else if(tokens[0].trim() == "kd") {
-				    	var kd = [];
-				      	kd.push(Number(tokens[1]));
-				      	kd.push(Number(tokens[2]));
-				      	kd.push(Number(tokens[3]));
-				    	currentMaterial.Kd = kd;
-				    }
-				    else if(tokens[0].trim() == "ks") {
-				    	var ks = [];
-				      	ks.push(Number(tokens[1]));
-				      	ks.push(Number(tokens[2]));
-				      	ks.push(Number(tokens[3]));
-				    	currentMaterial.Ks = ks;
-				    }
-				    else if(tokens[0].trim() == "ns") {
-				    	currentMaterial.Ns = Number(tokens[1]);
-				    }
-				    else if(tokens[0].trim() == "d") {
-				    	currentMaterial.d = Number(tokens[1]);
-				    }
-				    else if(tokens[0].trim() == "endmaterial") {
-				    	currentMesh.material = currentMaterial;
-				    }
+	    	currentMaterial.Ka = ka;
+	    }
+	    else if(tokens[0].trim() == "kd") {
+	    	var kd = [];
+	      	kd.push(Number(tokens[1]));
+	      	kd.push(Number(tokens[2]));
+	      	kd.push(Number(tokens[3]));
+	    	currentMaterial.Kd = kd;
+	    }
+	    else if(tokens[0].trim() == "ks") {
+	    	var ks = [];
+	      	ks.push(Number(tokens[1]));
+	      	ks.push(Number(tokens[2]));
+	      	ks.push(Number(tokens[3]));
+	    	currentMaterial.Ks = ks;
+	    }
+	    else if(tokens[0].trim() == "ns") {
+	    	currentMaterial.Ns = Number(tokens[1]);
+	    }
+	    else if(tokens[0].trim() == "d") {
+	    	currentMaterial.d = Number(tokens[1]);
+	    }
+	    else if(tokens[0].trim() == "endmaterial") {
+	    	currentMesh.material = currentMaterial;
+	    }
 
-			    }
-
-            }
-        }
+			    
     }
-    rawFile.send(null);
 }
 
 

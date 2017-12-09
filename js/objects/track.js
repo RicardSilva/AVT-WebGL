@@ -35,55 +35,40 @@ function Track(position, shader) {
 	this.finishLine;
 }
 
-Track.prototype.loadFromFile = function(track, file) {
-	var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-            	var x = 0;
-				var z = 100;
-				var c = 0;
-            	var data = rawFile.responseText;
-            	while (x < 140 && z > 0) {
-		
-					
-					if (data[c] == 0) {
-						// do nothing
-					}
-					else if (data[c] == 1) {
-						//new cheerio
-						track.cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
-					}
-					else if (data[c] == 2) {
-						//new candle
-						track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
-					}
-					else if (data[c] == 3) {
-						//new butter
-						track.butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
-					}
-					else if (data[c] == 4) {
-						track.startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));
-					}
-					x++;
-					c++;
-					if (x == 140) {
-						x = 0;
-						c++;
-						c++;
-						z--;
-				}
-	}
-			    
+Track.prototype.loadFromFile = function(track, data) {
+	
+	var x = 0;
+	var z = 100;
+	var c = 0;
+	while (x < 140 && z > 0) {
 
-            }
-        }
-    }
-    rawFile.send(null);
+		
+		if (data[c] == 0) {
+			// do nothing
+		}
+		else if (data[c] == 1) {
+			//new cheerio
+			track.cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+		}
+		else if (data[c] == 2) {
+			//new candle
+			track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+		}
+		else if (data[c] == 3) {
+			//new butter
+			track.butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+		}
+		else if (data[c] == 4) {
+			track.startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));
+		}
+		x++;
+		c++;
+		if (x == 140) {
+			x = 0;
+			c++;
+			z--;
+		}
+	}
 }
 
 Track.prototype.getStartingPosition = function() {
@@ -183,54 +168,41 @@ Track.prototype.restart = function(track, file) {
 	this.orangeCounter = 0;
 	this.orangeStartingSpeed = 125;
 
-	var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-            	var x = 0;
-				var z = 100;
-				var c = 0;
-            	var data = rawFile.responseText;
-            	while (x < 140 && z > 0) {
 		
-					
-					if (data[c] == 0) {
-						// do nothing
-					}
-					else if (data[c] == 1) {
-						//new cheerio
-						track.cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
-					}
-					else if (data[c] == 2) {
-						//new candle
-						track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
-					}
-					else if (data[c] == 3) {
-						//new butter
-						track.butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
-					}
-					else if (data[c] == 4) {
-						track.startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));
-					}
-					x++;
-					c++;
-					if (x == 140) {
-						x = 0;
-						c++;
-						c++;
-						z--;
-				}
-	}
-			    
+	var x = 0;
+	var z = 100;
+	var c = 0;
+	var data = rawFile.responseText;
+	while (x < 140 && z > 0) {
 
-            }
-        }
-    }
-    rawFile.send(null);
+		
+		if (data[c] == 0) {
+			// do nothing
+		}
+		else if (data[c] == 1) {
+			//new cheerio
+			track.cheerios.push(new Cheerio(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+		}
+		else if (data[c] == 2) {
+			//new candle
+			track.lamps.push(new Lamp(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+		}
+		else if (data[c] == 3) {
+			//new butter
+			track.butters.push(new Butter(vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500)), track.shader));
+		}
+		else if (data[c] == 4) {
+			track.startingPosition = vec3.fromValues((x * 10 - 700), 0, -(z * 10 - 500));
+		}
+		x++;
+		c++;
+		if (x == 140) {
+			x = 0;
+			c++;
+			z--;
+		}
+	}
+	
 }
 
 Track.prototype.attemptToSpawnOrange = function() {
