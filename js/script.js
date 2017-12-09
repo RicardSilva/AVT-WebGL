@@ -27,12 +27,33 @@ function drawText() {
     ctx.font="25px Verdana";
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'black';
-    var text = "Score: " + gameManager.score.toFixed(0);
-    ctx.fillText(text, 800, 40);
-    ctx.strokeText(text, 800, 40);
-    text = "Lives left: " + gameManager.lives;
-    ctx.fillText(text, 800, 80);
-    ctx.strokeText(text, 800, 80);
+
+    
+    var currentLapTime = gameManager.currentLapTime;
+    var bestLapTime = gameManager.bestLapTime;
+    var best_min = (bestLapTime / 1000) / 60;
+    var best_sec = (bestLapTime / 1000) % 60;
+    var best_mili = bestLapTime % 1000;
+    var curr_min = (currentLapTime / 1000) / 60;
+    var curr_sec = (currentLapTime / 1000) % 60;
+    var curr_mili = currentLapTime % 1000;
+    var text;
+
+    text = "Current Lap: " + curr_min.toFixed(0) + ":" + curr_sec.toFixed(0) + ":" + curr_mili.toFixed(0);
+    
+    ctx.fillText(text, 700, 40);
+    ctx.strokeText(text, 700, 40);
+    if(gameManager.atLeastOneLap) {
+        text = "Best Lap: " + best_min.toFixed(0) + ":" + best_sec.toFixed(0) + ":" + best_mili.toFixed(0);
+    }
+    else {
+        text = "    Best Lap: ---:---:---" ;
+    }   
+    ctx.fillText(text, 700, 80);
+    ctx.strokeText(text, 700, 80);
+    text = "    Lives left: " + gameManager.lives;
+    ctx.fillText(text, 700, 120);
+    ctx.strokeText(text, 700, 120);
     ctx.textAlign = "center";
     ctx.font="35px Verdana";
     if (gameManager.gameOver) {

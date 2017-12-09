@@ -161,7 +161,7 @@ Track.prototype.update = function(timeStep) {
 	}
 }
 
-Track.prototype.restart = function(track, file) {
+Track.prototype.restart = function(track, data) {
 	this.cheerios.length = 0;
 	this.butters.length = 0;
 	this.oranges.length = 0;
@@ -172,7 +172,7 @@ Track.prototype.restart = function(track, file) {
 	var x = 0;
 	var z = 100;
 	var c = 0;
-	var data = rawFile.responseText;
+	
 	while (x < 140 && z > 0) {
 
 		

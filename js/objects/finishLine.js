@@ -18,9 +18,8 @@ function FinishLine(position, width, length, shader) {
 
 FinishLine.prototype.draw = function() {
 	gameManager.matrices.pushMatrix(modelID);
-	//loadIdentity(MODEL);
+
 	mat4.translate(modelMatrix, modelMatrix, this.position);
-	//glDisable(GL_DEPTH_TEST);
 
 	this.shader.loadMatrices();
 
@@ -39,8 +38,6 @@ FinishLine.prototype.draw = function() {
 
 	this.shader.disableTextures();
 	gl.bindTexture(gl.TEXTURE_2D, null);
-
-	//glEnable(GL_DEPTH_TEST);
 
 	gameManager.matrices.popMatrix(modelID);
 }

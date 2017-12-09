@@ -23,9 +23,16 @@ function GameManager(width, height) {
 	this.sun;
 	this.flare;
 
+	//lap timer
+	this.bestLapTime = 100000000000000;
+	this.currentLapTime = 0;
+	this.startClock = false;
+	this.atLeastOneLap = false;
+
+
 	// animation variables
 	this.recording      = false;
-	this.playing        = true;
+	this.playing        = false;
 	this.animationVariables = [];
 	this.animationFrameCounter = 0;
 
@@ -188,6 +195,8 @@ GameManager.prototype.onIncreaseOrangeSpeedTimer = function() {
 	this.track.increaseOrangeSpeed();
 }
 
+
+
 GameManager.prototype.update = function(timeStep) {
 	if(!this.playing) {
 		this.car.update(timeStep);
@@ -227,6 +236,9 @@ GameManager.prototype.update = function(timeStep) {
 		animationFrame.carAngle = this.car.angle; 
 		this.animationVariables.push(animationFrame);
 	}
+
+	if(this.startClock)
+		this.currentLapTime += timeStep;
 
 }
 
@@ -314,6 +326,8 @@ GameManager.prototype.restartGame = function() {
 	this.lives = 5;
 	this.pause = false;
 	this.gameOver = false;
+	this.currentLapTime = 0;
+	this.startClock = false;
 }
 
 GameManager.prototype.checkCollision = function(obj1, obj2) {
@@ -377,7 +391,19 @@ GameManager.prototype.processCarCollisions = function() {
 			this.resetCar();
 	}
 	
-	//TODO finishline
+	if (this.checkCollision(this.car, this.track.finishLine)) {
+		
+		if (this.currentLapTime == 0) {
+			this.startClock = true;
+		}
+		else {
+			if (this.currentLapTime < this.bestLapTime && this.currentLapTime > 5000) {
+				this.bestLapTime = this.currentLapTime;
+				this.atLeastOneLap = true;
+			}
+			this.currentLapTime = 0;
+		}
+	}
 }
 
 GameManager.prototype.processObsCollisions = function() {
