@@ -119,6 +119,87 @@ function PerspectiveCamera(fov, ratio, near, far, position, direction) {
 
 PerspectiveCamera.prototype.computeProjection = function() {
 	mat4.identity(projectionMatrix);
+	var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
 	mat4.perspective(projectionMatrix, this.fov, this.ratio, this.near, this.far);
 }
 
+
+StereoCamera.prototype = Object.create(Camera.prototype);
+function StereoCamera(fov, ratio, near, far, focal, aperture) {
+	Camera.call(this, near, far);
+	this.fov       = fov;
+	this.ratio     = ratio; 
+
+
+	this.focal = focal; 
+	this.aperture = aperture; 
+
+	this.eyeSep = 0.2;
+	this.delta = 0.5 * this.eyeSep * near / focal;
+	this.hdiv2 = near * Math.tan(aperture/2);
+
+	this.top = this.hdiv2;
+	this.bottom = -this.hdiv2;
+
+
+
+}
+StereoCamera.prototype.computeLeftView = function() {
+	mat4.identity(viewMatrix);
+	var direction = vec3.create();
+	direction[0] = this.target[0] - this.eye[0];
+	direction[1] = this.target[1] - this.eye[1];
+	direction[2] = this.target[2] - this.eye[2];
+
+	this.rightVec = crossProduct(direction, this.up);
+	this.vEye = [this.rightVec[0] * this.eyeSep / 2.0, 
+				this.rightVec[1] * this.eyeSep / 2.0, 
+				this.rightVec[2] * this.eyeSep / 2.0];
+
+	mat4.lookAt(viewMatrix, [this.eye[0] - this.vEye[0],
+							this.eye[1] - this.vEye[1],
+							this.eye[2] - this.vEye[2]],
+							[this.eye[0] - this.vEye[0] + direction[0],
+							 this.eye[1] - this.vEye[1] + direction[1], 
+							 this.eye[2] - this.vEye[2] + direction[2]],
+							this.up);
+}
+StereoCamera.prototype.computeRightView = function() {
+	mat4.identity(viewMatrix);
+
+	var direction = vec3.create();
+	direction[0] = this.target[0] - this.eye[0];
+	direction[1] = this.target[1] - this.eye[1];
+	direction[2] = this.target[2] - this.eye[2];
+
+	this.rightVec = crossProduct(direction, this.up);
+	this.vEye = [this.rightVec[0] * this.eyeSep / 2.0,
+				 this.rightVec[1] * this.eyeSep / 2.0, 
+				 this.rightVec[2] * this.eyeSep / 2.0];
+
+	mat4.lookAt(viewMatrix, [this.eye[0] + this.vEye[0],
+							this.eye[1] + this.vEye[1],
+							this.eye[2] + this.vEye[2]],
+							[this.eye[0] + this.vEye[0] + direction[0],
+							 this.eye[1] + this.vEye[1] + direction[1],
+							 this.eye[2] + this.vEye[2] + direction[2]],
+							this.up);
+
+
+
+
+
+}
+StereoCamera.prototype.computeLeftProjection = function() {
+
+	var left = -this.ratio * this.hdiv2 + this.delta;
+	var right = this.ratio * this.hdiv2 + this.delta;
+
+	mat4.frustum(projectionMatrix, left, right, this.bottom, this.top, this.near, this.far);
+}
+StereoCamera.prototype.computeRightProjection = function() {
+	var left = -this.ratio * this.hdiv2 - this.delta;
+	var right = this.ratio * this.hdiv2 - this.delta;
+
+	mat4.frustum(projectionMatrix, left, right, this.bottom, this.top, this.near, this.far);
+}

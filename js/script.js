@@ -39,21 +39,21 @@ function drawText() {
     var curr_mili = currentLapTime % 1000;
     var text;
 
-    text = "Current Lap: " + curr_min.toFixed(0) + ":" + curr_sec.toFixed(0) + ":" + curr_mili.toFixed(0);
+    text = "Current Lap: " + Math.floor(curr_min) + ":" + Math.floor(curr_sec) + ":" + Math.floor(curr_mili);
     
-    ctx.fillText(text, 700, 40);
-    ctx.strokeText(text, 700, 40);
+    ctx.fillText(text, 900, 40);
+    ctx.strokeText(text, 900, 40);
     if(gameManager.atLeastOneLap) {
-        text = "Best Lap: " + best_min.toFixed(0) + ":" + best_sec.toFixed(0) + ":" + best_mili.toFixed(0);
+        text = "Best Lap: " + Math.floor(best_min) + ":" + Math.floor(best_sec) + ":" + Math.floor(best_mili);
     }
     else {
         text = "    Best Lap: ---:---:---" ;
     }   
-    ctx.fillText(text, 700, 80);
-    ctx.strokeText(text, 700, 80);
+    ctx.fillText(text, 900, 80);
+    ctx.strokeText(text, 900, 80);
     text = "    Lives left: " + gameManager.lives;
-    ctx.fillText(text, 700, 120);
-    ctx.strokeText(text, 700, 120);
+    ctx.fillText(text, 900, 120);
+    ctx.strokeText(text, 900, 120);
     ctx.textAlign = "center";
     ctx.font="35px Verdana";
     if (gameManager.gameOver) {
@@ -61,8 +61,8 @@ function drawText() {
         ctx.strokeText("Game Over! Press R to restart the game", 500, 350);
     }
     else if(gameManager.pause) {
-        ctx.fillText("Game is paused!", 500, 350);
-        ctx.strokeText("Game is paused!", 500, 350);
+        ctx.fillText("Game is paused!", 600, 350);
+        ctx.strokeText("Game is paused!", 600, 350);
     }
 }
 

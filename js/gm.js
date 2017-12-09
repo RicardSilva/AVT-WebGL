@@ -33,6 +33,7 @@ function GameManager(width, height) {
 	// animation variables
 	this.recording      = false;
 	this.playing        = false;
+	this.stereoMode     = false;
 	this.animationVariables = [];
 	this.animationFrameCounter = 0;
 
@@ -64,6 +65,7 @@ GameManager.prototype.init = function() {
 
 GameManager.prototype.initShaders = function() {
     this.shader = new Shader("shader-vs", "shader-fs");
+    this.shader.use();
 }
 
 var models = {}
@@ -144,32 +146,48 @@ GameManager.prototype.initCameras = function() {
 
 	this.cameras.push(topCamera);
 
-	var topPerspCamera = new PerspectiveCamera(70 * 3.14 / 180, this.width / this.height, 0.1, 1500.0);
+	var topPerspCamera = new PerspectiveCamera(70 * 3.14 / 180, gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 1500.0);
 	topPerspCamera.setEye(vec3.fromValues(0, 500, 900));
 	topPerspCamera.setTarget(vec3.fromValues(0, 0, 150));
 	topPerspCamera.setUp(vec3.fromValues(0, 0, -1));
 
 	this.cameras.push(topPerspCamera);
-	var carCamera = new PerspectiveCamera(60 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
+	var carCamera = new PerspectiveCamera(60 * 3.14 / 180, gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 1000.0);
 	carCamera.setEye(vec3.fromValues(0, 50, -80));
 	carCamera.setTarget(vec3.fromValues(0, 0, 0));
 	carCamera.setUp(vec3.fromValues(0, 1, 0));
 
 	this.cameras.push(carCamera);
 
-	var cockpitCamera = new PerspectiveCamera(90 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
+	var cockpitCamera = new PerspectiveCamera(90 * 3.14 / 180, gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 1000.0);
 	cockpitCamera.setEye(vec3.fromValues(0, 50, -80));
 	cockpitCamera.setTarget(vec3.fromValues(0, 0, 0));
 	cockpitCamera.setUp(vec3.fromValues(0, 1, 0));
 
 	this.cameras.push(cockpitCamera);
 
-	var backCamera = new PerspectiveCamera(130 * 3.14 / 180, this.width / this.height, 0.1, 1000.0);
+	var backCamera = new PerspectiveCamera(130 * 3.14 / 180, gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 1000.0);
 	backCamera.setEye(vec3.fromValues(0, 50, -80));
 	backCamera.setTarget(vec3.fromValues(0, 0, 0));
 	backCamera.setUp(vec3.fromValues(0, 1, 0));
 
 	this.cameras.push(backCamera);
+
+	var stereoCamera = new StereoCamera(75 * 3.14 / 180, 
+		gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 1000, 30, 45 * 3.14 / 180);
+	stereoCamera.setEye(vec3.fromValues(0, 50, -80));
+	stereoCamera.setTarget(vec3.fromValues(0, 0, 0));
+	stereoCamera.setUp(vec3.fromValues(0, 1, 0));
+
+	this.cameras.push(stereoCamera);
+
+	var stereoCamera2 = new StereoCamera(75 * 3.14 / 180, 
+		gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 1000, 30, 45 * 3.14 / 180);
+	stereoCamera2.setEye(vec3.fromValues(0, 50, -80));
+	stereoCamera2.setTarget(vec3.fromValues(0, 0, 0));
+	stereoCamera2.setUp(vec3.fromValues(0, 1, 0));
+
+	this.cameras.push(stereoCamera2);
 
 	this.activeCamera = carCamera;
 }
@@ -205,10 +223,7 @@ GameManager.prototype.update = function(timeStep) {
 		this.processCarCollisions();
 	   	this.processObsCollisions();
 	   
-		//compute cameras position
-		this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
-		this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
-		this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+		
 	}
 	else {
 		var animationFrame = record[this.animationFrameCounter++];
@@ -219,9 +234,7 @@ GameManager.prototype.update = function(timeStep) {
 
 	   	this.processObsCollisions();
 
-		this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
-		this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
-		this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+		
 
 		//change cameras
 		if(Math.random() > 0.999) {
@@ -237,30 +250,72 @@ GameManager.prototype.update = function(timeStep) {
 		this.animationVariables.push(animationFrame);
 	}
 
+	//compute cameras position
+	this.cameras[2].computeCarCameraPosition(this.car.position, this.car.angle);
+	this.cameras[3].computeCockpitCameraPosition(this.car.position, this.car.angle);
+	this.cameras[4].computeBackCameraPosition(this.car.position, this.car.angle);
+	this.cameras[5].computeCarCameraPosition(this.car.position, this.car.angle);
+	this.cameras[6].computeCockpitCameraPosition(this.car.position, this.car.angle);
+
 	if(this.startClock)
 		this.currentLapTime += timeStep;
 
 }
 
 GameManager.prototype.draw = function() {
-	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    mat4.identity(modelMatrix);
-    mat4.identity(viewMatrix);
-    mat4.identity(projectionMatrix);
-	
-    this.activeCamera.computeView();
-    this.activeCamera.computeProjection();
-    this.shader.loadMatrices();
-    this.shader.use();
 
+	if (this.activeCamera == this.cameras[5] || this.activeCamera == this.cameras[6]) {
+		//left
+        mat4.identity(projectionMatrix);
+        mat4.identity(modelMatrix);
+        mat4.identity(viewMatrix);
+        gl.viewport(0, 0, gl.drawingBufferWidth/2, gl.drawingBufferHeight);
+
+        this.activeCamera.computeLeftView();
+        this.activeCamera.computeLeftProjection();
+        //mat4.rotateY(projectionMatrix, projectionMatrix, -this.alpha);
+        //mat4.rotateX(projectionMatrix, projectionMatrix, this.beta);
+        this.drawObjects();
+
+        //right
+        mat4.identity(projectionMatrix);
+        mat4.identity(modelMatrix);
+        mat4.identity(viewMatrix);
+        gl.viewport(gl.drawingBufferWidth/2, 0, gl.drawingBufferWidth/2, gl.drawingBufferHeight);
+
+        this.activeCamera.computeRightView();
+        this.activeCamera.computeRightProjection();
+        //mat4.rotateY(projectionMatrix, projectionMatrix, -this.alpha);
+        //mat4.rotateX(projectionMatrix, projectionMatrix, this.beta);
+        
+        this.drawObjects();
+	}
+	else {
+
+	    mat4.identity(modelMatrix);
+	    mat4.identity(viewMatrix);
+	    mat4.identity(projectionMatrix);
+		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+	  
+		
+	    this.activeCamera.computeView();
+	    this.activeCamera.computeProjection();
+	    this.drawObjects();
+	}
+		
+	
+}
+
+GameManager.prototype.drawObjects = function() {
+	
     this.track.drawLights();
     this.car.drawLights();
 
     this.track.draw(this.activeCamera.eye);
     this.car.draw();
 
-    if(this.activeCamera == this.cameras[3])
+    if(this.activeCamera == this.cameras[3] || this.activeCamera == this.cameras[6])
 		this.drawMirrorReflection();
 	
 	if(this.raining)
@@ -269,8 +324,6 @@ GameManager.prototype.draw = function() {
 	if (this.day){
 	//this.sun.draw();
 	}
-	
-	
 }
 
 GameManager.prototype.drawMirrorReflection = function() {
@@ -322,7 +375,7 @@ GameManager.prototype.resetCar = function() {
 
 GameManager.prototype.restartGame = function() {
     this.track.restart(this.track, track_map);
-	this.car.restart(this.track.startingPosition);
+	this.car.restart(vec3.clone(this.track.startingPosition));
 	this.lives = 5;
 	this.pause = false;
 	this.gameOver = false;
@@ -470,6 +523,12 @@ GameManager.prototype.keyDown = function(key) {
 		break;
 	case 53:
 		this.activeCamera = this.cameras[4];
+		break;
+	case 54:
+		this.activeCamera = this.cameras[5];
+		break;
+	case 55:
+		this.activeCamera = this.cameras[6];
 		break;
 	case 56:
 		this.track.toogleDirectionalLight();
