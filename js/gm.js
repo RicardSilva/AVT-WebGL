@@ -11,7 +11,7 @@ function GameManager(width, height) {
     this.score          = 0;
     this.day            = true;
     this.raining        = false;
-
+	this.foggy 			= false;
     this.shader;
     this.cameras = [];
     this.activeCamera;
@@ -603,7 +603,11 @@ GameManager.prototype.keyDown = function(key) {
 	case 114:
 		//lensFlaring = !lensFlaring;
 		break;
+	case 90:
+		foggy = !foggy;
+		break;
 	}
+
 
 }
 GameManager.prototype.keyUp = function(key) {
