@@ -75,6 +75,9 @@ Shader.prototype.getUniformLocations = function() {
     this.maskID = gl.getUniformLocation(this.program, "mask");
     this.treeID = gl.getUniformLocation(this.program, "billboardTexture");
 
+    this.woodNormalID = gl.getUniformLocation(this.program, "woodNormal");
+    this.bambooNormalID = gl.getUniformLocation(this.program, "bambooNormal");
+
     var uniformName;
     for (i = 0; i < MAX_LIGHTS; i++) {
         for (j = 0; j < ATTRIBS_PER_LIGHT; j++) {
@@ -215,6 +218,13 @@ Shader.prototype.loadMask = function(id) {
 }
 Shader.prototype.loadTree = function(id) {
      gl.uniform1i(this.treeID, id);
+}
+
+Shader.prototype.loadWoodNormal = function(id) {
+     gl.uniform1i(this.woodNormalID, id);
+}
+Shader.prototype.loadBambooNormal = function(id) {
+     gl.uniform1i(this.bambooNormalID, id);
 }
 
 Shader.prototype.loadMatrices = function() {
