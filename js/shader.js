@@ -199,7 +199,7 @@ Shader.prototype.loadTexture = function(id) {
 	gl.uniform1i(this.textureID, id);
 }
 Shader.prototype.loadMatDiffuse = function(color) {
-	gl.uniform4fv(this.diffuseID, color); //TODO is this right?
+	gl.uniform4fv(this.diffuseID, color);
 }
 Shader.prototype.loadWoodDiffuse = function(id) {
      gl.uniform1i(this.woodDiffuseID, id);

@@ -198,8 +198,9 @@
 						materialTransparency = 1.0;
 
 						vec3 woodNorm = 2.0 * vec3(texture2D(woodNormal, exTexCoord*15.0)) - 1.0;
-						vec3 bambooNorm = 2.0 * vec3(texture2D(bambooNormal, exTexCoord*15.0)) - 1.0;
-						normFromTex = mix(woodNorm, bambooNorm, mixCoefficient);
+						vec3 bambooNorm = 2.0 * vec3(texture2D(bambooNormal, exTexCoord*10.0)) - 1.0;
+						//normFromTex = mix(woodNorm, bambooNorm, mixCoefficient);
+						normFromTex = bambooNorm;
 					}
 					else if (textureMode == 1) {
 						vec4 color = texture2D(billboardTexture, exTexCoord);
