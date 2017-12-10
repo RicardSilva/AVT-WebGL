@@ -326,7 +326,7 @@ GameManager.prototype.drawObjects = function() {
 		this.rain.draw();
 	
 	if (this.day){
-	//this.sun.draw();
+		this.sun.draw(this.activeCamera.eye);
 	}
 }
 

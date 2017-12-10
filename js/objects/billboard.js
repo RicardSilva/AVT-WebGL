@@ -80,5 +80,5 @@ Billboard.prototype.l3dBillboardCylindricalBegin = function(cam, worldPos) {
 	var angleCosine = this.mathsInnerProduct(lookAt, objToCamProj);
 	
 	if ((angleCosine < 0.99990) && (angleCosine > -0.9999))
-		mat4.rotate(modelMatrix, modelMatrix, Math.acos(angleCosine)/* * 180 / 3.14*/, upAux);
+		mat4.rotate(modelMatrix, modelMatrix, Math.acos(angleCosine), upAux);
 }
