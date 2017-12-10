@@ -9,6 +9,7 @@ function Shader (vsShader, fsShader) {
     this.vertexPositionAttribute;
     this.vertexNormalAttribute;
     this.textureCoordAttribute;
+    this.vertexTangentAttribute;
 
     this.projViewModelID;
     this.viewModelID;
@@ -51,6 +52,8 @@ Shader.prototype.initAttributes = function() {
 
     this.textureCoordAttribute = gl.getAttribLocation(this.program, "inTexCoord");
     //gl.enableVertexAttribArray(this.textureCoordAttribute);
+
+    this.vertexTangentAttribute = gl.getAttribLocation(this.program, "inTangent");
 }
 
 Shader.prototype.getUniformLocations = function() {

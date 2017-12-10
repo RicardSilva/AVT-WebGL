@@ -6,8 +6,9 @@
 			#version 100
 
 			attribute vec4 inPosition;
-			attribute vec3 inNormal; 
-			attribute vec2 inTexCoord; 
+			attribute vec3 inNormal;
+			attribute vec2 inTexCoord;
+			attribute vec4 inTangent;
 
 			uniform mat4 m_pvm;
 			uniform mat4 m_viewModel;
@@ -17,6 +18,8 @@
 			varying	vec3 exNormal;
 			varying	vec3 exEyeDirection;
 			varying	vec2 exTexCoord;
+			varying	vec3 exHalfVec;
+			varying	vec3 exLightVec;
 
 
 			void main (void) {
@@ -33,14 +36,15 @@
 				//vec3 b = inTangent[3] * cross(n,t);
 
 				vec3 eyeInPos = vec3(m_viewModel * inPosition);
-				//vec3 lightDir = normalize();
+				/*vec3 lightDir = normalize();
 
-				//vec3 v = [dot(lightDir, t), dot(lightDir, b),dot(lightDir, n)];
-				//lightVec = normalize(v);
+				vec3 v = [dot(lightDir, t), dot(lightDir, b),dot(lightDir, n)];
+				exLightVec = normalize(v);
 
-				/*halfVector = normalize(lightDir - eyeInPos);
+				vec3 halfVector = normalize(lightDir - eyeInPos);
 				v = [dot(halfVector, t), dot(halfVector, b), dot(halfVector, n)];
-					*/
+				exHalfVec = normalize(v);*/
+
 				gl_Position = m_pvm * inPosition;	
 			}
 
@@ -53,6 +57,8 @@
 			varying	vec3 exNormal;
 			varying	vec3 exEyeDirection;
 			varying	vec2 exTexCoord;
+			varying	vec3 exHalfVec;
+			varying	vec3 exLightVec;
 
 			struct Material {
 				vec3 diffuse;
@@ -212,8 +218,7 @@
 
 						vec3 woodNorm = 2.0 * vec3(texture2D(woodNormal, exTexCoord*15.0)) - 1.0;
 						vec3 bambooNorm = 2.0 * vec3(texture2D(bambooNormal, exTexCoord*10.0)) - 1.0;
-						//normFromTex = mix(woodNorm, bambooNorm, mixCoefficient);
-						normFromTex = bambooNorm;
+						normFromTex = mix(woodNorm, bambooNorm, mixCoefficient);
 					}
 					else if (textureMode == 1) {
 						vec4 color = texture2D(billboardTexture, exTexCoord);
