@@ -95,7 +95,7 @@ function OrthoCamera(right, left, bottom, top, near, far) {
 }
 OrthoCamera.prototype.computeProjection = function() {
 	mat4.identity(projectionMatrix);
-	mat4.ortho(projectionMatrix, this.right, this.left, this.bottom, this.top, this.near, this.far);
+	mat4.ortho(projectionMatrix,  this.left,this.right* gl.canvas.clientWidth / gl.canvas.clientHeight, this.bottom, this.top, this.near, this.far);
 }
 
 
@@ -120,7 +120,7 @@ function PerspectiveCamera(fov, ratio, near, far, position, direction) {
 PerspectiveCamera.prototype.computeProjection = function() {
 	mat4.identity(projectionMatrix);
 	var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-	mat4.perspective(projectionMatrix, this.fov, this.ratio, this.near, this.far);
+	mat4.perspective(projectionMatrix, this.fov, aspect, this.near, this.far);
 }
 
 
@@ -191,15 +191,16 @@ StereoCamera.prototype.computeRightView = function() {
 
 }
 StereoCamera.prototype.computeLeftProjection = function() {
-
-	var left = -this.ratio * this.hdiv2 + this.delta;
-	var right = this.ratio * this.hdiv2 + this.delta;
+	var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+	var left = -aspect * this.hdiv2 + this.delta;
+	var right = aspect * this.hdiv2 + this.delta;
 
 	mat4.frustum(projectionMatrix, left, right, this.bottom, this.top, this.near, this.far);
 }
 StereoCamera.prototype.computeRightProjection = function() {
-	var left = -this.ratio * this.hdiv2 - this.delta;
-	var right = this.ratio * this.hdiv2 - this.delta;
+	var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+	var left = -aspect * this.hdiv2 - this.delta;
+	var right = aspect * this.hdiv2 - this.delta;
 
 	mat4.frustum(projectionMatrix, left, right, this.bottom, this.top, this.near, this.far);
 }

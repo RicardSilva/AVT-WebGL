@@ -32,10 +32,14 @@ function GameManager(width, height) {
 
 	// animation variables
 	this.recording      = false;
-	this.playing        = false;
+	this.playing        = true;
 	this.stereoMode     = false;
 	this.animationVariables = [];
 	this.animationFrameCounter = 0;
+	//gyro angles
+	this.alpha = 0; //z axis
+	this.beta = 0; //x axis
+	this.gamma = 0;//y axis
 
     this.init();
 }
@@ -142,7 +146,7 @@ GameManager.prototype.initTextures = function(urls, callback) {
 GameManager.prototype.initCameras = function() {
 	mat4.identity(viewMatrix);
 
-	var topCamera = new OrthoCamera(-750, 750,-550,550, 0.1,150);
+	var topCamera = new OrthoCamera(750, -750,-550,550 , 0.1,150);
 	topCamera.setEye(vec3.fromValues(0,100,0));
 	topCamera.setTarget(vec3.fromValues(0,0,0));
 	topCamera.setUp(vec3.fromValues(0,0,-1));
@@ -244,7 +248,7 @@ GameManager.prototype.update = function(timeStep) {
 
 		//change cameras
 		if(Math.random() > 0.999) {
-			this.activeCamera = this.cameras[Math.round(Math.random() * 4)];
+			//this.activeCamera = this.cameras[Math.round(Math.random() * 4)];
 		}
 		if(this.animationFrameCounter > record.length - 1) 
 			this.animationFrameCounter = 0;
@@ -267,6 +271,11 @@ GameManager.prototype.update = function(timeStep) {
 		this.currentLapTime += timeStep;
 
 }
+GameManager.prototype.updateGyro = function(alpha, beta, gamma) {
+	this.alpha = alpha;
+	this.beta = beta;
+	this.gamma = gamma;
+}
 
 GameManager.prototype.draw = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -280,8 +289,25 @@ GameManager.prototype.draw = function() {
 
         this.activeCamera.computeLeftView();
         this.activeCamera.computeLeftProjection();
-        //mat4.rotateY(projectionMatrix, projectionMatrix, -this.alpha);
-        //mat4.rotateX(projectionMatrix, projectionMatrix, this.beta);
+        if(this.alpha != null && this.gamma != null) {
+
+	  		mat4.translate(viewMatrix, viewMatrix, this.activeCamera.eye);
+	    	mat4.rotate(viewMatrix, viewMatrix, -this.alpha * 3.14 / 180, [0,1,0]);
+
+	    	var direction = vec3.create();
+			direction[0] = this.activeCamera.target[0] - this.activeCamera.eye[0];
+			direction[1] = this.activeCamera.target[1] - this.activeCamera.eye[1];
+			direction[2] = this.activeCamera.target[2] - this.activeCamera.eye[2];
+
+			var rightVec = crossProduct(direction, this.activeCamera.up);
+
+
+		    mat4.rotate(viewMatrix, viewMatrix, this.gamma * 3.14 / 180 , rightVec);
+	  		mat4.translate(viewMatrix, viewMatrix, [-this.activeCamera.eye[0],
+										  			-this.activeCamera.eye[1],
+										  			-this.activeCamera.eye[2]]);
+
+    	}
         this.drawObjects();
 
         //right
@@ -292,8 +318,25 @@ GameManager.prototype.draw = function() {
 
         this.activeCamera.computeRightView();
         this.activeCamera.computeRightProjection();
-        //mat4.rotateY(projectionMatrix, projectionMatrix, -this.alpha);
-        //mat4.rotateX(projectionMatrix, projectionMatrix, this.beta);
+         if(this.alpha != null && this.gamma != null) {
+
+	  		mat4.translate(viewMatrix, viewMatrix, this.activeCamera.eye);
+	    	mat4.rotate(viewMatrix, viewMatrix, -this.alpha * 3.14 / 180, [0,1,0]);
+
+	    	var direction = vec3.create();
+			direction[0] = this.activeCamera.target[0] - this.activeCamera.eye[0];
+			direction[1] = this.activeCamera.target[1] - this.activeCamera.eye[1];
+			direction[2] = this.activeCamera.target[2] - this.activeCamera.eye[2];
+
+			var rightVec = crossProduct(direction, this.activeCamera.up);
+
+
+		    mat4.rotate(viewMatrix, viewMatrix, this.gamma * 3.14 / 180 , rightVec);
+	  		mat4.translate(viewMatrix, viewMatrix, [-this.activeCamera.eye[0],
+										  			-this.activeCamera.eye[1],
+										  			-this.activeCamera.eye[2]]);
+
+    	}
         
         this.drawObjects();
 	}
@@ -306,6 +349,26 @@ GameManager.prototype.draw = function() {
 	  
 		
 	    this.activeCamera.computeView();
+	    if(this.alpha != null && this.gamma != null) {
+
+	  		mat4.translate(viewMatrix, viewMatrix, this.activeCamera.eye);
+	    	mat4.rotate(viewMatrix, viewMatrix, -this.alpha * 3.14 / 180, [0,1,0]);
+
+	    	var direction = vec3.create();
+			direction[0] = this.activeCamera.target[0] - this.activeCamera.eye[0];
+			direction[1] = this.activeCamera.target[1] - this.activeCamera.eye[1];
+			direction[2] = this.activeCamera.target[2] - this.activeCamera.eye[2];
+
+			var rightVec = crossProduct(direction, this.activeCamera.up);
+
+
+		    mat4.rotate(viewMatrix, viewMatrix, this.gamma * 3.14 / 180 , rightVec);
+	  		mat4.translate(viewMatrix, viewMatrix, [-this.activeCamera.eye[0],
+										  			-this.activeCamera.eye[1],
+										  			-this.activeCamera.eye[2]]);
+
+		   
+    	}
 	    this.activeCamera.computeProjection();
 	    this.drawObjects();
 	}

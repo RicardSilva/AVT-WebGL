@@ -130,7 +130,35 @@ function resize(canvas, over) {
   }
 }
 
+var alpha = 0,beta = 0,gamma = 0;
 
+handleOrientationEvent = function(e) {
+ 
+    // Get the orientation of the device in 3 axes, known as alpha, beta, and gamma, 
+    // represented in degrees from the initial orientation of the device on load
+    var change = false;
+    if(e.alpha !=null && Math.abs(alpha - e.alpha) > 0.5) {
+        alpha = e.alpha;
+        change = true;
+    }
+    if(e.beta !=null && Math.abs(beta - e.beta) > 0.5) {
+        beta = e.beta;
+         change = true;
+    }
+    if(e.gamma !=null && Math.abs(gamma - e.gamma) > 0.5) {
+        gamma = e.gamma;
+        change = true;
+    }
+
+    // Rotate the <img> element in 3 axes according to the device’s orientation
+    if(change)
+        gameManager.updateGyro(alpha, beta, gamma);
+};
+ 
+// Listen for changes to the device orientation using the gyroscope and fire the event 
+// handler accordingly
+ 
+window.addEventListener('deviceorientation', handleOrientationEvent, false);
 
 var ncanvas;
 var nover;
@@ -152,7 +180,7 @@ function webGLStart() {
 
     document.onkeydown = handleKeyDown;
     document.onkeyup   = handleKeyUp;
-
+    window.addEventListener('deviceorientation', handleOrientationEvent, false);
     setTimeout(spawnOrangeTimer, 2000 + 7000 * Math.random());
     setTimeout(increaseOrangeSpeedTimer, 10000);
     tick();

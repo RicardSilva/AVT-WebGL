@@ -281,6 +281,8 @@ Track.prototype.attemptToSpawnOrange = function() {
 
 Track.prototype.increaseOrangeSpeed = function() {
 	this.orangeStartingSpeed += 125;
+	if(this.orangeStartingSpeed > 400)
+		this.orangeStartingSpeed = 400;
 	for (orange of this.oranges){
 		orange.increaseSpeed();
 	}
