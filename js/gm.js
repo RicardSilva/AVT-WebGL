@@ -12,6 +12,7 @@ function GameManager(width, height) {
     this.day            = true;
     this.raining        = false;
 	this.foggy 			= false;
+	this.lensFlaring    = true;
     this.shader;
     this.cameras = [];
     this.activeCamera;
@@ -32,7 +33,7 @@ function GameManager(width, height) {
 
 	// animation variables
 	this.recording      = false;
-	this.playing        = true;
+	this.playing        = false;
 	this.stereoMode     = false;
 	this.animationVariables = [];
 	this.animationFrameCounter = 0;
@@ -47,22 +48,22 @@ function GameManager(width, height) {
 GameManager.prototype.init = function() {
     this.initShaders();
     this.initMeshes();
-    this.initTextures(["./resources/textures/christmastree.gif", 
-    				"./resources/textures/particle2.gif",
-					"./resources/textures/lensFlare/flare2.gif", 
-					"./resources/textures/lensFlare/flare3.gif",
-					"./resources/textures/lensFlare/flare4.gif", 
-					"./resources/textures/lensFlare/flare1.gif",
-					"./resources/textures/lensFlare/flare6.gif", 
-					"./resources/textures/track/wood_diffuse.gif",
-					"./resources/textures/track/wood_specular.gif", 
-					"./resources/textures/track/bamboo_diffuse.gif",
-					"./resources/textures/track/bamboo_specular.gif", 
-					"./resources/textures/track/mask.gif",
-					"./resources/textures/finish.gif", 
-					"./resources/textures/lensFlare/flare5.gif", 
-					"./resources/textures/track/wood_normals.gif", 
-					"./resources/textures/track/bamboo_normals.gif"],
+    this.initTextures(["./resources/textures/christmastree.png", 
+    				"./resources/textures/particle2.png",
+					"./resources/textures/lensFlare/flare2.png", 
+					"./resources/textures/lensFlare/flare3.png",
+					"./resources/textures/lensFlare/flare4.png", 
+					"./resources/textures/lensFlare/flare1.png",
+					"./resources/textures/lensFlare/flare2.png", 
+					"./resources/textures/track/wood_diffuse.png",
+					"./resources/textures/track/wood_specular.png", 
+					"./resources/textures/track/bamboo_diffuse.png",
+					"./resources/textures/track/bamboo_specular.png", 
+					"./resources/textures/track/mask.png",
+					"./resources/textures/finish.png", 
+					"./resources/textures/lensFlare/flare5.png", 
+					"./resources/textures/track/wood_normals.png", 
+					"./resources/textures/track/bamboo_normals.png"],
 					createTextures);
 	
 
@@ -384,6 +385,9 @@ GameManager.prototype.drawObjects = function() {
     this.track.draw(this.activeCamera.eye);
     this.car.draw();
 
+    if (this.lensFlaring && this.activeCamera == this.cameras[2] && this.day) {
+		this.flare.draw(this.sun.position);
+	}
     if(this.activeCamera == this.cameras[3] || this.activeCamera == this.cameras[6])
 		this.drawMirrorReflection();
 	
@@ -393,6 +397,7 @@ GameManager.prototype.drawObjects = function() {
 	if (this.day){
 		this.sun.draw(this.activeCamera.eye);
 	}
+	
 }
 
 GameManager.prototype.drawMirrorReflection = function() {

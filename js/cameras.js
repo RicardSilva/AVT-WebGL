@@ -65,15 +65,18 @@ function convertWorldToScreen(worldPosition) {
 								 worldPosition[1],
 								 worldPosition[2],
 								 1.0);
+	var coords2 = vec4.create();
+	var coords3 = vec4.create();
+	multMatrixPoint(viewMatrix, coords, coords2);
+	multMatrixPoint(projectionMatrix, coords2, coords3);
 	
-	multMatrixPoint(VIEW, coords, coords);
-	multMatrixPoint(PROJECTION, coords, coords);
 
-	if (coords[3] <= 0)
-		return vec2.fromValues(-1, -1);
+	if (coords3[3] <= 0) {
+		return null;
+	}
 
-	var x = (coords[0] / coords[3] + 1) / 2.0;
-	var y = 1 - ((coords[1] / coords[3] + 1) / 2.0);
+	var x = (coords3[0] / coords3[3] + 1) / 2.0;
+	var y = 1 - ((coords3[1] / coords3[3] + 1) / 2.0);
 
 
 	return vec2.fromValues(x, y);
