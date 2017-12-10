@@ -30,7 +30,7 @@ Sun.prototype.draw = function(cam) {
 	gl.activeTexture(gl.TEXTURE13);
 	gl.bindTexture(gl.TEXTURE_2D, textures[13]);
 	
-	this.shader.loadTexture(13);
+	this.shader.loadTree(13);
 	
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
