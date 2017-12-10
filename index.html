@@ -27,7 +27,20 @@
 				exNormal = normalize(m_normal * inNormal);
 				exEyeDirection = normalize(vec3(-pos));
 				exTexCoord = inTexCoord;
-				
+
+				vec3 n = exNormal;
+				//vec3 t = normalize(m_normal * inTangent.xyz);
+				//vec3 b = inTangent[3] * cross(n,t);
+
+				vec3 eyeInPos = vec3(m_viewModel * inPosition);
+				//vec3 lightDir = normalize();
+
+				//vec3 v = [dot(lightDir, t), dot(lightDir, b),dot(lightDir, n)];
+				//lightVec = normalize(v);
+
+				/*halfVector = normalize(lightDir - eyeInPos);
+				v = [dot(halfVector, t), dot(halfVector, b), dot(halfVector, n)];
+					*/
 				gl_Position = m_pvm * inPosition;	
 			}
 
