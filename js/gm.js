@@ -56,8 +56,12 @@ GameManager.prototype.init = function() {
 					"./resources/textures/track/bamboo_specular.gif", 
 					"./resources/textures/track/mask.gif",
 					"./resources/textures/finish.gif", 
-					"./resources/textures/lensFlare/flare5.gif"], 
+					"./resources/textures/lensFlare/flare5.gif", 
+					"./resources/textures/track/wood_normals.gif", 
+					"./resources/textures/track/bamboo_normals.gif"],
 					createTextures);
+	
+
     this.initCameras();
     this.initGameObjects();
     document.getElementById("loadingtext").textContent = "";
@@ -324,7 +328,7 @@ GameManager.prototype.drawObjects = function() {
 		this.rain.draw();
 	
 	if (this.day){
-	//this.sun.draw();
+		this.sun.draw(this.activeCamera.eye);
 	}
 }
 

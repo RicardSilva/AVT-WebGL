@@ -17,17 +17,17 @@ Sun.prototype.draw = function(cam) {
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	mat4.scale(modelMatrix, modelMatrix, [50, 50, 50]);
 	
-	var pos = [position[0] , position[1], position[2]];
+	var pos = [this.position[0] , this.position[1], this.position[2]];
 	var camPos = [cam[0] , cam[1], cam[2]];
 	
-	this.l3dSunCylindricalBegin(camPos, pos);
+	this.l3dBillboardCylindricalBegin(camPos, pos);
 	
 	this.shader.loadMatrices();
 	
 	this.shader.enableTextures();
 	this.shader.loadTextureMode(1);
 	
-	gl.activeTexture(gl.TEXTURE0);
+	gl.activeTexture(gl.TEXTURE13);
 	gl.bindTexture(gl.TEXTURE_2D, textures[13]);
 	
 	this.shader.loadTexture(13);
@@ -57,7 +57,7 @@ Sun.prototype.mathsCrossProduct = function(a, b) {
 }
 
 Sun.prototype.mathsNormalize = function(v) {
-	var d = (sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
+	var d = (Math.sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2])));
 	v[0] = v[0] / d;
 	v[1] = v[1] / d;
 	v[2] = v[2] / d;
@@ -68,17 +68,17 @@ Sun.prototype.mathsNormalize = function(v) {
 Sun.prototype.l3dBillboardCylindricalBegin = function(cam, worldPos) {
 	var lookAt = [0, 0, 1];
 	
-	var objToCamProj = [0, 0, 0];
+	var objToCamProj = [];
 	objToCamProj[0] = cam[0] - worldPos[0];
 	objToCamProj[1] = 0;
 	objToCamProj[2] = cam[2] - worldPos[2];
 	
-	mathsNormalize(objToCamProj);
+	this.mathsNormalize(objToCamProj);
 	
-	var upAux = mathsCrossProduct(lookAt, objToCamProj);
+	var upAux = this.mathsCrossProduct(lookAt, objToCamProj);
 	
-	var angleCosine = mathsInnerProduct(lookAt, objToCamProj);
+	var angleCosine = this.mathsInnerProduct(lookAt, objToCamProj);
 	
 	if ((angleCosine < 0.99990) && (angleCosine > -0.9999))
-		mat4.rotate(modelMatrix, modelMatrix, acos(angleCosine) * 180 / 3.14, upAux);
+		mat4.rotate(modelMatrix, modelMatrix, Math.acos(angleCosine), upAux);
 }

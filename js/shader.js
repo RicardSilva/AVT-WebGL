@@ -77,6 +77,9 @@ Shader.prototype.getUniformLocations = function() {
     this.treeID = gl.getUniformLocation(this.program, "billboardTexture");
     this.foggyID = gl.getUniformLocation(this.program, "foggy");
 
+    this.woodNormalID = gl.getUniformLocation(this.program, "woodNormal");
+    this.bambooNormalID = gl.getUniformLocation(this.program, "bambooNormal");
+
     var uniformName;
     for (i = 0; i < MAX_LIGHTS; i++) {
         for (j = 0; j < ATTRIBS_PER_LIGHT; j++) {
@@ -200,7 +203,7 @@ Shader.prototype.loadTexture = function(id) {
 	gl.uniform1i(this.textureID, id);
 }
 Shader.prototype.loadMatDiffuse = function(color) {
-	gl.uniform4fv(this.diffuseID, color); //TODO is this right?
+	gl.uniform4fv(this.diffuseID, color);
 }
 Shader.prototype.loadWoodDiffuse = function(id) {
      gl.uniform1i(this.woodDiffuseID, id);
@@ -219,6 +222,13 @@ Shader.prototype.loadMask = function(id) {
 }
 Shader.prototype.loadTree = function(id) {
      gl.uniform1i(this.treeID, id);
+}
+
+Shader.prototype.loadWoodNormal = function(id) {
+     gl.uniform1i(this.woodNormalID, id);
+}
+Shader.prototype.loadBambooNormal = function(id) {
+     gl.uniform1i(this.bambooNormalID, id);
 }
 
 Shader.prototype.loadMatrices = function() {

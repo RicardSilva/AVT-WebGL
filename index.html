@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 	<head>
 		<title>Micromachines</title>
 		
@@ -85,6 +85,8 @@
 			uniform sampler2D mask;
 			uniform sampler2D billboardTexture;
 
+			uniform sampler2D woodNormal;
+			uniform sampler2D bambooNormal;
 
 			vec4 calcDirLight(Light light, vec3 normal, vec3 viewDir, vec3 materialDiffuse, vec3 materialSpecular) {
 
@@ -171,7 +173,6 @@
 				vec3 specular = light.color * spec * materialSpecular * attenuation;
 				
 				return vec4((diffuse + specular).xyz, 1.0);
-
 			}
 
 			void main(void) {
@@ -181,22 +182,25 @@
 				vec3 materialSpecular;
 				float materialTransparency;
 				vec3 normal;
+				vec3 normFromTex;
 				
 				if(useTextures) {
-					
 					if(textureMode == 0) {
-						
 						vec3 woodDiff = vec3(texture2D(woodDiffuse, exTexCoord * 15.0));
 						vec3 bambooDiff = vec3(texture2D(bambooDiffuse, exTexCoord * 10.0));
 						float mixCoefficient = (texture2D(mask, exTexCoord)).r;
 						materialDiffuse = mix(woodDiff, bambooDiff, mixCoefficient);
 						outColor += vec4(materialDiffuse * 0.1, 1);	
 						
-						
 						vec3 woodSpec = vec3(texture2D(woodSpecular, exTexCoord * 15.0));
 						vec3 bambooSpec = vec3(texture2D(bambooSpecular, exTexCoord * 10.0)) * 0.9;
 						materialSpecular = mix(woodSpec, bambooSpec, mixCoefficient) ;
 						materialTransparency = 1.0;
+
+						vec3 woodNorm = 2.0 * vec3(texture2D(woodNormal, exTexCoord*15.0)) - 1.0;
+						vec3 bambooNorm = 2.0 * vec3(texture2D(bambooNormal, exTexCoord*10.0)) - 1.0;
+						//normFromTex = mix(woodNorm, bambooNorm, mixCoefficient);
+						normFromTex = bambooNorm;
 					}
 					else if (textureMode == 1) {
 						vec4 color = texture2D(billboardTexture, exTexCoord);
@@ -220,7 +224,12 @@
 					materialTransparency = mat.transparency;
 				}
 				
-				normal = normalize(exNormal);
+				if (useTextures && textureMode == 0){
+					normal = normalize(normFromTex);
+				}
+				else{
+					normal = normalize(exNormal);
+				}
 				
 				for (int i = 0; i < MaxLights; i++) {
 					Light light = lights[i];
