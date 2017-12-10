@@ -218,10 +218,12 @@ GameManager.prototype.onIncreaseOrangeSpeedTimer = function() {
 GameManager.prototype.update = function(timeStep) {
 	if(!this.playing) {
 		this.car.update(timeStep);
-	  	this.track.update(timeStep);
-	   
-		this.processCarCollisions();
-	   	this.processObsCollisions();
+  	this.track.update(timeStep);
+  	if(this.raining)
+		this.rain.update(timeStep);
+   
+	this.processCarCollisions();
+   	this.processObsCollisions();
 	   
 		
 	}
@@ -483,15 +485,13 @@ GameManager.prototype.processObsCollisions = function() {
 	}
 }
 
-GameManager.prototype.setDayRainingColor = function() {
-	gl.clearColor(0.35, 0.60, 0.70, 1);
-}
-GameManager.prototype.setDayClearColor = function() {
-	gl.clearColor(0.53, 0.81, 0.92, 1);
-}
-GameManager.prototype.setNightColor = function() {
-	gl.clearColor(0.2, 0.2, 0.2, 1);
-}
+GameManager.prototype.setNightColor           = function() { gl.clearColor(0.2, 0.2, 0.2, 1); }
+GameManager.prototype.setNightFoggyColor      = function() { gl.clearColor(0.35, 0.35, 0.35, 1); }
+GameManager.prototype.setDayClearColor        = function() { gl.clearColor(0.53, 0.81, 0.92, 1); }
+GameManager.prototype.setDayRainingColor      = function() { gl.clearColor(0.35, 0.60, 0.70, 1); }
+GameManager.prototype.setDayFoggyColor        = function() { gl.clearColor(0.5, 0.5, 0.5, 1); }
+GameManager.prototype.setDayRainingFoggyColor = function() { gl.clearColor(0.50, 0.50, 0.55, 1); }
+
 
 GameManager.prototype.exportAnimation = function() {
 	var s = "[";
@@ -506,9 +506,9 @@ GameManager.prototype.exportAnimation = function() {
 GameManager.prototype.keyDown = function(key) {
 	switch (key) {
 	
-	case 90:
-		this.exportAnimation();
-		break;
+	//case 90:
+	//	this.exportAnimation();
+	//	break;
 	case 49:
 		this.activeCamera = this.cameras[0];
 		break;
@@ -534,16 +534,23 @@ GameManager.prototype.keyDown = function(key) {
 		this.track.toogleDirectionalLight();
 		this.day = !this.day;
 		if (this.day) {
-			if (this.raining)
+			if (this.raining && this.foggy)
+				this.setDayRainingFoggyColor();
+			else if (this.raining)
 				this.setDayRainingColor();
+			else if (this.foggy)
+				this.setDayFoggyColor();
 			else {
 				this.setDayClearColor();
 			}
 		}
 
 		else
-			this.setNightColor();
-	
+			if (this.foggy)
+				this.setNightFoggyColor();
+			else
+				this.setNightColor();
+
 		break;
 	case 57:
 		this.track.tooglePointLights();
@@ -581,30 +588,51 @@ GameManager.prototype.keyDown = function(key) {
 	case 40: //down arrow
 		this.car.goBack = true;
 		break;
-	/*case 112:
-		raining = !raining;
-		if (day) {
-			if (raining) {
-				if (foggy)
-					setDayRainingFoggyColor();
+	
+	case 88: //X
+		this.foggy = !this.foggy;
+		this.shader.loadFoggy(this.foggy);
+		if (this.foggy) {
+			if (this.day) {
+				if (this.raining)
+					this.setDayRainingFoggyColor();
 				else
-					setDayRainingColor();
+					this.setDayFoggyColor();
+			}
+			else
+				this.setNightFoggyColor();
+		}
+		else {
+			if (this.day) {
+				if (this.raining)
+					this.setDayRainingColor();
+				else
+					this.setDayClearColor();
+			}
+			else
+				this.setNightColor();
+		}
+		break;
+	case 90: //Z
+		this.raining = !this.raining;
+		if (this.day) {
+			if (this.raining) {
+				if (this.foggy)
+					this.setDayRainingFoggyColor();
+				else
+					this.setDayRainingColor();
 
 			}
 			else {
-				if (foggy)
-					setDayFoggyColor();
+				if (this.foggy)
+					this.setDayFoggyColor();
 				else
-					setDayClearColor();
+					this.setDayClearColor();
 			}
 		}
 		break;
-	*/
-	case 114:
+	case 67: //C
 		//lensFlaring = !lensFlaring;
-		break;
-	case 90:
-		foggy = !foggy;
 		break;
 	}
 
