@@ -26,6 +26,7 @@
 			attribute vec4 inPosition;
 			attribute vec3 inNormal; 
 			attribute vec2 inTexCoord; 
+			attribute vec4 inTangent;
 
 			uniform mat4 m_pvm;
 			uniform mat4 m_viewModel;
@@ -49,36 +50,10 @@
 				exNormal = normalize(m_normal * inNormal);
 				exEyeDirection = normalize(vec3(-pos));
 				exTexCoord = inTexCoord;
-				if(false) {
-
-					vec3 l = vec3(shadowLight);
-					vec3 n = vec3(0,1,0);
-					mat4 shadowMatrix;
-					
-					shadowMatrix[0][0] = dot(n, l) - l.x * n.x;
-					shadowMatrix[0][1] = -l.y * n.x;
-					shadowMatrix[0][2] = -l.z * n.x;
-					shadowMatrix[0][3] = -n.x;
-					shadowMatrix[1][0] = -l.x * n.y;
-					shadowMatrix[1][1] = dot(n, l) - l.y * n.y;
-					shadowMatrix[1][2] = -l.z * n.y;
-					shadowMatrix[1][3] = -n.y;
-					shadowMatrix[2][0] = -l.x * n.z;
-					shadowMatrix[2][1] = -l.y * n.z;
-					shadowMatrix[2][2] = dot(n, l) - l.z * n.z;
-					shadowMatrix[2][3] = -n.z;
-					shadowMatrix[3][0] = 0.0;
-					shadowMatrix[3][1] = 0.0;
-					shadowMatrix[3][2] = 0.0;
-					shadowMatrix[3][3] = dot(n, l);
-
-					
-					gl_Position =  m_pvm * shadowMatrix * inPosition;
-
-				}
-				else {
-					gl_Position = m_pvm * inPosition;	
-				}
+				
+				
+				gl_Position = m_pvm * inPosition;	
+				
 				
 			}
 
