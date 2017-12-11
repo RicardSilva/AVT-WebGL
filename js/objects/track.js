@@ -112,8 +112,8 @@ Track.prototype.draw = function(cam) {
 	this.shader.loadBambooSpecular(10);
 	this.shader.loadMask(11);
 
-	this.shader.loadWoodNormal(14);
-	this.shader.loadBambooNormal(15);
+	this.shader.loadWoodNormal(15);
+	this.shader.loadBambooNormal(16);
 
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {
@@ -206,8 +206,8 @@ Track.prototype.drawTable = function() {
 	this.shader.loadBambooSpecular(10);
 	this.shader.loadMask(11);
 
-	this.shader.loadWoodNormal(14);
-	this.shader.loadBambooNormal(15);
+	this.shader.loadWoodNormal(15);
+	this.shader.loadBambooNormal(16);
 
 	var arrayLength = this.model.meshes.length;
 	for (var i = 0; i < arrayLength; i++) {

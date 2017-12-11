@@ -203,7 +203,7 @@ GameManager.prototype.initCameras = function() {
 
 GameManager.prototype.initGameObjects = function() {
 	
-	this.track = new Track(vec3.fromValues(0,-0.1,0), this.shader);
+	this.track = new Track(vec3.fromValues(0,0,0), this.shader);
 	this.track.loadFromFile(this.track, track_map);
 	this.track.createFinishingLine();
 	
