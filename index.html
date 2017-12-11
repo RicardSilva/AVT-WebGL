@@ -191,7 +191,6 @@
 				vec3 specular = light.color * spec * materialSpecular;
 				return vec4((diffuse + specular).xyz, 1.0);
 			}
-			float trash;
 			vec4 calcPointLight(Light light, vec3 lightD, vec3 halfV, vec3 normal, vec3 materialDiffuse, vec3 materialSpecular) {
 
 				
@@ -210,19 +209,14 @@
 				// the direction of maximum highlight also changes per fragment
 				vec3 halfVector = normalize(halfV);
 				
-				float diff = max(0.0, dot(normal, lightDirection));
-				
-			
+				float diff = max(0.0, dot(normal, lightDirection));			
 				float spec = max(0.0, dot(normal, halfVector));
-				trash = diff;
 				
 				if (diff == 0.0)
 					spec = 0.0;
 				else
 					spec = pow(spec, mat.shininess);
 
-				trash = spec;
-							
 				vec3 diffuse = light.color * diff * materialDiffuse * attenuation;
 				vec3 specular = light.color * spec * materialSpecular * attenuation;
 				return vec4((diffuse + specular ).xyz, 1.0);
@@ -397,17 +391,18 @@
 					normalTexture = false;
 				}
 				
-				if (useTextures && textureMode == 0){
-					normal = normalize(normFromTex);
-				}
-				else{
-					normal = normalize(exNormal);
-				}
+				
 				
 				for (int i = 0; i < MaxLights*2; i+=2) {
 					Light light = lights[i/2];
 					if(light.isActive) {	
 
+						if (useTextures && textureMode == 0 && light.type!= 2){
+							normal = normalize(normFromTex);
+						}
+						else{
+							normal = normalize(exNormal);
+						}
 						vec3 lD = exLights[i];
 						vec3 hV = exLights[i + 1];
 						
@@ -420,12 +415,12 @@
 							}
 						}
 						else if (light.type == 2) {
-							if (normalTexture) {
+							/*if (normalTexture) {
 								outColor += calcSpotLight(light,lD, hV, normal, materialDiffuse, materialSpecular) *  0.5;
 							}
-							else {
+							else {*/
 								outColor += calcSpotLight2(light, exPosition, normal, exEyeDirection, materialDiffuse, materialSpecular) * 0.5;
-							}
+							
 							
 						}
 						else if(light.type == 0)	{
@@ -456,8 +451,6 @@
 					outColor = mix(vec4(0.5,0.5,0.5,1.0), outColor , fogAmount);
 	            }
 				gl_FragColor = outColor;
-				//gl_FragColor = vec4(normal, 1.0);
-				//gl_FragColor = vec4(trash, 0, 0, 1);
 				return;
 			}
 		</script>
