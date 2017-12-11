@@ -49,7 +49,7 @@
 				exNormal = normalize(m_normal * inNormal);
 				exEyeDirection = normalize(vec3(-pos));
 				exTexCoord = inTexCoord;
-				if(drawingShadows) {
+				if(false) {
 
 					vec3 l = vec3(shadowLight);
 					vec3 n = vec3(0,1,0);
@@ -73,7 +73,7 @@
 					shadowMatrix[3][3] = dot(n, l);
 
 					
-					gl_Position = shadowMatrix * m_pvm * inPosition;
+					gl_Position =  m_pvm * shadowMatrix * inPosition;
 
 				}
 				else {

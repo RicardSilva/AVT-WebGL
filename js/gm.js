@@ -384,7 +384,9 @@ GameManager.prototype.drawObjects = function() {
     this.car.drawLights();
 
     this.track.drawTable();
-   // this.drawShadows();
+    //this.drawShadows();
+    this.track.drawLights();
+    this.car.drawLights();
     this.track.drawObjects(this.activeCamera.eye);
     this.car.draw();
 
@@ -459,9 +461,32 @@ GameManager.prototype.drawShadows = function() {
 	// Render object shadows	
 	for(lamp of this.track.lamps) {
 		if(lamp.light.isActive) {
-			this.shader.loadShadowLight(lamp.light);
+			//this.shader.loadShadowLight(lamp.light);
+			var l = vec3.clone(lamp.light.position);
+			var n = [0,1,0];
+			var shadowMatrix = mat4.create();
+			
+			shadowMatrix[0] = innerProduct(n, l) - l[0] * n[1];
+			shadowMatrix[1] = -l[1] * n[0];
+			shadowMatrix[2] = -l[2] * n[0];
+			shadowMatrix[3] = -n[0];
+			shadowMatrix[4] = -l[0] * n[1];
+			shadowMatrix[5] = innerProduct(n, l) - l[1] * n[1];
+			shadowMatrix[6] = -l[2] * n[2];
+			shadowMatrix[7] = -n[1];
+			shadowMatrix[8] = -l[0] * n[2];
+			shadowMatrix[9] = -l[1] * n[2];
+			shadowMatrix[10] = innerProduct(n, l) - l[2] * n[2];
+			shadowMatrix[11] = -n[2];
+			shadowMatrix[12] = 0.0;
+			shadowMatrix[13] = 0.0;
+			shadowMatrix[14] = 0.0;
+			shadowMatrix[15] = innerProduct(n, l);
+			this.matrices.pushMatrix(viewID);
+			mat4.multiply(viewMatrix, viewMatrix, shadowMatrix);
 			this.track.drawObjects(this.activeCamera.eye);
 			this.car.draw();
+			this.matrices.popMatrix(viewID);
 		}
 	}
 	
