@@ -32,6 +32,8 @@ function Shader (vsShader, fsShader) {
     this.maskID;
     this.treeID;
     this.foggyID;
+    this.shadowID;
+    this.shadowLightID;
     this.lightUniforms = new Array(MAX_LIGHTS * ATTRIBS_PER_LIGHT);
     this.lightAttribNames = [ "isActive", "type", "position", "direction",
         "color", "intensity", "constantAttenuation", "linearAttenuation", 
@@ -79,6 +81,8 @@ Shader.prototype.getUniformLocations = function() {
     this.maskID = gl.getUniformLocation(this.program, "mask");
     this.treeID = gl.getUniformLocation(this.program, "billboardTexture");
     this.foggyID = gl.getUniformLocation(this.program, "foggy");
+    this.shadowID = gl.getUniformLocation(this.program, "drawingShadows");
+    this.shadowLightID = gl.getUniformLocation(this.program, "shadowLight");
 
     this.woodNormalID = gl.getUniformLocation(this.program, "woodNormal");
     this.bambooNormalID = gl.getUniformLocation(this.program, "bambooNormal");
@@ -102,6 +106,19 @@ Shader.prototype.unUse = function() {
 
 Shader.prototype.loadFoggy = function(value) {
     gl.uniform1i(this.foggyID, value);
+}
+Shader.prototype.loadShadows = function(value) {
+    gl.uniform1i(this.shadowID, value);
+}
+Shader.prototype.loadShadowLight = function(light) {
+    var lightPos = [];
+    multMatrixPoint(viewMatrix, light.position, lightPos);
+    gl.uniform4fv(this.shadowLightID, light.position);
+}
+Shader.prototype.turnOffLights = function() {
+    for(var i = 0; i < MAX_LIGHTS; i++) {
+        gl.uniform1i(this.lightUniforms[i * ATTRIBS_PER_LIGHT + 0], false);
+    }
 }
 Shader.prototype.loadProjViewModelMatrix = function(matrix) {
     gl.uniformMatrix4fv(this.projViewModelID, false, matrix);

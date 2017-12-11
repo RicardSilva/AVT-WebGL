@@ -379,10 +379,13 @@ GameManager.prototype.draw = function() {
 
 GameManager.prototype.drawObjects = function() {
 	
+	
     this.track.drawLights();
     this.car.drawLights();
 
-    this.track.draw(this.activeCamera.eye);
+    this.track.drawTable();
+   // this.drawShadows();
+    this.track.drawObjects(this.activeCamera.eye);
     this.car.draw();
 
     
@@ -398,6 +401,7 @@ GameManager.prototype.drawObjects = function() {
 	if (this.lensFlaring && this.activeCamera == this.cameras[2] && this.day) {
 		this.flare.draw(this.sun.position);
 	}
+	
 	
 }
 
@@ -433,8 +437,46 @@ GameManager.prototype.drawMirrorReflection = function() {
 	gl.disable(gl.STENCIL_TEST);
 }
 
-GameManager.prototype.drawFlare = function() {
-    //this.flare.draw(this.sun.position;);
+GameManager.prototype.drawShadows = function() {
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+	gl.enable(gl.STENCIL_TEST);
+	// Draw mirror
+
+	gl.clear(gl.STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
+	gl.stencilFunc(gl.ALWAYS, 1, 0xFF); // Set any stencil to 1
+	gl.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
+	gl.stencilMask(0xFF); // Write to stencil buffer
+	gl.depthMask(false); // Don't write to depth buffer
+
+	this.track.drawTable();
+
+	
+	gl.stencilFunc(gl.EQUAL, 1, 0xFF); // Pass test if stencil value is 1
+	gl.stencilMask(0xFF); // Write to stencil buffer
+	gl.depthMask(false); // Don't write to depth buffer
+
+	this.shader.loadShadows(true);
+	// Render object shadows	
+	for(lamp of this.track.lamps) {
+		if(lamp.light.isActive) {
+			this.shader.loadShadowLight(lamp.light);
+			this.track.drawObjects(this.activeCamera.eye);
+			this.car.draw();
+		}
+	}
+	
+
+	this.shader.loadShadows(false);
+	gl.stencilFunc(gl.EQUAL, 2, 0xFF); // Pass test if stencil value is 2
+	gl.stencilMask(0x00); // Don't write anything to stencil buffer
+	gl.depthMask(true); // Write to depth buffer
+
+	this.shader.turnOffLights();
+	gl.disable(gl.DEPTH_TEST);
+	this.track.drawTable();
+	gl.enable(gl.DEPTH_TEST);
+
+	gl.disable(gl.STENCIL_TEST);
 }
 
 GameManager.prototype.resetCar = function() {

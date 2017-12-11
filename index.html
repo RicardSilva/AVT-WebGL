@@ -4,6 +4,24 @@
 		
 		<script id="shader-vs" type="x-shader/x-vertex">
 			#version 100
+			precision mediump float;
+			precision mediump int;
+
+			struct Light {
+				bool isActive;
+				int type;
+				vec4 position;
+				vec4 direction;
+				vec3 color;	
+				float intensity;
+				
+				float constantAttenuation;
+				float linearAttenuation;
+				float quadraticAttenuation;
+				
+				float spotCosCutoff; 
+				float spotExponent;
+			}; 
 
 			attribute vec4 inPosition;
 			attribute vec3 inNormal; 
@@ -19,22 +37,56 @@
 			varying	vec2 exTexCoord;
 
 
+			uniform vec4 shadowLight;
+			uniform bool drawingShadows;
+
+
 			void main (void) {
-				
+
 				vec4 pos = m_viewModel * inPosition;
 
 				exPosition = pos;
 				exNormal = normalize(m_normal * inNormal);
 				exEyeDirection = normalize(vec3(-pos));
 				exTexCoord = inTexCoord;
+				if(drawingShadows) {
+
+					vec3 l = vec3(shadowLight);
+					vec3 n = vec3(0,1,0);
+					mat4 shadowMatrix;
+					
+					shadowMatrix[0][0] = dot(n, l) - l.x * n.x;
+					shadowMatrix[0][1] = -l.y * n.x;
+					shadowMatrix[0][2] = -l.z * n.x;
+					shadowMatrix[0][3] = -n.x;
+					shadowMatrix[1][0] = -l.x * n.y;
+					shadowMatrix[1][1] = dot(n, l) - l.y * n.y;
+					shadowMatrix[1][2] = -l.z * n.y;
+					shadowMatrix[1][3] = -n.y;
+					shadowMatrix[2][0] = -l.x * n.z;
+					shadowMatrix[2][1] = -l.y * n.z;
+					shadowMatrix[2][2] = dot(n, l) - l.z * n.z;
+					shadowMatrix[2][3] = -n.z;
+					shadowMatrix[3][0] = 0.0;
+					shadowMatrix[3][1] = 0.0;
+					shadowMatrix[3][2] = 0.0;
+					shadowMatrix[3][3] = dot(n, l);
+
+					
+					gl_Position = shadowMatrix * m_pvm * inPosition;
+
+				}
+				else {
+					gl_Position = m_pvm * inPosition;	
+				}
 				
-				gl_Position = m_pvm * inPosition;	
 			}
 
 		</script>
 		
 		<script id="shader-fs" type="x-shader/x-fragment">
 		    precision mediump float;
+		    precision mediump int;
 
 			varying	vec4 exPosition; 
 			varying	vec3 exNormal;
@@ -76,6 +128,7 @@
 			uniform bool useTextures;
 			uniform int textureMode;
 			uniform Material mat;
+			uniform bool drawingShadows;
 
 			uniform vec4 matDiffuse;
 
@@ -177,6 +230,10 @@
 			}
 
 			void main(void) {
+				if(drawingShadows) {
+					gl_FragColor = vec4(0,0,0,1);
+					return;
+				}
 				vec4 outColor = vec4(0);
 				
 				vec3 materialDiffuse;

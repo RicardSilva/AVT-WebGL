@@ -80,6 +80,8 @@ Flare.prototype.draw = function(sunPosition) {
 
 		gameManager.matrices.popMatrix(modelID);
 	}
+	this.shader.disableTextures();
+	gl.bindTexture(gl.TEXTURE_2D, null);
 	gameManager.matrices.popMatrix(viewID);
 	gameManager.matrices.popMatrix(projectionID);
 	gl.enable(gl.DEPTH_TEST);
