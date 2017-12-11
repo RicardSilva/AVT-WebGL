@@ -13,6 +13,7 @@ Sun.prototype.draw = function(cam) {
 	gl.enable(gl.BLEND);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 	
+	
 	gameManager.matrices.pushMatrix(modelID);
 	mat4.translate(modelMatrix, modelMatrix, this.position);
 	mat4.scale(modelMatrix, modelMatrix, [50, 50, 50]);
@@ -25,7 +26,8 @@ Sun.prototype.draw = function(cam) {
 	this.shader.loadMatrices();
 	
 	this.shader.enableTextures();
-	this.shader.loadTextureMode(1);
+	this.shader.loadTextureMode(4);
+	this.shader.loadMatDiffuse([1, 0.6, 0, 1]);
 	
 	gl.activeTexture(gl.TEXTURE13);
 	gl.bindTexture(gl.TEXTURE_2D, textures[13]);

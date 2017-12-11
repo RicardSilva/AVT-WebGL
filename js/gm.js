@@ -12,7 +12,7 @@ function GameManager(width, height) {
     this.day            = true;
     this.raining        = false;
 	this.foggy 			= false;
-	this.lensFlaring    = true;
+	this.lensFlaring    = false;
     this.shader;
     this.cameras = [];
     this.activeCamera;
@@ -385,9 +385,7 @@ GameManager.prototype.drawObjects = function() {
     this.track.draw(this.activeCamera.eye);
     this.car.draw();
 
-    if (this.lensFlaring && this.activeCamera == this.cameras[2] && this.day) {
-		this.flare.draw(this.sun.position);
-	}
+    
     if(this.activeCamera == this.cameras[3] || this.activeCamera == this.cameras[6])
 		this.drawMirrorReflection();
 	
@@ -396,6 +394,9 @@ GameManager.prototype.drawObjects = function() {
 	
 	if (this.day){
 		this.sun.draw(this.activeCamera.eye);
+	}
+	if (this.lensFlaring && this.activeCamera == this.cameras[2] && this.day) {
+		this.flare.draw(this.sun.position);
 	}
 	
 }
@@ -704,7 +705,7 @@ GameManager.prototype.keyDown = function(key) {
 		}
 		break;
 	case 67: //C
-		//lensFlaring = !lensFlaring;
+		this.lensFlaring = !this.lensFlaring;
 		break;
 	}
 

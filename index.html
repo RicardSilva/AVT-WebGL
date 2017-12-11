@@ -76,7 +76,7 @@
 			uniform bool useTextures;
 			uniform int textureMode;
 			uniform Material mat;
-			
+
 			uniform vec4 matDiffuse;
 
 			uniform sampler2D woodDiffuse;
@@ -217,6 +217,21 @@
 						materialSpecular = vec3(0.05, 0.05, 0.05);
 						materialTransparency = color.w;
 					}
+					else if(textureMode == 3) {
+						vec4 color = texture2D(billboardTexture, exTexCoord);	
+						gl_FragColor = vec4(color.xyz, 0.7);
+						return;
+					}
+					else if (textureMode == 4) {
+						vec4 color = texture2D(billboardTexture, exTexCoord);	
+						gl_FragColor = color * matDiffuse;
+						return;
+					}
+					else if (textureMode == 5) {
+						vec4 color = texture2D(billboardTexture, exTexCoord);	
+						gl_FragColor = color;
+						return;
+					}	
 				}	
 				else {
 					outColor += vec4(mat.ambient.xyz, 1);	
