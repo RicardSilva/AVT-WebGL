@@ -459,42 +459,18 @@ GameManager.prototype.drawShadows = function() {
 	gl.depthMask(false); // Don't write to depth buffer
 	gl.colorMask(true, true, true, true);
 	this.shader.loadShadows(true);
-	// Render object shadows	
-	for(lamp of this.track.lamps) {
-		if(lamp.light.isActive) {
-			var l = vec3.clone(lamp.light.position);
-			var l = [];
-    		multMatrixPoint(viewMatrix, lamp.light.position, l);
-
-			var n = [0,-1,0];
-			var shadowMatrix = mat4.create();
-			var d = 0;
+	
 			
-			shadowMatrix[0] = innerProduct(n, l) + d - l[0] * n[1];
-			shadowMatrix[1] = -l[1] * n[0];
-			shadowMatrix[2] = -l[2] * n[0];
-			shadowMatrix[3] = -n[0];
-			shadowMatrix[4] = -l[0] * n[1];
-			shadowMatrix[5] = innerProduct(n, l) + d - l[1] * n[1];
-			shadowMatrix[6] = -l[2] * n[2];
-			shadowMatrix[7] = -n[1];
-			shadowMatrix[8] = -l[0] * n[2];
-			shadowMatrix[9] = -l[1] * n[2];
-			shadowMatrix[10] = innerProduct(n, l) + d - l[2] * n[2];
-			shadowMatrix[11] = -n[2];
-			shadowMatrix[12] = -l[0] * d;
-			shadowMatrix[13] = -l[1] * d;
-			shadowMatrix[14] = -l[2] * d;
-			shadowMatrix[15] = innerProduct(n, l);
+
 			gl.disable(gl.DEPTH_TEST);
 			this.matrices.pushMatrix(modelID);
-			mat4.multiply(modelMatrix, modelMatrix, shadowMatrix);
+			mat4.translate(modelMatrix, modelMatrix, [-10, 0, 0]);
 			this.track.drawObjects(this.activeCamera.eye);
 			this.car.draw();
 			this.matrices.popMatrix(modelID);
 			gl.disable(gl.DEPTH_TEST);
-		}
-	}
+	
+	
 	
 
 	this.shader.loadShadows(false);
