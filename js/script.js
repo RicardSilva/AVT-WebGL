@@ -41,28 +41,28 @@ function drawText() {
 
     text = "Current Lap: " + Math.floor(curr_min) + ":" + Math.floor(curr_sec) + ":" + Math.floor(curr_mili);
     
-    ctx.fillText(text, 900, 40);
-    ctx.strokeText(text, 900, 40);
+    ctx.fillText(text, 1000, 40);
+    ctx.strokeText(text, 1000, 40);
     if(gameManager.atLeastOneLap) {
         text = "Best Lap: " + Math.floor(best_min) + ":" + Math.floor(best_sec) + ":" + Math.floor(best_mili);
     }
     else {
         text = "    Best Lap: ---:---:---" ;
     }   
-    ctx.fillText(text, 900, 80);
-    ctx.strokeText(text, 900, 80);
+    ctx.fillText(text, 1000, 80);
+    ctx.strokeText(text, 1000, 80);
     text = "    Lives left: " + gameManager.lives;
-    ctx.fillText(text, 900, 120);
-    ctx.strokeText(text, 900, 120);
+    ctx.fillText(text, 1000, 120);
+    ctx.strokeText(text, 1000, 120);
     ctx.textAlign = "center";
     ctx.font="35px Verdana";
     if (gameManager.gameOver) {
-        ctx.fillText("Game Over! Press R to restart the game", 500, 350);
-        ctx.strokeText("Game Over! Press R to restart the game", 500, 350);
+        ctx.fillText("Game Over! Press R to restart the game", 750, 350);
+        ctx.strokeText("Game Over! Press R to restart the game", 750, 350);
     }
     else if(gameManager.pause) {
-        ctx.fillText("Game is paused!", 600, 350);
-        ctx.strokeText("Game is paused!", 600, 350);
+        ctx.fillText("Game is paused!", 750, 350);
+        ctx.strokeText("Game is paused!", 750, 350);
     }
 }
 

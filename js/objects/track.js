@@ -220,6 +220,52 @@ Track.prototype.drawTable = function() {
 	gameManager.matrices.popMatrix(modelID);
 }
 
+Track.prototype.drawTable2 = function() {
+	gameManager.matrices.pushMatrix(modelID);
+	mat4.translate(modelMatrix, modelMatrix, this.position);
+	this.shader.loadMatrices();
+	
+	//load textures
+	this.shader.disableTextures();
+	this.shader.loadTextureMode(0);
+	
+	
+	gl.activeTexture(gl.TEXTURE7);
+	gl.bindTexture(gl.TEXTURE_2D, textures[7]);
+	gl.activeTexture(gl.TEXTURE8);
+	gl.bindTexture(gl.TEXTURE_2D, textures[8]);
+	gl.activeTexture(gl.TEXTURE9);
+	gl.bindTexture(gl.TEXTURE_2D, textures[9]);
+	gl.activeTexture(gl.TEXTURE10);
+	gl.bindTexture(gl.TEXTURE_2D, textures[10]);
+	gl.activeTexture(gl.TEXTURE11);
+	gl.bindTexture(gl.TEXTURE_2D, textures[11]);
+
+	gl.activeTexture(gl.TEXTURE15);
+	gl.bindTexture(gl.TEXTURE_2D, textures[14]);
+	gl.activeTexture(gl.TEXTURE16);
+	gl.bindTexture(gl.TEXTURE_2D, textures[15]);
+	
+	this.shader.loadWoodDiffuse(7);
+	this.shader.loadWoodSpecular(8);
+	this.shader.loadBambooDiffuse(9);
+	this.shader.loadBambooSpecular(10);
+	this.shader.loadMask(11);
+
+	this.shader.loadWoodNormal(15);
+	this.shader.loadBambooNormal(16);
+
+	var arrayLength = this.model.meshes.length;
+	for (var i = 0; i < arrayLength; i++) {
+		this.shader.loadMaterial(this.model.meshes[i].material);
+		this.model.meshes[i].draw(this.shader);
+	}
+
+	this.shader.enableTextures();
+	gl.bindTexture(gl.TEXTURE_2D, null);
+	gameManager.matrices.popMatrix(modelID);
+}
+
 Track.prototype.drawLights = function() {
 	this.directionalLight.draw();
 	for (lamp of this.lamps)

@@ -13,6 +13,7 @@ function GameManager(width, height) {
     this.raining        = false;
 	this.foggy 			= false;
 	this.lensFlaring    = false;
+	this.shadows        = false;
     this.shader;
     this.cameras = [];
     this.activeCamera;
@@ -34,7 +35,6 @@ function GameManager(width, height) {
 	// animation variables
 	this.recording      = false;
 	this.playing        = false;
-	this.stereoMode     = false;
 	this.animationVariables = [];
 	this.animationFrameCounter = 0;
 	//gyro angles
@@ -248,8 +248,8 @@ GameManager.prototype.update = function(timeStep) {
 		
 
 		//change cameras
-		if(Math.random() > 0.999) {
-			//this.activeCamera = this.cameras[Math.round(Math.random() * 4)];
+		if(Math.random() > 0.995) {
+			this.activeCamera = this.cameras[Math.round(Math.random() + 5)];
 		}
 		if(this.animationFrameCounter > record.length - 1) 
 			this.animationFrameCounter = 0;
@@ -307,8 +307,9 @@ GameManager.prototype.draw = function() {
 	  		mat4.translate(viewMatrix, viewMatrix, [-this.activeCamera.eye[0],
 										  			-this.activeCamera.eye[1],
 										  			-this.activeCamera.eye[2]]);
-
+	  		this.shadows = false;
     	}
+
         this.drawObjects();
 
         //right
@@ -336,7 +337,7 @@ GameManager.prototype.draw = function() {
 	  		mat4.translate(viewMatrix, viewMatrix, [-this.activeCamera.eye[0],
 										  			-this.activeCamera.eye[1],
 										  			-this.activeCamera.eye[2]]);
-
+	  		this.shadows = false;
     	}
         
         this.drawObjects();
@@ -384,7 +385,8 @@ GameManager.prototype.drawObjects = function() {
     this.car.drawLights();
 
     this.track.drawTable();
-    //this.drawShadows();
+    if(this.shadows)
+   	 this.drawShadows();
     this.track.drawLights();
     this.car.drawLights();
     this.track.drawObjects(this.activeCamera.eye);
@@ -442,51 +444,55 @@ GameManager.prototype.drawMirrorReflection = function() {
 GameManager.prototype.drawShadows = function() {
     gl.clear(gl.DEPTH_BUFFER_BIT);
 	gl.enable(gl.STENCIL_TEST);
-	// Draw mirror
 
 	gl.clear(gl.STENCIL_BUFFER_BIT); // Clear stencil buffer (0 by default)
 	gl.stencilFunc(gl.ALWAYS, 1, 0xFF); // Set any stencil to 1
 	gl.stencilOp(gl.KEEP, gl.KEEP, gl.INCR);
 	gl.stencilMask(0xFF); // Write to stencil buffer
 	gl.depthMask(false); // Don't write to depth buffer
-
-	this.track.drawTable();
+	gl.colorMask(false, false, false, false);
+	this.track.drawTable2();
 
 	
 	gl.stencilFunc(gl.EQUAL, 1, 0xFF); // Pass test if stencil value is 1
 	gl.stencilMask(0xFF); // Write to stencil buffer
 	gl.depthMask(false); // Don't write to depth buffer
-
+	gl.colorMask(true, true, true, true);
 	this.shader.loadShadows(true);
 	// Render object shadows	
 	for(lamp of this.track.lamps) {
 		if(lamp.light.isActive) {
-			//this.shader.loadShadowLight(lamp.light);
 			var l = vec3.clone(lamp.light.position);
-			var n = [0,1,0];
+			var l = [];
+    		multMatrixPoint(viewMatrix, lamp.light.position, l);
+
+			var n = [0,-1,0];
 			var shadowMatrix = mat4.create();
+			var d = 0;
 			
-			shadowMatrix[0] = innerProduct(n, l) - l[0] * n[1];
+			shadowMatrix[0] = innerProduct(n, l) + d - l[0] * n[1];
 			shadowMatrix[1] = -l[1] * n[0];
 			shadowMatrix[2] = -l[2] * n[0];
 			shadowMatrix[3] = -n[0];
 			shadowMatrix[4] = -l[0] * n[1];
-			shadowMatrix[5] = innerProduct(n, l) - l[1] * n[1];
+			shadowMatrix[5] = innerProduct(n, l) + d - l[1] * n[1];
 			shadowMatrix[6] = -l[2] * n[2];
 			shadowMatrix[7] = -n[1];
 			shadowMatrix[8] = -l[0] * n[2];
 			shadowMatrix[9] = -l[1] * n[2];
-			shadowMatrix[10] = innerProduct(n, l) - l[2] * n[2];
+			shadowMatrix[10] = innerProduct(n, l) + d - l[2] * n[2];
 			shadowMatrix[11] = -n[2];
-			shadowMatrix[12] = 0.0;
-			shadowMatrix[13] = 0.0;
-			shadowMatrix[14] = 0.0;
+			shadowMatrix[12] = -l[0] * d;
+			shadowMatrix[13] = -l[1] * d;
+			shadowMatrix[14] = -l[2] * d;
 			shadowMatrix[15] = innerProduct(n, l);
-			this.matrices.pushMatrix(viewID);
-			mat4.multiply(viewMatrix, viewMatrix, shadowMatrix);
+			gl.disable(gl.DEPTH_TEST);
+			this.matrices.pushMatrix(modelID);
+			mat4.multiply(modelMatrix, modelMatrix, shadowMatrix);
 			this.track.drawObjects(this.activeCamera.eye);
 			this.car.draw();
-			this.matrices.popMatrix(viewID);
+			this.matrices.popMatrix(modelID);
+			gl.disable(gl.DEPTH_TEST);
 		}
 	}
 	
@@ -495,6 +501,7 @@ GameManager.prototype.drawShadows = function() {
 	gl.stencilFunc(gl.EQUAL, 2, 0xFF); // Pass test if stencil value is 2
 	gl.stencilMask(0x00); // Don't write anything to stencil buffer
 	gl.depthMask(true); // Write to depth buffer
+
 
 	this.shader.turnOffLights();
 	gl.disable(gl.DEPTH_TEST);
@@ -774,6 +781,9 @@ GameManager.prototype.keyDown = function(key) {
 	case 67: //C
 		this.lensFlaring = !this.lensFlaring;
 		break;
+	case 86: //C
+	this.shadows = !this.shadows;
+	break;
 	}
 
 

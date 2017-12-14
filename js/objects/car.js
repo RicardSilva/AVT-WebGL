@@ -9,7 +9,7 @@ function Car(position, shader) {
 	this.goBack = false;
 	
 	this.angleInc = 1.5;
-	this.maxSpeed = 250;
+	this.maxSpeed = 275;
 	this.maxBackwardsSpeed = -175;
 
 	this.acceleration = 150;
